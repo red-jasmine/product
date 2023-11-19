@@ -1,0 +1,25 @@
+<?php
+
+namespace RedJasmine\Product\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Support\Traits\HasDateTimeFormatter;
+
+class ProductInfo extends Model
+{
+
+    use HasDateTimeFormatter;
+
+    use SoftDeletes;
+
+    protected $casts = [
+        'basic_props' => 'array',
+        'sku_props'   => 'array',
+        'images'      => 'array',
+        'videos'      => 'array',
+        'tools'       => 'array',
+        'extends'     => 'array',
+    ];
+
+}
