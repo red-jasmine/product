@@ -21,6 +21,11 @@ class ProductCategoryService
     use WithUserService;
 
 
+    public function find(int $id) : ProductCategory
+    {
+        return ProductCategory::findOrFail($id);
+    }
+
     /**
      * @param array $attributes
      *

@@ -3,17 +3,25 @@
 namespace RedJasmine\Product\Http\Seller\Controllers\Api;
 
 
-use Illuminate\Http\Request;
+use RedJasmine\Product\Http\Seller\Resources\ProductCategoryResource;
+use RedJasmine\Product\Services\Category\ProductCategoryService;
 
 class ProductCategoryController extends Controller
 {
+
+    public function service() : ProductCategoryService
+    {
+        return app(ProductCategoryService::class);
+    }
+
     public function index()
     {
 
     }
 
-    public function show($id)
+    public function show($id) : ProductCategoryResource
     {
+        return new ProductCategoryResource($this->service()->find($id));
     }
 
 

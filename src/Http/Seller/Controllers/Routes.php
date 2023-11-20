@@ -23,8 +23,8 @@ class Routes
 
                 Route::group([ 'prefix' => 'product-categories' ], function () {
 
-                    Route::get('{id}', [ 'ProductCategoryController', 'show' ]);
-                    Route::get('/', [ 'ProductCategoryController', 'index' ]);
+                    Route::get('{id}', 'ProductCategoryController@show');
+                    Route::get('/', 'ProductCategoryController@index');
                 });
 
             });
