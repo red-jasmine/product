@@ -4,11 +4,12 @@ namespace RedJasmine\Product\Services\Category;
 
 use Exception;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Models\ProductCategory;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Rules\NotZeroExistsRule;
+use RedJasmine\Support\Rules\ParentIDValidationRule;
 use RedJasmine\Support\Traits\WithUserService;
 
 /**
@@ -20,11 +21,43 @@ class ProductCategoryService
     use WithUserService;
 
 
+    /**
+     * @param array $attributes
+     *
+     * @return ProductCategory
+     * @throws Exception
+     */
+    public function create(array $attributes) : ProductCategory
+    {
+        $productCategory     = new ProductCategory();
+        $productCategory->id = Snowflake::getInstance()->nextId();
+
+        $validator = $this->validator($attributes);
+        $validator->validate();
+
+        $productCategory->fill($validator->safe()->all());
+        $productCategory->withCreator($this->getOperator());
+
+        $productCategory->save();
+
+        return $productCategory;
+    }
+
+    public function validator(array $attributes) : \Illuminate\Validation\Validator
+    {
+        return Validator::make($attributes, $this->rules(), [], $this->attributes());
+    }
+
     protected function rules() : array
     {
+
         return [
             'id'         => [],
-            'parent_id'  => [ 'required', 'integer',Rule::exists()],
+            'parent_id'  => [
+                'required',
+                'integer',
+                new NotZeroExistsRule('product_categories', 'id'),
+            ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'max:100' ],
             'sort'       => [ 'integer' ],
@@ -55,29 +88,23 @@ class ProductCategoryService
         ];
     }
 
-
     /**
+     * 更新操作
+     *
+     * @param int   $id
      * @param array $attributes
      *
      * @return ProductCategory
-     * @throws Exception
      */
-    public function create(array $attributes) : ProductCategory
+    public function update(int $id, array $attributes) : ProductCategory
     {
-        // 验证
-        $productCategory     = new ProductCategory();
-        $productCategory->id = Snowflake::getInstance()->nextId();
-        $this->validate($attributes);
-        $productCategory->fill($attributes);
-        $productCategory->withCreator($this->getOperator());
+        $productCategory = ProductCategory::findOrFail($id);
+        $validator       = $this->validator($attributes);
+        $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
+        $validator->validated();
+        $productCategory->fill($validator->safe()->all());
+        $productCategory->withUpdater($this->getOperator());
         $productCategory->save();
         return $productCategory;
-    }
-
-
-    public function validate(array $attributes) : void
-    {
-        $validator = Validator::make($attributes, $this->rules(), [], $this->attributes());
-        $validator->validate();
     }
 }
