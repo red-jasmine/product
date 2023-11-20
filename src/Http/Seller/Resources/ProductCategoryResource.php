@@ -25,6 +25,7 @@ class ProductCategoryResource extends JsonResource
             'sort'       => $this->sort,
             'is_leaf'    => $this->is_leaf,
             'extends'    => $this->extends,
+            'children'   => $this->children ? static::collection(collect($this->children)) : null,
         ];
     }
 }

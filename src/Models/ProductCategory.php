@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\ModelTree;
 use RedJasmine\Support\Traits\WithOperatorModel;
 
 class ProductCategory extends Model
@@ -15,14 +16,16 @@ class ProductCategory extends Model
 
     use WithOperatorModel;
 
+    use ModelTree;
+
     // 父级ID字段名称，默认值为 parent_id
-    protected $parentColumn = 'parent_id';
+    protected string $parentColumn = 'parent_id';
 
     // 排序字段名称，默认值为 order
-    protected $orderColumn = 'sort';
+    protected string $orderColumn = 'sort';
 
     // 标题字段名称，默认值为 title
-    protected $titleColumn = 'name';
+    protected string $titleColumn = 'name';
 
 
     protected $fillable = [

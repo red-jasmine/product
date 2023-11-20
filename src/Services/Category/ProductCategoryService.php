@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Services\Category;
 
 use Exception;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
@@ -24,6 +25,18 @@ class ProductCategoryService
     public function find(int $id) : ProductCategory
     {
         return ProductCategory::findOrFail($id);
+    }
+
+    /**
+     * to tree
+     * @return array
+     */
+    public function tree() : array
+    {
+        $query = (new ProductCategory())->withQuery(function (ProductCategory $query) {
+            return $query->where('status', CategoryStatusEnum::ENABLE);
+        });
+        return $query->toTree();
     }
 
     /**
@@ -58,11 +71,7 @@ class ProductCategoryService
 
         return [
             'id'         => [],
-            'parent_id'  => [
-                'required',
-                'integer',
-                new NotZeroExistsRule('product_categories', 'id'),
-            ],
+            'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule('product_categories', 'id'), ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'max:100' ],
             'sort'       => [ 'integer' ],
