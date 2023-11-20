@@ -10,9 +10,12 @@ use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\ModelTree;
 use RedJasmine\Support\Traits\WithOperatorModel;
 
-class ProductCategory extends Model
+class ProductSellerCategory extends Model
 {
     use HasDateTimeFormatter;
+
+
+
 
     use WithOperatorModel;
 
@@ -34,16 +37,16 @@ class ProductCategory extends Model
         'parent_id',
         'name',
         'group_name',
-
+        'image',
         'sort',
-        'is_leaf',
         'status',
+        'is_leaf',
         'extends',
     ];
 
     protected $casts = [
-        'extends'    => 'array',
-        'status'     => CategoryStatusEnum::class,
+        'extends' => 'array',
+        'status'  => CategoryStatusEnum::class,
     ];
 
     public function parent() : BelongsTo
@@ -52,3 +55,4 @@ class ProductCategory extends Model
     }
 
 }
+

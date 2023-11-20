@@ -2,8 +2,8 @@
 
 return [
     'labels'     => [
-        'ProductCategory'  => '商品类目',
-        'product-category' => '商品类目',
+        'ProductSellerCategory'   => '商品卖家分类',
+        'product-seller-category' => '商品卖家分类',
     ],
     'attributes' => [
         'id'           => '类目ID',
