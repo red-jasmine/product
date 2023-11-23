@@ -15,7 +15,8 @@
         "red-jasmine/support": "1.0.x-dev"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0"
+        "orchestra/testbench": "^8.0",
+        "nunomaduro/collision": "^7.8"
     },
     "autoload": {
         "psr-4": {

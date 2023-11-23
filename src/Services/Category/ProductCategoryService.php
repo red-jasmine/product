@@ -122,4 +122,26 @@ class ProductCategoryService
         $productCategory->save();
         return $productCategory;
     }
+
+    /**
+     * 修改
+     *
+     * @param int   $id
+     * @param array $attributes
+     *
+     * @return Model
+     */
+    public function modify(int $id, array $attributes) : Model
+    {
+        $productCategory = Model::findOrFail($id);
+        $validator       = $this->validator($attributes);
+        $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
+        $validator->setRules(Arr::only($validator->getRules(), array_keys($attributes)));
+        $validator->validated();
+        $productCategory->fill($validator->safe()->all());
+        $productCategory->withUpdater($this->getOperator());
+        $productCategory->save();
+        return $productCategory;
+
+    }
 }
