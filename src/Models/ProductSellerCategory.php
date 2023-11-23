@@ -4,18 +4,17 @@ namespace RedJasmine\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\ModelTree;
-use RedJasmine\Support\Traits\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\ModelTree;
+use RedJasmine\Support\Traits\Models\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\WithOwnerModel;
 
 class ProductSellerCategory extends Model
 {
     use HasDateTimeFormatter;
 
-
-
+    use WithOwnerModel;
 
     use WithOperatorModel;
 

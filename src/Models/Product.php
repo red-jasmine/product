@@ -8,12 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\WithOwnerModel;
 
 class Product extends Model
 {
     use HasDateTimeFormatter;
 
     use SoftDeletes;
+
+    use WithOwnerModel;
+
+    use WithOperatorModel;
 
 
     /**
