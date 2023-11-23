@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('status')->default(1)->comment('状态');
             $table->json('extends')->nullable()->comment('扩展字段');
             $table->timestamps();
+            $table->softDeletes();
             $table->comment('商品-品牌');
         });
     }
