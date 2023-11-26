@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Services\Property;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
@@ -113,11 +114,12 @@ class PropertyService
 
 
     /**
+     * 查询所有
      * @param int $pid
      *
-     * @return ProductPropertyValue[]
+     * @return ProductPropertyValue[]|Collection
      */
-    public function values(int $pid)
+    public function values(int $pid) : Collection|array
     {
         return ProductPropertyValue::available()
                                    ->select($this->propertyValueFields)
