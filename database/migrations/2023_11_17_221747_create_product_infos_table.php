@@ -22,14 +22,14 @@ return new class extends Migration {
             $table->string('length')->nullable()->comment('长:m');
             $table->string('size')->nullable()->comment('体积:m³');
             // 属性
-            $table->json('basic_props')->nullable()->comment('基本属性数据');
-            $table->json('sku_props')->nullable()->comment('规格属性数据');
+            $table->json('basic_props')->nullable()->comment('基本属性');
+            $table->json('sale_props')->nullable()->comment('销售属性');
             $table->string('remarks')->nullable()->comment('备注');
-            $table->json('extends')->nullable()->comment('扩展参数');
             $table->json('tools')->nullable()->comment('工具参数');
+            $table->json('extends')->nullable()->comment('扩展参数');
             $table->timestamps();
             $table->softDeletes();
-            $table->comment('商品-信息表');
+            $table->comment('商品-附加信息表');
         });
     }
 

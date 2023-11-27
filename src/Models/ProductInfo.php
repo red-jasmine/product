@@ -18,7 +18,7 @@ class ProductInfo extends Model
 
     protected $casts = [
         'basic_props' => 'array',
-        'sku_props'   => 'array',
+        'sale_props'  => 'array',
         'images'      => 'array',
         'videos'      => 'array',
         'tools'       => 'array',

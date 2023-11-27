@@ -8,35 +8,37 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('products', function (Blueprint $table) {
+            $price_decimal_total     = config('red-jasmine.product.price_decimal_total', 10);
+            $price_decimal_precision = config('red-jasmine.product.price_decimal_precision', 2);
             $table->unsignedBigInteger('id')->primary()->comment('ID');
             // 卖家信息
             $table->string('owner_type', 20)->comment('所属者类型');
             $table->string('owner_uid', 64)->comment('所属者UID');
             // 商品类型 实物、虚拟、拍卖、酒店订单、外卖
-            $table->string('product_type', 20)->nullable()->comment('商品类型');
+            $table->string('product_type', 20)->comment('商品类型');
             // 发货类型 物流 虚拟 卡密 在线服务 线下服务等 主要处理 发货流程 运费计算等 决定收货时间
-            $table->string('shipping_type', 20)->nullable()->comment('发货类型');
+            $table->string('shipping_type', 20)->comment('发货类型');
             // 分类
-            $table->unsignedBigInteger('category_id')->default()->comment('类目ID');
-            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('卖家分类ID');
-            $table->unsignedBigInteger('brand_id')->nullable()->comment('品牌ID');
+            $table->unsignedBigInteger('brand_id')->nullable()->comment('品牌');
+            $table->unsignedBigInteger('category_id')->default()->comment('类目');
+            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('卖家分类');
 
             $table->string('title', 60)->comment('标题');
             $table->string('image')->nullable()->comment('主图');
             $table->string('barcode', 32)->nullable()->comment('条形码');
             $table->string('outer_id', 20)->nullable()->comment('商家编码');
-            $table->string('keywords')->nullable()->comment('商品关键字');
+            $table->string('keywords')->nullable()->comment('关键字');
             // 多规格 查询: 商品级 parent_id = 0  规格级 is_sku = 1
             $table->unsignedBigInteger('parent_id')->default(0)->comment('规格父级');
-            $table->unsignedTinyInteger('has_skus')->default(0)->comment('含有多规格');
-            $table->unsignedTinyInteger('is_sku')->default(1)->comment('是否最小规格');
+            $table->unsignedTinyInteger('has_skus')->default(0)->comment('多规格');
+            $table->unsignedTinyInteger('is_sku')->default(1)->comment('是否SKU');
             // 规格信息
             $table->string('properties')->nullable()->comment('规格属性值');
             $table->string('properties_name')->nullable()->comment('规格属性名称');
             // 价格
-            $table->decimal('price', 10, 2, true)->default(0)->comment('销售价');
-            $table->decimal('market_price', 10, 2, true)->default(0)->comment('市场价');
-            $table->decimal('cost_price', 10, 2, true)->default(0)->comment('成本价');
+            $table->decimal('price', $price_decimal_total, $price_decimal_precision, true)->default(0)->comment('销售价');
+            $table->decimal('market_price', $price_decimal_total, $price_decimal_precision, true)->default(0)->comment('市场价');
+            $table->decimal('cost_price', $price_decimal_total, $price_decimal_precision, true)->default(0)->comment('成本价');
             // 运费
             $table->unsignedTinyInteger('freight_payer')->default(0)->comment('运费承担方');
             $table->unsignedBigInteger('postage_id')->default(0)->comment('运费模板ID');
@@ -50,12 +52,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('hold_quantity')->default(0)->comment('预扣库存');
             $table->unsignedBigInteger('sold_quantity')->default(0)->comment('销售数量');
             // 发货类
-            $table->unsignedInteger('delivery_time')->default(0)->comment('小时内发货');
+            $table->unsignedInteger('delivery_time')->default(0)->comment('发货时间:小时');
             // 用户类
             $table->unsignedTinyInteger('vip')->default(0)->comment('VIP');
             $table->unsignedInteger('points')->default(0)->comment('积分');
             // 状态相关
-            $table->string('status')->comment('商品状态');
+            $table->string('status')->comment('状态');
             // 时间
             $table->timestamp('on_sale_time')->nullable()->comment('上架时间');
             $table->timestamp('sold_out_time')->nullable()->comment('售停时间');

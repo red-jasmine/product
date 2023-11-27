@@ -20,34 +20,39 @@ class ProductService
     public const MAX_QUANTITY = 999999999;
 
 
+
     /**
-     * @param ProductInterface $productObject
+     *
+     *
+     * @param array $data
      *
      * @return Product
      * @throws Throwable
      */
-    public function create(ProductInterface $productObject) : Product
+    public function create(array $data) : Product
     {
-        // 验证数据
+        //
 
         // 保存数据
         DB::beginTransaction();
         try {
             // 生成商品ID
-            $this->validateProduct($productObject);
+            $this->validateProduct($data);
             $builder     = new ProductBuilder();
             $product     = new Product();
             $productInfo = new ProductInfo();
             $product->id = $product->id ?? $builder->generateID();
             // 设置属性
-            $product->fill($productObject->getAttributes());
+            $product->fill($data);
             $productInfo->fill();
             // 插件数据
             $product->info()->save($productInfo);
             $skus = [];
             $product->skus()->saveMany($skus);
-            $product->refresh();
+
             $product->save();
+
+
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollBack();
@@ -60,7 +65,7 @@ class ProductService
 
 
     // 验证数据
-    public function validateProduct(ProductInterface $productObject)
+    public function validateProduct($data)
     {
         //
 

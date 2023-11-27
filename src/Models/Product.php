@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
+use RedJasmine\Product\Enums\Product\ProductStatus;
+use RedJasmine\Product\Enums\Product\ProductTypeEnum;
+use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\WithOperatorModel;
 use RedJasmine\Support\Traits\Models\WithOwnerModel;
@@ -21,6 +25,20 @@ class Product extends Model
 
     use WithOperatorModel;
 
+    public $incrementing = false;
+
+
+    protected $casts = [
+        'product_type'  => ProductTypeEnum::class,  // 商品类型
+        'shipping_type' => ShippingTypeEnum::class,// 发货类型
+        'status'        => BrandStatusEnum::class,// 状态
+        'modified_time' => 'datetime',
+        'off_sale_time' => 'datetime',
+        'on_sale_time'  => 'datetime',
+        'sold_out_time' => 'datetime',
+
+    ];
+
 
     /**
      * 类目
@@ -29,6 +47,18 @@ class Product extends Model
     public function category() : BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'category_id', 'id');
+    }
+
+
+    public function brand() : BelongsTo
+    {
+        return $this->belongsTo(Brand::class, 'brand_id', 'id');
+    }
+
+
+    public function sellerCategory() : BelongsTo
+    {
+        return $this->belongsTo(ProductSellerCategory::class, 'seller_category_id', 'id');
     }
 
     /**
