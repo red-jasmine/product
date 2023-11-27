@@ -27,6 +27,7 @@ class ProductPropertyValue extends Model
         'vid',
         'pid',
         'name',
+        'group_name',
         'status',
         'extends',
         'sort',

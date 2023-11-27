@@ -62,5 +62,6 @@ class ProductSellerCategoryController extends Controller
 
     public function destroy($id)
     {
+        // TODO 删除 目录
     }
 }

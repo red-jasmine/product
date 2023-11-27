@@ -4,7 +4,10 @@ namespace RedJasmine\Product\Services\Property;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\ProductProperty;
@@ -15,7 +18,6 @@ use RedJasmine\Support\Traits\WithUserService;
 class PropertyService
 {
     use WithUserService;
-
 
     /**
      * @return int
@@ -56,12 +58,15 @@ class PropertyService
     public function createName(string $name, array $data = []) : ProductProperty
     {
         $this->validateName($name);
-        $values = [
+        $values    = [
             'pid'     => $this->buildID(),
             'name'    => $name,
+            'sort'    => (int)($data['sort'] ?? 0),
             'extends' => $data['extends'] ?? [],
             'status'  => PropertyStatusEnum::from($data['status'] ?? PropertyStatusEnum::ENABLE->value),
         ];
+        $validator = $this->nameValidator($values);
+        $validator->validate();
 
         if ($this->getOperator()) {
             $values['creator_type']     = $this->getOperator()->getUserType();
@@ -88,12 +93,17 @@ class PropertyService
     {
         $this->validateName($name);
         $values = [
-            'vid'     => $this->buildID(),
-            'pid'     => $pid,
-            'name'    => $name,
-            'extends' => $data['extends'] ?? [],
-            'status'  => PropertyStatusEnum::from($data['status'] ?? PropertyStatusEnum::ENABLE->value),
+            'vid'        => $this->buildID(),
+            'pid'        => $pid,
+            'name'       => $name,
+            'sort'       => (int)($data['sort'] ?? 0),
+            'group_name' => $data['group_name'] ?? '',
+            'extends'    => $data['extends'] ?? [],
+            'status'     => PropertyStatusEnum::from($data['status'] ?? PropertyStatusEnum::ENABLE->value),
         ];
+
+        $validator = $this->valueValidator($values);
+        $validator->validate();
 
         if ($this->getOperator()) {
             $values['creator_type']     = $this->getOperator()->getUserType();
@@ -107,14 +117,72 @@ class PropertyService
         return ProductPropertyValue::firstOrCreate($attributes, $values);
     }
 
+    public function nameValidator(array $data = []) : \Illuminate\Validation\Validator
+    {
+        return Validator::make($data, $this->nameRules(), [], $this->nameAttributes());
+    }
+
+
+    protected function nameRules() : array
+    {
+        return [
+            'name'    => [ 'required', 'max:30' ],
+            'extends' => [ 'sometimes', 'array' ],
+            'sort'    => [ 'integer' ],
+            'status'  => [ new Enum(PropertyStatusEnum::class) ],
+        ];
+    }
+
+    protected function nameAttributes() : array
+    {
+        return [
+
+            'name'    => '属性名',
+            'extends' => '扩展字段',
+            'status'  => '状态',
+            'sort'    => '排序值',
+        ];
+    }
+
+    public function valueValidator(array $data = []) : \Illuminate\Validation\Validator
+    {
+        return Validator::make($data, $this->valueRules(), [], $this->valueAttributes());
+    }
+
+    protected function valueRules() : array
+    {
+        return [
+            'pid'        => [ 'required', 'integer', Rule::exists('product_properties', 'pid') ],
+            'name'       => [ 'required', 'max:30' ],
+            'extends'    => [ 'sometimes', 'array' ],
+            'group_name' => [ 'sometimes', 'max:30' ],
+            'sort'       => [ 'integer' ],
+            'status'     => [ new Enum(PropertyStatusEnum::class) ],
+
+        ];
+    }
+
+    protected function valueAttributes() : array
+    {
+        return [
+            'pid'        => '属性ID',
+            'name'       => '属性值',
+            'extends'    => '扩展字段',
+            'group_name' => '分租名称',
+            'status'     => '状态',
+            'sort'       => '排序值',
+        ];
+    }
+
 
     public array $propertyValueFields = [
-        'vid', 'pid', 'name', 'sort', 'extends'
+        'vid', 'pid', 'name', 'group_name', 'sort', 'extends'
     ];
 
 
     /**
      * 查询所有
+     *
      * @param int $pid
      *
      * @return ProductPropertyValue[]|Collection

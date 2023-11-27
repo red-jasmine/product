@@ -2,8 +2,13 @@
 
 namespace RedJasmine\Product\Enums\Property;
 
+use RedJasmine\Support\Helpers\Enums\EnumsHelper;
+
 enum PropertyStatusEnum: int
 {
+
+
+    use EnumsHelper;
 
     case  DISABLE = 0;  // 禁用
     case  ENABLE = 1;  // 启用
@@ -12,7 +17,7 @@ enum PropertyStatusEnum: int
     /**
      * @return array
      */
-    public static function options() : array
+    public static function names() : array
     {
         return [
             self::ENABLE->value  => __('enable'),

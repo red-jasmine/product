@@ -14,6 +14,7 @@ return new class extends Migration {
 
             $table->string('name')->comment('名称');
             $table->bigInteger('sort')->default(0)->comment('排序');
+            $table->string('group_name')->nullable()->comment('分租');
             $table->unsignedTinyInteger('status')->default(1)->comment('状态');
             $table->json('extends')->nullable()->comment('扩展字段');
 

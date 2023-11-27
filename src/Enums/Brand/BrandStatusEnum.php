@@ -1,18 +1,16 @@
 <?php
 
-namespace RedJasmine\Product\Enums\Category;
+namespace RedJasmine\Product\Enums\Brand;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-enum CategoryStatusEnum: string
+enum BrandStatusEnum: int
 {
-
     use EnumsHelper;
 
-    case DISABLE = 'disable';
+    case  DISABLE = 0;  // 禁用
 
-
-    case ENABLE = 'enable';
+    case  ENABLE = 1;  // 启用
 
     /**
      * @return array
@@ -25,4 +23,5 @@ enum CategoryStatusEnum: string
         ];
 
     }
+
 }

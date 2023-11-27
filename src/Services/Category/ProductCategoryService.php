@@ -49,15 +49,12 @@ class ProductCategoryService
     {
         $productCategory     = new Model();
         $productCategory->id = Snowflake::getInstance()->nextId();
-        $productCategory->setAttribute('id', $productCategory->id);
+
         $validator = $this->validator($attributes);
         $validator->validate();
-
         $productCategory->fill($validator->safe()->all());
         $productCategory->withCreator($this->getOperator());
-
         $productCategory->save();
-
         return $productCategory;
     }
 

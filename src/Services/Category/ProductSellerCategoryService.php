@@ -51,8 +51,7 @@ class ProductSellerCategoryService
     {
         $productCategory     = new Model();
         $productCategory->id = Snowflake::getInstance()->nextId();
-        $productCategory->setAttribute('id', $productCategory->id);
-        $validator = $this->validator($attributes);
+        $validator           = $this->validator($attributes);
         $validator->validate();
         $productCategory->fill($validator->safe()->all());
         $productCategory->withOwner($this->getOwner());

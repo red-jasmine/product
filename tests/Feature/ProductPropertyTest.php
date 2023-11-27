@@ -40,6 +40,12 @@ class ProductPropertyTest extends TestCase
         $this->assertEquals($count, 1);
 
 
+
+
+        $name2     = '尺码';
+        $property2 = $propertyService->createName($name2);
+
+
         return $property;
 
     }
@@ -95,8 +101,7 @@ class ProductPropertyTest extends TestCase
 
         $values = $service->values($propertyValue->pid);
 
-
-        dd($values);
+        $this->assertCount(3, $values);
 
     }
 
