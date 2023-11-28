@@ -27,7 +27,7 @@ class ProductProperty extends Model
         'sort',
         'creator_type',
         'creator_uid',
-        'creator_nickname',
+
 
     ];
 

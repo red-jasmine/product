@@ -94,10 +94,8 @@ class ProductSellerCategoryService
             'extends'          => __('red-jasmine/product::product-seller-category.attributes.extends'),
             'creator_type'     => __('red-jasmine/product::product-seller-category.attributes.creator_type'),
             'creator_uid'      => __('red-jasmine/product::product-seller-category.attributes.creator_uid'),
-            'creator_nickname' => __('red-jasmine/product::product-seller-category.attributes.creator_nickname'),
             'updater_type'     => __('red-jasmine/product::product-seller-category.attributes.updater_type'),
             'updater_uid'      => __('red-jasmine/product::product-seller-category.attributes.updater_uid'),
-            'updater_nickname' => __('red-jasmine/product::product-seller-category.attributes.updater_nickname'),
         ];
     }
 

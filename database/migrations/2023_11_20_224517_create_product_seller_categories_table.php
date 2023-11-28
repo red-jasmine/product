@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->primary()->comment('类目ID');
             $table->string('owner_type', 20)->comment('所属者类型');
             $table->string('owner_uid', 64)->comment('所属者UID');
-            $table->string('owner_nickname', 64)->comment('所属者昵称');
             $table->string('name')->comment('类目名称');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父级类目');
             $table->string('group_name')->nullable()->comment('分组');

@@ -71,7 +71,6 @@ class PropertyService
         if ($this->getOperator()) {
             $values['creator_type']     = $this->getOperator()->getUserType();
             $values['creator_uid']      = $this->getOperator()->getUID();
-            $values['creator_nickname'] = $this->getOperator()->getNickname();
         }
         $attributes = [
             'name' => $name,
@@ -108,7 +107,6 @@ class PropertyService
         if ($this->getOperator()) {
             $values['creator_type']     = $this->getOperator()->getUserType();
             $values['creator_uid']      = $this->getOperator()->getUID();
-            $values['creator_nickname'] = $this->getOperator()->getNickname();
         }
         $attributes = [
             'pid'  => $pid,
