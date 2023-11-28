@@ -19,12 +19,12 @@ return new class extends Migration {
             $table->json('extends')->nullable()->comment('扩展字段');
 
             $table->string('creator_type', 20)->nullable()->comment('创建者类型');
-            $table->string('creator_uid', 64)->nullable()->comment('创建者ID');
-            $table->string('creator_nickname', 64)->nullable()->comment('创建者昵称');
+            $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
 
             $table->string('updater_type', 20)->nullable()->comment('更新者类型');
-            $table->string('updater_uid', 64)->nullable()->comment('更新者UID');
-            $table->string('updater_nickname', 64)->nullable()->comment('更新者昵称');
+            $table->unsignedBigInteger('updater_uid')->nullable()->comment('更新者UID');
+
+
             $table->timestamps();
             $table->comment('商品-属性值表');
         });
