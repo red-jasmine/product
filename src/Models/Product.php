@@ -31,7 +31,7 @@ class Product extends Model
     protected $casts = [
         'product_type'  => ProductTypeEnum::class,  // 商品类型
         'shipping_type' => ShippingTypeEnum::class,// 发货类型
-        'status'        => BrandStatusEnum::class,// 状态
+        'status'        => ProductStatus::class,// 状态
         'modified_time' => 'datetime',
         'off_sale_time' => 'datetime',
         'on_sale_time'  => 'datetime',

@@ -20,14 +20,14 @@ class ProductPropertyTest extends TestCase
     }
 
 
-    public function testCreateName()
+    public function testCreateColorName()
     {
         $propertyService = $this->service();
 
-        $name     = '颜色';
-        $property = $propertyService->createName($name);
+        $name  = '颜色';
+        $color = $propertyService->createName($name);
 
-        $this->assertEquals($name, $property->name);
+        $this->assertEquals($name, $color->name);
 
         $propertyData = [
             'status' => 1
@@ -39,27 +39,33 @@ class ProductPropertyTest extends TestCase
 
         $this->assertEquals($count, 1);
 
+        return $color;
 
+    }
 
+    public function testCreateSizeName()
+    {
+        $propertyService = $this->service();
 
-        $name2     = '尺码';
-        $property2 = $propertyService->createName($name2);
+        $name = '尺码';
+        $size = $propertyService->createName($name);
 
+        $this->assertEquals($name, $size->name);
 
-        return $property;
+        return $size;
 
     }
 
 
     /**
-     * @depends testCreateName
+     * @depends testCreateColorName
      *
      * @param ProductProperty $property
      *
-     * @return void
+     * @return array
      * @throws \Exception
      */
-    public function testCreateValue(ProductProperty $property)
+    public function testCreateColorValues(ProductProperty $property) : array
     {
 
         $service = $this->service();
@@ -83,26 +89,55 @@ class ProductPropertyTest extends TestCase
         $propertyValue3 = $service->createValue($property->pid, $vName3);
 
 
-        return $propertyValue;
+        return [
+            $propertyValue,
+            $propertyValue2,
+            $propertyValue3
+        ];
     }
 
 
     /**
-     * @depends testCreateValue
+     * @depends testCreateSizeName
      *
-     * @param ProductPropertyValue $propertyValue
+     * @param ProductProperty $property
      *
-     * @return void
+     * @return array
+     * @throws \Exception
      */
-    public function testValues(ProductPropertyValue $propertyValue)
+    public function testCreateSizeValues(ProductProperty $property) : array
     {
 
         $service = $this->service();
+        $data    = [
+            'group_name' => '衣服'
+        ];
 
-        $values = $service->values($propertyValue->pid);
+        $vName         = 'S';
+        $propertyValue = $service->createValue($property->pid, $vName, $data);
 
-        $this->assertCount(3, $values);
+        $this->assertEquals($property->pid, $propertyValue->pid);
+        $this->assertEquals($vName, $propertyValue->name);
 
+        $propertyValue = $service->createValue($property->pid, $vName, $data);
+
+        $count = ProductPropertyValue::where('pid', $property->pid)->where('name', $vName)->count();
+
+        $this->assertEquals(1, $count);
+
+        $vName2         = 'M';
+        $propertyValue2 = $service->createValue($property->pid, $vName2, $data);
+
+        $vName3         = 'L';
+        $propertyValue3 = $service->createValue($property->pid, $vName3, $data);
+
+
+        return [
+            $propertyValue,
+            $propertyValue2,
+            $propertyValue3
+        ];
     }
+
 
 }

@@ -2,8 +2,10 @@
 
 namespace RedJasmine\Product\Services\Product;
 
+use Illuminate\Support\Facades\Validator;
 use RedJasmine\Product\Services\Product\Validators\AbstractProductValidator;
 use RedJasmine\Product\Services\Product\Validators\ProductBasicValidator;
+use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Support\Traits\WithUserService;
 
 class ValidatorService
@@ -22,13 +24,14 @@ class ValidatorService
      */
     public static array $validators = [
         ProductBasicValidator::class,
+        PropsValidator::class
     ];
 
 
     /**
      * @return array|AbstractProductValidator[]
      */
-    public function getValidators() : array
+    protected function getValidators() : array
     {
         $validators = self::$validators;
 
@@ -37,16 +40,21 @@ class ValidatorService
         return array_merge($validators, $configValidators);
     }
 
-    public function validate() : void
+    public function validate() : array
     {
+        $validator = Validator::make($this->data, []);
         foreach ($this->getValidators() as $validatorName) {
-            $validator = app($validatorName);
-            if ($validator instanceof AbstractProductValidator) {
-                $validator->setOwner($this->getOwner());
-                $validator->setOperator($this->getOperator());
-                $validator->validator($this->data);
+            $productValidator = app($validatorName);
+            if ($productValidator instanceof AbstractProductValidator) {
+                $productValidator->setOwner($this->getOwner())->setOperator($this->getOperator());
+                $validator->addRules($productValidator->rules());
+                $validator->addCustomAttributes($productValidator->attributes());
+                // 加载后续验证器
+                $productValidator->withValidator($validator);
             }
         }
+        $validator->validated();
+        return $validator->safe()->all();
     }
 
 

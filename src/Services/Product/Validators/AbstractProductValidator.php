@@ -9,13 +9,27 @@ abstract class AbstractProductValidator
 {
     use WithUserService;
 
-
     /**
-     * 数据验证
-     *
-     * @param array $data
-     *
-     * @return mixed
+     * 验证规则
+     * @return array
      */
-    abstract public function validator(array $data) : Validator;
+    abstract public function rules() : array;
+
+
+    public function messages() : array
+    {
+        return [];
+    }
+
+    public function attributes() : array
+    {
+        return [];
+    }
+
+
+    public function withValidator(Validator $validator) : void
+    {
+    }
+
+
 }

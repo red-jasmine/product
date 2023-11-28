@@ -20,7 +20,6 @@ class ProductService
     public const MAX_QUANTITY = 999999999;
 
 
-
     /**
      *
      *
@@ -34,19 +33,39 @@ class ProductService
         //
 
         // 保存数据
-        DB::beginTransaction();
+        //DB::beginTransaction();
         try {
             // 生成商品ID
-            $this->validateProduct($data);
-            $builder     = new ProductBuilder();
+
             $product     = new Product();
             $productInfo = new ProductInfo();
+
+            $builder     = new ProductBuilder();
             $product->id = $product->id ?? $builder->generateID();
-            // 设置属性
-            $product->fill($data);
-            $productInfo->fill();
-            // 插件数据
+
+            $data = $builder->validate($data);
+
+            foreach ($data as $key => $value) {
+                switch ($key) {
+                    case 'info':
+                        foreach ($value as $infoKey => $infoValue) {
+                            $productInfo->setAttribute($infoKey, $infoValue);
+                        }
+                        break;
+                    case 'skus':
+                        break;
+                    default:
+                        $product->setAttribute($key, $value);
+                        break;
+                }
+            }
+
+
+            $product->withOwner($this->getOwner());
+            $product->save();
             $product->info()->save($productInfo);
+            dd($product);
+
             $skus = [];
             $product->skus()->saveMany($skus);
 
@@ -64,15 +83,17 @@ class ProductService
     }
 
 
-    // 验证数据
-    public function validateProduct($data)
+// 验证数据
+    public
+    function validateProduct($data)
     {
         //
 
     }
 
 
-    public function update()
+    public
+    function update()
     {
 
     }
