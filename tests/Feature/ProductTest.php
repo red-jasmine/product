@@ -6,6 +6,7 @@ use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Services\Product\ProductService;
+use RedJasmine\Product\Services\Property\PropertyFormatter;
 use RedJasmine\Support\Helpers\UserObjectBuilder;
 use RedJasmine\Support\Services\SystemUser;
 
@@ -33,33 +34,52 @@ class ProductTest extends ProductPropertyTest
         $colorValues = $this->testCreateColorValues($color);
         $size        = $this->testCreateSizeName();
         $sizeValues  = $this->testCreateSizeValues($size);
+        $style       = $this->testCreateStyleName();
+        $styleValues = $this->testCreateStyleValues($style);
+
 
         $saleProps  = [
 
         ];
         $colorProps = [
-            'pid'    => $color->pid,
-            'values' => [],
+            'pid' => $color->pid,
+            'vid' => [],
         ];
         foreach ($colorValues as $value) {
-            $colorProps['values'][] = $value->vid;
+            $colorProps['vid'][] = $value->vid;
         }
         $sizeProps = [
-            'pid'    => $size->pid,
-            'values' => [],
+            'pid' => $size->pid,
+            'vid' => [],
         ];
         foreach ($sizeValues as $value) {
-            $sizeProps['values'][] = $value->vid;
+            $sizeProps['vid'][] = $value->vid;
         }
 
-        $saleProps       = [
+        $saleProps         = [
             $colorProps, $sizeProps
         ];
-        $salePropsString = [];
-        foreach ($saleProps as $value) {
-            $salePropsString[] = implode(":", [ $value['pid'], implode(',', $value['values']) ]);
+        $propertyFormatter = new PropertyFormatter();
+        $salePropsString   = $propertyFormatter->toString($saleProps);
+        $saleProps         = $propertyFormatter->toArray($salePropsString);
+        $cross             = $propertyFormatter->crossJoinToString($saleProps);
+
+        $sku  = [
+            'price'      => 56.44,
+            'cost_price' => 0,
+            'quantity'   => 1,
+        ];
+        $skus = [];
+        foreach ($cross as $properties) {
+            $sku['properties'] = $properties;
+            $skus[]            = $sku;
         }
-        $salePropsString = implode(';', $salePropsString);
+        $basicProps = [
+            [
+                'pid' => $style->pid,
+                'vid' => $styleValues[0]->vid
+            ]
+        ];
 
 
         $product = [
@@ -69,19 +89,25 @@ class ProductTest extends ProductPropertyTest
             'title'         => '基础商品',
             'price'         => 56.44,
             'cost_price'    => 0,
+            'freight_payer' => 0,
+            'sub_stock'     => 0,
+            'delivery_time' => 0,
+            'vip'           => 0,
+            'points'        => 0,
             'quantity'      => 1,
-
-            'info' => [
-                'desc'       => 'desc',
-                'sale_props' => $salePropsString,
-                'extends'    => [],
-            ]
+            'keywords'      => '潮流 古风',
+            'has_skus'      => 1, // 含有多规格
+            'info'          => [
+                'desc'        => 'desc',
+                'basic_props' => $basicProps,
+                'sale_props'  => $saleProps,
+                'extends'     => [],
+            ],
+            'skus'          => $skus,
         ];
-
-
         $this->productService()->create($product);
 
-
     }
+
 
 }

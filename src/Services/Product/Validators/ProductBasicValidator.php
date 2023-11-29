@@ -7,27 +7,21 @@ use Illuminate\Validation\Validator;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
+use RedJasmine\Support\Enums\BoolIntEnum;
 
 class ProductBasicValidator extends AbstractProductValidator
 {
     public function withValidator(Validator $validator) : void
     {
 
-
         $validator->after(function (Validator $validator) {
-
             $data = $validator->getData();
-
-
-            if (blank($data['skus'] ?? [])) {
-                $validator->addRules([
-                                         'parent_id' => [],
-                                         'has_skus'  => [],
-                                         'is_sku'    => [],
-                                     ]);
+            if ((int)$data['has_skus']) {
+                $validator->setValue('is_sku', 0);
                 $validator->setValue('parent_id', 0);
-                $validator->setValue('has_skus', 0);
+            } else {
                 $validator->setValue('is_sku', 1);
+                $validator->setValue('parent_id', 0);
             }
 
         });
@@ -62,7 +56,10 @@ class ProductBasicValidator extends AbstractProductValidator
             'quantity'           => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0' ], ],
             'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatus::class) ], ],
 
-            'price'        => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
+            'price' => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
+
+            'has_skus' => [ 'attribute' => '多规格', 'rules' => [ 'required', 'integer', new Enum(BoolIntEnum::class) ], ],
+
             'market_price' => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', ], ],
             'cost_price'   => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', ], ],
 
@@ -71,9 +68,13 @@ class ProductBasicValidator extends AbstractProductValidator
             'multiple' => [ 'attribute' => '倍数', 'rules' => [ 'sometimes', 'integer' ], ],
 
 
-            'freight_payer' => [ 'attribute' => '运费承担方', 'rules' => [], ],
+            'freight_payer' => [ 'attribute' => '运费承担方', 'rules' => [ 'sometimes', 'integer' ], ],
             'sub_stock'     => [ 'attribute' => '减库存方式', 'rules' => [], ],
             'postage_id'    => [ 'attribute' => '运费模板', 'rules' => [], ],
+            'delivery_time' => [ 'attribute' => '发货时间', 'rules' => [ 'sometimes', 'integer' ], ],
+            'vip'           => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer' ], ],
+            'points'        => [ 'attribute' => '积分', 'rules' => [ 'sometimes', 'integer' ], ],
+            'keywords'      => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
 
 
             'info.desc'       => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
@@ -95,23 +96,23 @@ class ProductBasicValidator extends AbstractProductValidator
         ];
 
         $sku = [
-            'skus.*.product_type'  => $fields['product_type'],
-            'skus.*.shipping_type' => $fields['shipping_type'],
-            'skus.*.title'         => $fields['title'],
-            'skus.*.image'         => $fields['image'],
-            'skus.*.barcode'       => $fields['barcode'],
-            'skus.*.outer_id'      => $fields['outer_id'],
-            'skus.*.quantity'      => $fields['quantity'],
-            'skus.*.price'         => $fields['price'],
-            'skus.*.market_price'  => $fields['market_price'],
-            'skus.*.cost_price'    => $fields['cost_price'],
-            'skus.*.min'           => $fields['min'],
-            'skus.*.max'           => $fields['max'],
-            'skus.*.multiple'      => $fields['multiple'],
+            //'skus.*.product_type'  => $fields['product_type'],
+            //'skus.*.shipping_type' => $fields['shipping_type'],
+            //'skus.*.title'         => $fields['title'],
+            'skus.*.price'        => $fields['price'],
+            'skus.*.market_price' => $fields['market_price'],
+            'skus.*.cost_price'   => $fields['cost_price'],
 
 
-            'skus.*.properties' => [ 'attribute' => '规格', 'rules' => [ 'sometimes', 'array' ], ],
+            'skus.*.min'      => $fields['min'],
+            'skus.*.max'      => $fields['max'],
+            'skus.*.multiple' => $fields['multiple'],
 
+            'skus.*.image'      => $fields['image'],
+            'skus.*.barcode'    => $fields['barcode'],
+            'skus.*.outer_id'   => $fields['outer_id'],
+            'skus.*.quantity'   => $fields['quantity'],
+            'skus.*.properties' => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
         ];
 
 

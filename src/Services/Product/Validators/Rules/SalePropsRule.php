@@ -16,13 +16,10 @@ class SalePropsRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
-        // TODO 销售属性验证
-        // 基础验证 数据库验证
-        // 重新排序
+        // TODO
+        // 验证销售属性 不能在基本属性中
 
-        // 对SKU 数量验证
-        //  属性 、sku
-        dd($attribute, $value);
+
     }
 
 

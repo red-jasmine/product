@@ -47,10 +47,13 @@ class ValidatorService
             $productValidator = app($validatorName);
             if ($productValidator instanceof AbstractProductValidator) {
                 $productValidator->setOwner($this->getOwner())->setOperator($this->getOperator());
-                $validator->addRules($productValidator->rules());
-                $validator->addCustomAttributes($productValidator->attributes());
+
                 // 加载后续验证器
                 $productValidator->withValidator($validator);
+
+                $validator->addRules($productValidator->rules());
+                $validator->addCustomAttributes($productValidator->attributes());
+
             }
         }
         $validator->validated();

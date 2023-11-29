@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('product_type', 20)->comment('商品类型');
             // 发货类型 物流 虚拟 卡密 在线服务 线下服务等 主要处理 发货流程 运费计算等 决定收货时间
             $table->string('shipping_type', 20)->comment('发货类型');
-            
+
             $table->string('title', 60)->comment('标题');
             $table->string('image')->nullable()->comment('主图');
             $table->string('barcode', 32)->nullable()->comment('条形码');
@@ -38,7 +38,7 @@ return new class extends Migration {
 
             // 品牌
             $table->unsignedBigInteger('brand_id')->nullable()->comment('品牌');
-            $table->unsignedBigInteger('category_id')->default()->comment('类目');
+            $table->unsignedBigInteger('category_id')->nullable()->comment('类目');
             $table->unsignedBigInteger('seller_category_id')->nullable()->comment('卖家分类');
 
             // 规格信息
@@ -46,7 +46,7 @@ return new class extends Migration {
             $table->string('properties_name')->nullable()->comment('规格属性名称');
             // 运费
             $table->unsignedTinyInteger('freight_payer')->default(0)->comment('运费承担方');
-            $table->unsignedBigInteger('postage_id')->default(0)->comment('运费模板ID');
+            $table->unsignedBigInteger('postage_id')->nullable()->comment('运费模板ID');
             // 下单类
             $table->unsignedBigInteger('min')->default(0)->comment('起购量');
             $table->unsignedBigInteger('max')->default(0)->comment('限购量');

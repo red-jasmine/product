@@ -140,4 +140,58 @@ class ProductPropertyTest extends TestCase
     }
 
 
+    public function testCreateStyleName()
+    {
+        $propertyService = $this->service();
+
+        $name = '风格';
+        $size = $propertyService->createName($name);
+
+        $this->assertEquals($name, $size->name);
+
+        return $size;
+
+    }
+
+
+    /**
+     * @depends testCreateStyleName
+     *
+     * @param ProductProperty $property
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function testCreateStyleValues(ProductProperty $property) : array
+    {
+
+        $service = $this->service();
+
+        $vName         = '古风';
+        $propertyValue = $service->createValue($property->pid, $vName);
+
+        $this->assertEquals($property->pid, $propertyValue->pid);
+        $this->assertEquals($vName, $propertyValue->name);
+
+        $propertyValue = $service->createValue($property->pid, $vName);
+
+        $count = ProductPropertyValue::where('pid', $property->pid)->where('name', $vName)->count();
+
+        $this->assertEquals(1, $count);
+
+        $vName2         = '潮流';
+        $propertyValue2 = $service->createValue($property->pid, $vName2);
+
+        $vName3         = '嘻哈';
+        $propertyValue3 = $service->createValue($property->pid, $vName3);
+
+
+        return [
+            $propertyValue,
+            $propertyValue2,
+            $propertyValue3
+        ];
+    }
+
+
 }

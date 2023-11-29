@@ -18,6 +18,8 @@ class ProductPropertyValue extends Model
 
     public $incrementing = false;
 
+    protected $primaryKey = 'vid';
+
     public function scopeAvailable(Builder $query) : Builder
     {
         return $query->where('status', PropertyStatusEnum::ENABLE);

@@ -17,6 +17,9 @@ class ProductProperty extends Model
     use WithOperatorModel;
 
 
+    protected $primaryKey = 'pid';
+
+
     public $incrementing = false;
 
     protected $fillable = [

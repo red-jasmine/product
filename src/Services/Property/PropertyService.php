@@ -69,8 +69,8 @@ class PropertyService
         $validator->validate();
 
         if ($this->getOperator()) {
-            $values['creator_type']     = $this->getOperator()->getUserType();
-            $values['creator_uid']      = $this->getOperator()->getUID();
+            $values['creator_type'] = $this->getOperator()->getUserType();
+            $values['creator_uid']  = $this->getOperator()->getUID();
         }
         $attributes = [
             'name' => $name,
@@ -105,8 +105,8 @@ class PropertyService
         $validator->validate();
 
         if ($this->getOperator()) {
-            $values['creator_type']     = $this->getOperator()->getUserType();
-            $values['creator_uid']      = $this->getOperator()->getUID();
+            $values['creator_type'] = $this->getOperator()->getUserType();
+            $values['creator_uid']  = $this->getOperator()->getUID();
         }
         $attributes = [
             'pid'  => $pid,
@@ -192,5 +192,59 @@ class PropertyService
                                    ->where('pid', $pid)
                                    ->orderBy('sort', 'desc')
                                    ->get();
+    }
+
+
+    /**
+     * @throws ProductPropertyException
+     */
+    public function validateProps(array $props = []) : array
+    {
+        if (blank($props)) {
+            return [];
+        }
+        // 查询属性
+        $allPid               = collect($props)->pluck('pid')->values()->all();
+        $allVid               = collect($props)->pluck('vid')->values()->all();
+        $allProductProperties = ProductProperty::select([ 'pid', 'name' ])->find($allPid)
+                                               ->keyBy('pid');
+
+        $allVid = array_merge([], ...$allVid);
+        // 查询值
+        if (filled($allVid)) {
+            $allProductPropertyValues = ProductPropertyValue::select([ 'vid', 'pid', 'name' ])->find($allVid);
+        } else {
+            $allProductPropertyValues = collect();
+        }
+
+
+        foreach ($props as &$item) {
+            try {
+                $item['name'] = $allProductProperties[$item['pid']]->name;
+            } catch (\Throwable $throwable) {
+                throw new ProductPropertyException('属性不存在');
+            }
+
+            $item['values'] = $allProductPropertyValues
+                ->where('pid', $item['pid'])
+                ->values()
+                ->map(function ($item) {
+                    unset($item['pid']);
+                    return $item;
+                })->toArray();
+
+
+            if (count($item['values']) !== count($item['vid'] ?? [])) {
+                throw new ProductPropertyException('属性值存在错误');
+            }
+            // 对比差值
+            $result = collect($item['vid'])->diff(collect($item['values'])->pluck('vid'));
+            if ($result->count() > 0) {
+                throw new ProductPropertyException('属性值存在错误');
+            }
+
+        }
+
+        return $props;
     }
 }
