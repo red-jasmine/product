@@ -31,6 +31,12 @@ class ProductBuilder implements ProductBuilderInterface
     }
 
 
+    public function validateOnly($data)
+    {
+        $validatorService = new ValidatorService($data);
+
+        return $validatorService->validateOnly();
+    }
 
 
 }

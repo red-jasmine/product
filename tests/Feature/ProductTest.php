@@ -19,7 +19,6 @@ class ProductTest extends ProductPropertyTest
 {
 
 
-
     public function productService() : ProductService
     {
         $service = new ProductService();
@@ -370,14 +369,52 @@ class ProductTest extends ProductPropertyTest
      *
      * @param Product $product
      *
-     * @return void
+     * @return Product
      * @throws \Exception
      */
     public function testUpdateRemoveSaleProps(Product $product)
     {
 
-        $this->testUpdateProduct($product);
+        $product = $this->testUpdateProduct($product);
+
+
+        return $product;
+    }
+
+
+    /**
+     * @depends  testUpdateRemoveSaleProps
+     *
+     * @param Product $product
+     *
+     * @return void
+     * @throws \Throwable
+     */
+    public function testModifyProduct(Product $product)
+    {
+
+
+        $data    = [
+            'title'  => '修改价格',
+            'price'  => '9988',
+            'status' => ProductStatus::OUT_OF_STOCK
+
+        ];
+        $product = $this->productService()->modify($product->id, $data);
+
+        $this->assertEquals(9988, $product->price);
+
+        $data    = [
+            'title'    => '关闭多规格',
+            'has_skus' => 0,
+        ];
+        $product = $this->productService()->modify($product->id, $data);
+
+
+        $this->assertCount(0, $product->skus);
+
 
     }
+
 
 }

@@ -16,12 +16,15 @@ class ProductBasicValidator extends AbstractProductValidator
 
         $validator->after(function (Validator $validator) {
             $data = $validator->getData();
-            if ((int)$data['has_skus']) {
+            if ((int)($data['has_skus'] ?? 0)) {
                 $validator->setValue('is_sku', 0);
                 $validator->setValue('parent_id', 0);
+
             } else {
                 $validator->setValue('is_sku', 1);
                 $validator->setValue('parent_id', 0);
+                $validator->setValue('skus', []);
+                $validator->setValue('info.sale_props', []);
             }
 
         });

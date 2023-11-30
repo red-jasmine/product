@@ -15,6 +15,10 @@ use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\WithOperatorModel;
 use RedJasmine\Support\Traits\Models\WithOwnerModel;
 
+/**
+ * @property string $owner_type
+ * @property int    $owner_uid
+ */
 class Product extends Model
 {
     use HasDateTimeFormatter;

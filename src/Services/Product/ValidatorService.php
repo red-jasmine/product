@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Product\Services\Product;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use RedJasmine\Product\Services\Product\Validators\AbstractProductValidator;
 use RedJasmine\Product\Services\Product\Validators\ProductBasicValidator;
@@ -15,6 +16,8 @@ class ValidatorService
 
     public function __construct(protected array $data)
     {
+
+        $this->validator = $this->initValidator();
     }
 
 
@@ -40,7 +43,10 @@ class ValidatorService
         return array_merge($validators, $configValidators);
     }
 
-    public function validate() : array
+
+    protected \Illuminate\Validation\Validator $validator;
+
+    public function initValidator() : \Illuminate\Validation\Validator
     {
         $validator = Validator::make($this->data, []);
         foreach ($this->getValidators() as $validatorName) {
@@ -56,8 +62,27 @@ class ValidatorService
 
             }
         }
+        return $validator;
+
+    }
+
+    public function validator() : \Illuminate\Validation\Validator
+    {
+        return $this->validator;
+    }
+
+    public function validateOnly() : array
+    {
+        $validator = $this->initValidator();
+        $validator->setRules(Arr::only($validator->getRules(), array_keys($this->data)));
         $validator->validated();
         return $validator->safe()->all();
+    }
+
+    public function validate() : array
+    {
+        $this->validator->validated();
+        return $this->validator->safe()->all();
     }
 
 
