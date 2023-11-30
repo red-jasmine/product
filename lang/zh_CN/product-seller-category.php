@@ -10,6 +10,7 @@ return [
         'parent_id'    => '父级类目',
         'name'         => '类目名称',
         'group_name'   => '分组',
+        'image'        => '图片',
         'is_leaf'      => '是否叶子类目',
         'extends'      => '扩展字段',
         'sort'         => '排序',

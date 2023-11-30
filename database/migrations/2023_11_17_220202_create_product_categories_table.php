@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->primary()->comment('类目ID');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父级类目');
             $table->string('name')->comment('类目名称');
+            $table->string('image')->nullable()->comment('图片');
             $table->string('group_name')->nullable()->comment('分组');
             $table->bigInteger('sort')->default(0)->comment('排序');
             $table->unsignedTinyInteger('is_leaf')->default(0)->comment('是否叶子类目');

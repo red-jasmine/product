@@ -52,7 +52,9 @@ class ProductCategoryService
 
         $validator = $this->validator($attributes);
         $validator->validate();
-        $productCategory->fill($validator->safe()->all());
+        foreach ($validator->safe()->all() as $key => $value) {
+            $productCategory->setAttribute($key, $value);
+        }
         $productCategory->withCreator($this->getOperator());
         $productCategory->save();
         return $productCategory;
@@ -71,6 +73,7 @@ class ProductCategoryService
             'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule('product_categories', 'id'), ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'max:100' ],
+            'image'      => [ 'sometimes', 'max:255' ],
             'sort'       => [ 'integer' ],
             'is_leaf'    => [ 'required', 'boolean' ],
             'status'     => [ new Enum(CategoryStatusEnum::class) ],
@@ -82,18 +85,19 @@ class ProductCategoryService
     protected function attributes() : array
     {
         return [
-            'id'               => __('red-jasmine/product::product-category.attributes.id'),
-            'parent_id'        => __('red-jasmine/product::product-category.attributes.parent_id'),
-            'name'             => __('red-jasmine/product::product-category.attributes.name'),
-            'group_name'       => __('red-jasmine/product::product-category.attributes.group_name'),
-            'sort'             => __('red-jasmine/product::product-category.attributes.sort'),
-            'is_leaf'          => __('red-jasmine/product::product-category.attributes.is_leaf'),
-            'status'           => __('red-jasmine/product::product-category.attributes.status'),
-            'extends'          => __('red-jasmine/product::product-category.attributes.extends'),
-            'creator_type'     => __('red-jasmine/product::product-category.attributes.creator_type'),
-            'creator_uid'      => __('red-jasmine/product::product-category.attributes.creator_uid'),
-            'updater_type'     => __('red-jasmine/product::product-category.attributes.updater_type'),
-            'updater_uid'      => __('red-jasmine/product::product-category.attributes.updater_uid'),
+            'id'           => __('red-jasmine/product::product-category.attributes.id'),
+            'parent_id'    => __('red-jasmine/product::product-category.attributes.parent_id'),
+            'name'         => __('red-jasmine/product::product-category.attributes.name'),
+            'group_name'   => __('red-jasmine/product::product-category.attributes.group_name'),
+            'image'        => __('red-jasmine/product::product-category.attributes.image'),
+            'sort'         => __('red-jasmine/product::product-category.attributes.sort'),
+            'is_leaf'      => __('red-jasmine/product::product-category.attributes.is_leaf'),
+            'status'       => __('red-jasmine/product::product-category.attributes.status'),
+            'extends'      => __('red-jasmine/product::product-category.attributes.extends'),
+            'creator_type' => __('red-jasmine/product::product-category.attributes.creator_type'),
+            'creator_uid'  => __('red-jasmine/product::product-category.attributes.creator_uid'),
+            'updater_type' => __('red-jasmine/product::product-category.attributes.updater_type'),
+            'updater_uid'  => __('red-jasmine/product::product-category.attributes.updater_uid'),
         ];
     }
 
@@ -111,8 +115,10 @@ class ProductCategoryService
         $validator       = $this->validator($attributes);
         $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
         $validator->setRules(Arr::only($validator->getRules(), array_keys($attributes)));
-        $validator->validated();
-        $productCategory->fill($validator->safe()->all());
+        $validator->validate();
+        foreach ($validator->safe()->all() as $key => $value) {
+            $productCategory->setAttribute($key, $value);
+        }
         $productCategory->withUpdater($this->getOperator());
         $productCategory->save();
         return $productCategory;
@@ -132,8 +138,10 @@ class ProductCategoryService
         $validator       = $this->validator($attributes);
         $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
         $validator->setRules(Arr::only($validator->getRules(), array_keys($attributes)));
-        $validator->validated();
-        $productCategory->fill($validator->safe()->all());
+        $validator->validate();
+        foreach ($validator->safe()->all() as $key => $value) {
+            $productCategory->setAttribute($key, $value);
+        }
         $productCategory->withUpdater($this->getOperator());
         $productCategory->save();
         return $productCategory;
