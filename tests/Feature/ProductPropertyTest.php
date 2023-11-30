@@ -194,4 +194,58 @@ class ProductPropertyTest extends TestCase
     }
 
 
+    public function testCreateLengthName()
+    {
+        $propertyService = $this->service();
+
+        $name = '长度';
+        $size = $propertyService->createName($name);
+
+        $this->assertEquals($name, $size->name);
+
+        return $size;
+
+    }
+
+
+    /**
+     * @depends testCreateLengthName
+     *
+     * @param ProductProperty $property
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function testCreateLengthValues(ProductProperty $property) : array
+    {
+
+        $service = $this->service();
+
+        $vName         = '九分';
+        $propertyValue = $service->createValue($property->pid, $vName);
+
+        $this->assertEquals($property->pid, $propertyValue->pid);
+        $this->assertEquals($vName, $propertyValue->name);
+
+        $propertyValue = $service->createValue($property->pid, $vName);
+
+        $count = ProductPropertyValue::where('pid', $property->pid)->where('name', $vName)->count();
+
+        $this->assertEquals(1, $count);
+
+        $vName2         = '七分';
+        $propertyValue2 = $service->createValue($property->pid, $vName2);
+
+        $vName3         = '五分';
+        $propertyValue3 = $service->createValue($property->pid, $vName3);
+
+
+        return [
+            $propertyValue,
+            $propertyValue2,
+            $propertyValue3
+        ];
+    }
+
+
 }

@@ -19,4 +19,7 @@ enum ProductStatus: string
 
     case FORCED_OFF_SHELF = 'forced_off_shelf'; // 强制下架
 
+    case DELETED = 'deleted'; // 删除
+
+
 }
