@@ -12,17 +12,17 @@ use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
 class ProductSellerCategoryController extends Controller
 {
 
+    public function index() : AnonymousResourceCollection
+    {
+        return ProductSellerCategoryResource::collection($this->service()->tree());
+    }
+
     public function service() : ProductSellerCategoryService
     {
         $service = app(ProductSellerCategoryService::class);
         $service->setOperator($this->getUser());
         $service->setOwner($this->getOwner());
         return $service;
-    }
-
-    public function index() : AnonymousResourceCollection
-    {
-        return ProductSellerCategoryResource::collection($this->service()->tree());
     }
 
     /**
@@ -60,8 +60,17 @@ class ProductSellerCategoryController extends Controller
         return new  ProductSellerCategoryResource($result);
     }
 
-    public function destroy($id)
+    /**
+     * 删除
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id) : \Illuminate\Http\JsonResponse
     {
-        // TODO 删除 目录
+
+        $result = $this->service()->delete($id);
+
+        return $this->success($result);
     }
 }

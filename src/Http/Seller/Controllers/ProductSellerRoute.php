@@ -3,10 +3,11 @@
 namespace RedJasmine\Product\Http\Seller\Controllers;
 
 use Illuminate\Support\Facades\Route;
+use RedJasmine\Product\Http\Seller\Controllers\Api\BrandController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductSellerCategoryController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductCategoryController;
 
-class Routes
+class ProductSellerRoute
 {
 
     public static function web() : void
@@ -33,6 +34,13 @@ class Routes
 
                 Route::apiResource('product-seller-categories', ProductSellerCategoryController::class);
 
+
+                Route::group([
+                                 'prefix' => 'brands'
+                             ], function () {
+                    Route::get('{id}', [ BrandController::class, 'show' ]);
+                    Route::get('/', [ BrandController::class, 'index' ]);
+                });
             });
 
     }

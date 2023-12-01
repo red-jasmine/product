@@ -12,7 +12,8 @@
     "homepage": "https://github.com/red-jasmine/product",
     "keywords": ["Laravel", "Product"],
     "require": {
-        "red-jasmine/support": "1.0.x-dev"
+        "red-jasmine/support": "1.0.x-dev",
+        "spatie/laravel-query-builder": "^5.6"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0",

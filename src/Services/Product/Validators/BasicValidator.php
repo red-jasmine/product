@@ -7,6 +7,7 @@ use Illuminate\Validation\Validator;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
+use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
 class BasicValidator extends AbstractProductValidator
@@ -39,11 +40,6 @@ class BasicValidator extends AbstractProductValidator
 
     }
 
-    public function rules() : array
-    {
-        return collect($this->fields())->keys()->combine(collect($this->fields())->pluck('rules'))->toArray();
-    }
-
     public function fields() : array
     {
         $fields = [
@@ -56,7 +52,7 @@ class BasicValidator extends AbstractProductValidator
             'image'              => [ 'attribute' => '主图', 'rules' => [ 'sometimes', 'max:255' ], ],
             'barcode'            => [ 'attribute' => '条形码', 'rules' => [ 'sometimes', 'max:64' ], ],
             'outer_id'           => [ 'attribute' => '商品编码', 'rules' => [ 'sometimes', 'max:64' ], ],
-            'quantity'           => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0' ], ],
+            'quantity'           => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0', 'max:' . ProductService::MAX_QUANTITY ], ],
             'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatus::class) ], ],
 
             'price' => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
@@ -120,6 +116,11 @@ class BasicValidator extends AbstractProductValidator
 
 
         return array_merge($fields, $sku);
+    }
+
+    public function rules() : array
+    {
+        return collect($this->fields())->keys()->combine(collect($this->fields())->pluck('rules'))->toArray();
     }
 
 

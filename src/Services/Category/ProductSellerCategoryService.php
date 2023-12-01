@@ -73,6 +73,7 @@ class ProductSellerCategoryService
             'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule('product_seller_categories', 'id'), ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'max:100' ],
+            'image'      => [ 'sometimes', 'max:255' ],
             'sort'       => [ 'integer' ],
             'is_leaf'    => [ 'required', 'boolean' ],
             'status'     => [ new Enum(CategoryStatusEnum::class) ],
@@ -84,18 +85,18 @@ class ProductSellerCategoryService
     protected function attributes() : array
     {
         return [
-            'id'               => __('red-jasmine/product::product-seller-category.attributes.id'),
-            'parent_id'        => __('red-jasmine/product::product-seller-category.attributes.parent_id'),
-            'name'             => __('red-jasmine/product::product-seller-category.attributes.name'),
-            'group_name'       => __('red-jasmine/product::product-seller-category.attributes.group_name'),
-            'sort'             => __('red-jasmine/product::product-seller-category.attributes.sort'),
-            'is_leaf'          => __('red-jasmine/product::product-seller-category.attributes.is_leaf'),
-            'status'           => __('red-jasmine/product::product-seller-category.attributes.status'),
-            'extends'          => __('red-jasmine/product::product-seller-category.attributes.extends'),
-            'creator_type'     => __('red-jasmine/product::product-seller-category.attributes.creator_type'),
-            'creator_uid'      => __('red-jasmine/product::product-seller-category.attributes.creator_uid'),
-            'updater_type'     => __('red-jasmine/product::product-seller-category.attributes.updater_type'),
-            'updater_uid'      => __('red-jasmine/product::product-seller-category.attributes.updater_uid'),
+            'id'           => __('red-jasmine/product::product-seller-category.attributes.id'),
+            'parent_id'    => __('red-jasmine/product::product-seller-category.attributes.parent_id'),
+            'name'         => __('red-jasmine/product::product-seller-category.attributes.name'),
+            'group_name'   => __('red-jasmine/product::product-seller-category.attributes.group_name'),
+            'sort'         => __('red-jasmine/product::product-seller-category.attributes.sort'),
+            'is_leaf'      => __('red-jasmine/product::product-seller-category.attributes.is_leaf'),
+            'status'       => __('red-jasmine/product::product-seller-category.attributes.status'),
+            'extends'      => __('red-jasmine/product::product-seller-category.attributes.extends'),
+            'creator_type' => __('red-jasmine/product::product-seller-category.attributes.creator_type'),
+            'creator_uid'  => __('red-jasmine/product::product-seller-category.attributes.creator_uid'),
+            'updater_type' => __('red-jasmine/product::product-seller-category.attributes.updater_type'),
+            'updater_uid'  => __('red-jasmine/product::product-seller-category.attributes.updater_uid'),
         ];
     }
 
@@ -139,5 +140,17 @@ class ProductSellerCategoryService
         $productCategory->save();
         return $productCategory;
 
+    }
+
+
+    /**
+     * 删除
+     * @param int $id
+     *
+     * @return bool|null
+     */
+    public function delete(int $id) : ?bool
+    {
+        return Model::where('id', $id)->delete();
     }
 }

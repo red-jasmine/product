@@ -9,7 +9,9 @@ use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class BrandService
 {
@@ -17,13 +19,30 @@ class BrandService
     use WithUserService;
 
 
-    /**
-     * @return int
-     * @throws Exception
-     */
-    protected function buildID() : int
+    use HasQueryBuilder;
+
+    public function filters() : array
     {
-        return Snowflake::getInstance()->nextId();
+        return [
+            AllowedFilter::exact('status')
+        ];
+    }
+
+
+    /**
+     * @var string
+     */
+    protected string $model = Brand::class;
+
+
+    public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->query()->paginate();
+    }
+
+    public function find(int $id) : ?Brand
+    {
+        return Brand::findOrFail($id);
     }
 
     /**
@@ -52,6 +71,45 @@ class BrandService
 
     }
 
+    public function validator(array $data) : \Illuminate\Validation\Validator
+    {
+        return Validator::make($data, $this->rules(), [], $this->attributes());
+    }
+
+    protected function rules() : array
+    {
+
+        return [
+            'name'    => [ 'required', 'max:100' ],
+            'logo'    => [ 'sometimes', 'max:255' ],
+            'sort'    => [ 'integer' ],
+            'status'  => [ new Enum(BrandStatusEnum::class) ],
+            'extends' => [ 'sometimes', 'array' ],
+        ];
+
+    }
+
+    protected function attributes() : array
+    {
+        return [
+            'name'    => '名称',
+            'logo'    => 'Logo',
+            'sort'    => '排序',
+            'status'  => '状态',
+            'extends' => '扩展字段',
+        ];
+
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    protected function buildID() : int
+    {
+        return Snowflake::getInstance()->nextId();
+    }
+
     /**
      * 更新
      *
@@ -71,7 +129,6 @@ class BrandService
         return $brand;
     }
 
-
     /**
      * 修改
      *
@@ -90,36 +147,6 @@ class BrandService
         $brand->withUpdater($this->getOperator());
         $brand->save();
         return $brand;
-
-    }
-
-    public function validator(array $data) : \Illuminate\Validation\Validator
-    {
-        return Validator::make($data, $this->rules(), [], $this->attributes());
-    }
-
-    protected function attributes() : array
-    {
-        return [
-            'name'    => '名称',
-            'logo'    => 'Logo',
-            'sort'    => '排序',
-            'status'  => '状态',
-            'extends' => '扩展字段',
-        ];
-
-    }
-
-    protected function rules() : array
-    {
-
-        return [
-            'name'    => [ 'required', 'max:100' ],
-            'logo'    => [ 'sometimes', 'max:255' ],
-            'sort'    => [ 'integer' ],
-            'status'  => [ new Enum(BrandStatusEnum::class) ],
-            'extends' => [ 'sometimes', 'array' ],
-        ];
 
     }
 
