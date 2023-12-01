@@ -24,23 +24,16 @@ class ProductSellerRoute
             function () {
 
 
-                Route::group([
-                                 'prefix' => 'product-categories'
-                             ], function () {
-                    Route::get('{id}', [ ProductCategoryController::class, 'show' ]);
-                    Route::get('/', [ ProductCategoryController::class, 'index' ]);
-                });
+                Route::get('product-categories/{id}', [ ProductCategoryController::class, 'show' ])->name('product.seller.product-categories.show');
+                Route::get('product-categories', [ ProductCategoryController::class, 'index' ])->name('product.seller.product-categories.index');
+
+                Route::get('brands/{id}', [ BrandController::class, 'show' ])->name('product.seller.brand.show');
+                Route::get('brands', [ BrandController::class, 'index' ])->name('product.seller.brand.index');
 
 
-                Route::apiResource('product-seller-categories', ProductSellerCategoryController::class);
+                Route::apiResource('product-seller-categories', ProductSellerCategoryController::class)->names('product.seller.product-seller-categories');
 
 
-                Route::group([
-                                 'prefix' => 'brands'
-                             ], function () {
-                    Route::get('{id}', [ BrandController::class, 'show' ]);
-                    Route::get('/', [ BrandController::class, 'index' ]);
-                });
             });
 
     }
