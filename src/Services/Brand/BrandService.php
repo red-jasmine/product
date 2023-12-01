@@ -24,7 +24,9 @@ class BrandService
     public function filters() : array
     {
         return [
-            AllowedFilter::exact('status')
+
+            AllowedFilter::exact('name'),
+            AllowedFilter::exact('status'),
         ];
     }
 
