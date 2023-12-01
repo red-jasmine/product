@@ -21,19 +21,6 @@ class PropsValidator extends AbstractProductValidator
             $validator->setValue('info.sale_props', []);
             $validator->setValue('skus', []);
         }
-
-
-        // 验证之后
-        $validator->after(function (Validator $validator) {
-            $validator->after(function (Validator $validator) {
-
-                $data = $validator->getData();
-
-
-            });
-
-
-        });
     }
 
 

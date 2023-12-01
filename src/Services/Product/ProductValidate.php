@@ -5,46 +5,30 @@ namespace RedJasmine\Product\Services\Product;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use RedJasmine\Product\Services\Product\Validators\AbstractProductValidator;
-use RedJasmine\Product\Services\Product\Validators\ProductBasicValidator;
+use RedJasmine\Product\Services\Product\Validators\BasicValidator;
 use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Support\Traits\WithUserService;
 
-class ValidatorService
+class ProductValidate
 {
 
     use WithUserService;
+
+    /**
+     * 基础验证器
+     * @var AbstractProductValidator[]
+     */
+    public static array                        $validators = [
+        BasicValidator::class,
+        PropsValidator::class
+    ];
+    protected \Illuminate\Validation\Validator $validator;
 
     public function __construct(protected array $data)
     {
 
         $this->validator = $this->initValidator();
     }
-
-
-    /**
-     * 基础验证器
-     * @var AbstractProductValidator[]
-     */
-    public static array $validators = [
-        ProductBasicValidator::class,
-        PropsValidator::class
-    ];
-
-
-    /**
-     * @return array|AbstractProductValidator[]
-     */
-    protected function getValidators() : array
-    {
-        $validators = self::$validators;
-
-        $configValidators = config('red-jasmine.product.validators');
-
-        return array_merge($validators, $configValidators);
-    }
-
-
-    protected \Illuminate\Validation\Validator $validator;
 
     public function initValidator() : \Illuminate\Validation\Validator
     {
@@ -64,6 +48,18 @@ class ValidatorService
         }
         return $validator;
 
+    }
+
+    /**
+     * @return array|AbstractProductValidator[]
+     */
+    protected function getValidators() : array
+    {
+        $validators = self::$validators;
+
+        $configValidators = config('red-jasmine.product.validators');
+
+        return array_merge($validators, $configValidators);
     }
 
     public function validator() : \Illuminate\Validation\Validator

@@ -9,7 +9,7 @@ use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
-class ProductBasicValidator extends AbstractProductValidator
+class BasicValidator extends AbstractProductValidator
 {
     public function withValidator(Validator $validator) : void
     {
