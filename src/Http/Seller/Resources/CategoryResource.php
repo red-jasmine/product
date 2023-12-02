@@ -10,7 +10,7 @@ use RedJasmine\Support\Http\Resources\WithCollectionResource;
 /**
  * @mixin ProductCategory
  */
-class ProductCategoryResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     use WithCollectionResource;
 

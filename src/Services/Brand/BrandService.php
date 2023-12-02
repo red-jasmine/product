@@ -29,6 +29,7 @@ class BrandService
 
             AllowedFilter::exact('name'),
             AllowedFilter::exact('status'),
+            static::searchFilter([ 'name' ]),
         ];
     }
 

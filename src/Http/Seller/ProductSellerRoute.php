@@ -1,12 +1,12 @@
 <?php
 
-namespace RedJasmine\Product\Http\Seller\Controllers;
+namespace RedJasmine\Product\Http\Seller;
 
 use Illuminate\Support\Facades\Route;
 use RedJasmine\Product\Http\Seller\Controllers\Api\BrandController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductController;
-use RedJasmine\Product\Http\Seller\Controllers\Api\ProductSellerCategoryController;
-use RedJasmine\Product\Http\Seller\Controllers\Api\ProductCategoryController;
+use RedJasmine\Product\Http\Seller\Controllers\Api\SellerCategoryController;
+use RedJasmine\Product\Http\Seller\Controllers\Api\CategoryController;
 
 class ProductSellerRoute
 {
@@ -25,14 +25,14 @@ class ProductSellerRoute
             function () {
 
 
-                Route::get('product-categories/{id}', [ ProductCategoryController::class, 'show' ])->name('product.seller.product-categories.show');
-                Route::get('product-categories', [ ProductCategoryController::class, 'index' ])->name('product.seller.product-categories.index');
+                Route::get('categories/{id}', [ CategoryController::class, 'show' ])->name('product.seller.categories.show');
+                Route::get('categories', [ CategoryController::class, 'index' ])->name('product.seller.categories.index');
 
                 Route::get('brands/{id}', [ BrandController::class, 'show' ])->name('product.seller.brand.show');
                 Route::get('brands', [ BrandController::class, 'index' ])->name('product.seller.brand.index');
 
 
-                Route::apiResource('product-seller-categories', ProductSellerCategoryController::class)->names('product.seller.product-seller-categories');
+                Route::apiResource('seller-categories', SellerCategoryController::class)->names('product.seller.product-seller-categories');
                 Route::apiResource('products', ProductController::class)->names('product.seller.products');
 
 

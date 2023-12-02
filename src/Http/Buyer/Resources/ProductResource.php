@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Http\Seller\Resources;
+namespace RedJasmine\Product\Http\Buyer\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -67,7 +67,6 @@ class ProductResource extends JsonResource
             'shipping_type'      => $this->shipping_type,
             'image'              => $this->image,
             'barcode'            => $this->barcode,
-            'outer_id'           => $this->outer_id,
             'keywords'           => $this->keywords,
             'parent_id'          => $this->parent_id,
             'has_skus'           => $this->has_skus,
@@ -75,7 +74,6 @@ class ProductResource extends JsonResource
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,
-            'cost_price'         => $this->cost_price,
             'brand_id'           => $this->brand_id,
             'category_id'        => $this->category_id,
             'seller_category_id' => $this->seller_category_id,
@@ -93,17 +91,6 @@ class ProductResource extends JsonResource
             'delivery_time'      => $this->delivery_time,
             'vip'                => $this->vip,
             'points'             => $this->points,
-            'on_sale_time'       => $this->on_sale_time?->toDateTimeString(),
-            'sold_out_time'      => $this->sold_out_time?->toDateTimeString(),
-            'off_sale_time'      => $this->off_sale_time?->toDateTimeString(),
-            'modified_time'      => $this->modified_time?->toDateTimeString(),
-            'creator_type'       => $this->creator_type,
-            'creator_uid'        => $this->creator_uid,
-            'updater_type'       => $this->updater_type,
-            'updater_uid'        => $this->updater_uid,
-            'created_at'         => $this->created_at?->toDateTimeString(),
-            'updated_at'         => $this->updated_at?->toDateTimeString(),
-            'deleted_at'         => $this->deleted_at?->toDateTimeString(),
             'info'               => $info,
             'skus'               => $skus,
             $this->mergeWhen($this->relationLoaded('brand'), [ 'brand' => $brand ]),
