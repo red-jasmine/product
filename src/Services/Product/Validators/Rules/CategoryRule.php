@@ -11,8 +11,10 @@ class CategoryRule extends AbstractRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
+        if(blank($value)){
+            return;
+        }
         $service = app(ProductCategoryService::class);
-
         try {
             $service->isAllowUse($value);
         } catch (AbstractException|ModelNotFoundException) {

@@ -38,7 +38,7 @@ class Product extends Model
         'status'        => ProductStatus::class,// 状态
         'sub_stock'     => SubStockTypeEnum::class,// 扣库存方式
         'freight_payer' => FreightPayerEnum::class,// 运费承担方
-        'has_skus'      => BoolIntEnum::class,
+        'is_multiple_spec'      => BoolIntEnum::class,
         'is_sku'        => BoolIntEnum::class,
         'modified_time' => 'datetime',
         'off_sale_time' => 'datetime',
@@ -56,7 +56,7 @@ class Product extends Model
      */
     public function scopeProductable(Builder $query) : Builder
     {
-        return $query->where('parent_id', 0);
+        return $query->where('spu_id', 0);
     }
 
     /**
@@ -109,7 +109,7 @@ class Product extends Model
      */
     public function skus() : HasMany
     {
-        return $this->hasMany(static::class, 'parent_id', 'id');
+        return $this->hasMany(static::class, 'spu_id', 'id');
     }
 
 }

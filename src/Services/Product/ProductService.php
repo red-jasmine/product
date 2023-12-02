@@ -56,7 +56,7 @@ class ProductService
             AllowedFilter::exact('shipping_type'),
             AllowedFilter::partial('title'),
             AllowedFilter::exact('outer_id'),
-            AllowedFilter::exact('has_skus'),
+            AllowedFilter::exact('is_multiple_spec'),
             AllowedFilter::exact('status'),
             AllowedFilter::exact('brand_id'),
             AllowedFilter::exact('category_id'),
@@ -177,7 +177,7 @@ class ProductService
             $product->save();
             $product->info()->save($productInfo);
             // 对多规格操作
-            if (filled($data['has_skus'] ?? null)) {
+            if (filled($data['is_multiple_spec'] ?? null)) {
 
                 // 获取数据库中所有的SKU
                 /**
@@ -248,9 +248,9 @@ class ProductService
     {
         $sku->owner_type         = $product->owner_type;
         $sku->owner_uid          = $product->owner_uid;
-        $sku->has_skus           = 0;
+        $sku->is_multiple_spec   = 0;
         $sku->is_sku             = 1;
-        $sku->parent_id          = $product->parent_id;
+        $sku->spu_id             = $product->id;
         $sku->title              = $product->title;
         $sku->product_type       = $product->product_type;
         $sku->shipping_type      = $product->shipping_type;

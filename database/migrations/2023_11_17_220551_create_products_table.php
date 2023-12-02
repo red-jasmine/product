@@ -24,10 +24,12 @@ return new class extends Migration {
             $table->string('barcode', 32)->nullable()->comment('条形码');
             $table->string('outer_id', 20)->nullable()->comment('商家编码');
             $table->string('keywords')->nullable()->comment('关键字');
-            // 多规格 查询: 商品级 parent_id = 0  规格级 is_sku = 1
-            $table->unsignedBigInteger('parent_id')->default(0)->comment('规格父级');
-            $table->unsignedTinyInteger('has_skus')->default(0)->comment('多规格');
-            $table->unsignedTinyInteger('is_sku')->default(1)->comment('是否SKU');
+            // 多规格 查询: 商品级 spu_id = 0  规格级 is_sku = 1
+            $table->unsignedBigInteger('spu_id')->default(0)->comment('SPU ID');
+            $table->unsignedTinyInteger('is_multiple_spec')->default(0)->comment('多规格');
+            $table->unsignedTinyInteger('is_sku')->default(1)->comment('是否库存单位');
+
+            $table->unsignedBigInteger('sort')->default(0)->comment('排序');
             // 状态相关
             $table->string('status')->comment('状态');
             // 价格
@@ -53,21 +55,24 @@ return new class extends Migration {
             $table->unsignedBigInteger('multiple')->default(1)->comment('购买倍数');
             // 库存
             $table->unsignedTinyInteger('sub_stock')->default(0)->comment('减库存方式');
-            $table->unsignedBigInteger('quantity')->default(999999999)->comment('库存数量');
-            $table->unsignedBigInteger('hold_quantity')->default(0)->comment('预扣库存');
-            $table->unsignedBigInteger('sold_quantity')->default(0)->comment('销售数量');
+            $table->unsignedBigInteger('stock')->default(999999999)->comment('库存');
+            $table->unsignedBigInteger('hold_stock')->default(0)->comment('预扣库存');
+            $table->unsignedBigInteger('sales')->default(0)->comment('销售数量');
             // 发货类
             $table->unsignedInteger('delivery_time')->default(0)->comment('发货时间:小时');
             // 用户类
             $table->unsignedTinyInteger('vip')->default(0)->comment('VIP');
             $table->unsignedInteger('points')->default(0)->comment('积分');
-
+            // 展现
+            $table->unsignedTinyInteger('is_hot')->default(0)->comment('热销');
+            $table->unsignedTinyInteger('is_new')->default(0)->comment('新品');
+            $table->unsignedTinyInteger('is_best')->default(0)->comment('精品');
+            $table->unsignedTinyInteger('is_benefit')->default(0)->comment('特惠');
             // 时间
             $table->timestamp('on_sale_time')->nullable()->comment('上架时间');
             $table->timestamp('sold_out_time')->nullable()->comment('售停时间');
             $table->timestamp('off_sale_time')->nullable()->comment('下架时间');
             $table->timestamp('modified_time')->nullable()->comment('修改时间');
-
             // 操作人
             $table->string('creator_type', 20)->nullable()->comment('创建者类型');
             $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');

@@ -15,8 +15,8 @@ class PropsValidator extends AbstractProductValidator
     public function withValidator(Validator $validator) : void
     {
         // 在调用之前
-        $has_skus = $validator->getValue('has_skus');
-        if (BoolIntEnum::from($has_skus) === BoolIntEnum::NO) {
+        $is_multiple_spec = $validator->getValue('is_multiple_spec');
+        if (BoolIntEnum::from($is_multiple_spec) === BoolIntEnum::NO) {
             // 如果不是多规格 重置 销售属性
             $validator->setValue('info.sale_props', []);
             $validator->setValue('skus', []);
@@ -27,7 +27,7 @@ class PropsValidator extends AbstractProductValidator
     public function rules() : array
     {
         return [
-            'has_skus'         => [ new HasSkusRule() ],
+            'is_multiple_spec'         => [ new HasSkusRule() ],
             'info.basic_props' => [ 'sometimes', new PropsRule() ],
             'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule() ],
             'skus'             => [ 'sometimes', new SkusRule() ],

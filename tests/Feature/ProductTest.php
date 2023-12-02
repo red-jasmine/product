@@ -56,9 +56,9 @@ class ProductTest extends ProductPropertyTest
             'delivery_time' => 0,
             'vip'           => 0,
             'points'        => 0,
-            'quantity'      => 1,
+            'stock'      => 1,
             'keywords'      => '潮流 古风',
-            'has_skus'      => 0, // 含有多规格
+            'is_multiple_spec'      => 0, // 含有多规格
             'info'          => [
                 'desc'        => 'desc',
                 'basic_props' => $basicProps,
@@ -116,7 +116,7 @@ class ProductTest extends ProductPropertyTest
         $sku  = [
             'price'      => 56.44,
             'cost_price' => 0,
-            'quantity'   => 1,
+            'stock'   => 1,
         ];
         $skus = [];
         foreach ($cross as $properties) {
@@ -143,9 +143,9 @@ class ProductTest extends ProductPropertyTest
             'delivery_time' => 0,
             'vip'           => 0,
             'points'        => 0,
-            'quantity'      => 1,
+            'stock'      => 1,
             'keywords'      => '潮流 古风',
-            'has_skus'      => 1, // 含有多规格
+            'is_multiple_spec'      => 1, // 含有多规格
             'info'          => [
                 'desc'        => 'desc',
                 'basic_props' => $basicProps,
@@ -210,13 +210,13 @@ class ProductTest extends ProductPropertyTest
         $sku  = [
             'price'      => rand(1, 100),
             'cost_price' => 0,
-            'quantity'   => rand(1, 100),
+            'stock'   => rand(1, 100),
         ];
         $skus = [];
         foreach ($cross as $properties) {
             $sku['properties'] = $properties;
             $sku['price']      = rand(1, 100);
-            $sku['quantity']   = rand(1, 100);
+            $sku['stock']   = rand(1, 100);
             $skus[]            = $sku;
         }
         $basicProps = [
@@ -239,9 +239,9 @@ class ProductTest extends ProductPropertyTest
             'delivery_time' => 0,
             'vip'           => 0,
             'points'        => 0,
-            'quantity'      => 1,
+            'stock'      => 1,
             'keywords'      => '潮流 古风 2',
-            'has_skus'      => 1, // 含有多规格
+            'is_multiple_spec'      => 1, // 含有多规格
             'info'          => [
                 'desc'        => 'desc update 2',
                 'basic_props' => $basicProps,
@@ -316,13 +316,13 @@ class ProductTest extends ProductPropertyTest
         $sku  = [
             'price'      => rand(1, 100),
             'cost_price' => 0,
-            'quantity'   => rand(1, 100),
+            'stock'   => rand(1, 100),
         ];
         $skus = [];
         foreach ($cross as $properties) {
             $sku['properties'] = $properties;
             $sku['price']      = rand(1, 100);
-            $sku['quantity']   = rand(1, 100);
+            $sku['stock']   = rand(1, 100);
             $skus[]            = $sku;
         }
 
@@ -346,9 +346,9 @@ class ProductTest extends ProductPropertyTest
             'delivery_time' => 0,
             'vip'           => 0,
             'points'        => 0,
-            'quantity'      => 1,
+            'stock'      => 1,
             'keywords'      => '潮流 古风 2',
-            'has_skus'      => 1, // 含有多规格
+            'is_multiple_spec'      => 1, // 含有多规格
             'info'          => [
                 'desc'        => 'desc update 2',
                 'basic_props' => $basicProps,
@@ -406,7 +406,7 @@ class ProductTest extends ProductPropertyTest
 
         $data    = [
             'title'    => '关闭多规格',
-            'has_skus' => 0,
+            'is_multiple_spec' => 0,
         ];
         $product = $this->productService()->modify($product->id, $data);
 

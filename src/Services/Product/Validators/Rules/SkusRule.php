@@ -29,7 +29,7 @@ class SkusRule extends AbstractRule
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
 
-        $hasSkus = BoolIntEnum::from($this->data['has_skus'] ?? 0);
+        $hasSkus = BoolIntEnum::from($this->data['is_multiple_spec'] ?? 0);
         if ($hasSkus === BoolIntEnum::NO) {
             return;
         }

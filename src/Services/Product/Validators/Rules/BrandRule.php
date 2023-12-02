@@ -11,9 +11,11 @@ class BrandRule extends AbstractRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
+        if (blank($value)) {
+            return;
+        }
         $service = app(BrandService::class);
         $service->disableRequest();
-
         try {
             $service->isAllowUse($value);
         } catch (AbstractException|ModelNotFoundException $exception) {
