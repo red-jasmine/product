@@ -2,36 +2,71 @@
 
 namespace RedJasmine\Product\Http\Seller\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
-use RedJasmine\Product\Services\Product\ProductService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use RedJasmine\Product\Business\Seller\ProductService;
+use RedJasmine\Product\Http\Seller\Resources\ProductResource;
+use Throwable;
 
 class ProductController extends Controller
 {
     public function __construct(public ProductService $service)
     {
+        $this->service->setOwner($this->getOwner())->setOperator($this->getUser());
     }
 
-    public function index()
+    public function index() : AnonymousResourceCollection
     {
-        $result =  $this->service->lists();
-
-        dd($result);
+        $result = $this->service->lists();
+        return ProductResource::collection($result);
     }
 
-    public function store(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return ProductResource
+     * @throws Throwable
+     */
+    public function store(Request $request) : ProductResource
     {
+        $result = $this->service->create($request->all());
+        return new ProductResource($result);
     }
 
-    public function show($id)
+    public function show($id) : ProductResource
     {
+        $result = $this->service->find($id);
+        return new ProductResource($result);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * @param Request $request
+     * @param         $id
+     *
+     * @return ProductResource
+     * @throws Throwable
+     */
+    public function update(Request $request, $id) : ProductResource
     {
+        if ($request->isMethod('PATCH')) {
+            $result = $this->service->modify($id, $request->all());
+        } else {
+            $result = $this->service->update($id, $request->all());
+        }
+        return new ProductResource($result);
     }
 
-    public function destroy($id)
+    /**
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws Throwable
+     * @throws \RedJasmine\Support\Exceptions\AbstractException
+     */
+    public function destroy($id) : \Illuminate\Http\JsonResponse
     {
+        $result = $this->service->delete($id);
+        return $this->success($result);
     }
 }

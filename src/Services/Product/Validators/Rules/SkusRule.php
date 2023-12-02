@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Validation\Validator;
+use JsonException;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
@@ -18,6 +19,13 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
     protected PropertyFormatter $propertyFormatter;
 
+    /**
+     * @param string  $attribute
+     * @param mixed   $value
+     * @param Closure $fail
+     *
+     * @return void
+     */
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
 
@@ -39,7 +47,7 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
         $this->salePropsNames = $this->getSalePropsNames();
         foreach ($value as &$sku) {
-            $sku['properties'] = $this->propertyFormatter->formatterString($sku['properties']);
+            $sku['properties'] = $this->propertyFormatter->formatString($sku['properties']);
             if (!in_array($sku['properties'], $cross, true)) {
                 $fail('规格不在属性配置中');
                 return;
@@ -78,7 +86,7 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
     public function getSalePropsNames() : array
     {
 
-        $saleProps  = $this->data['info']['sale_props'] ?? [];
+        $saleProps = $this->data['info']['sale_props'] ?? [];
 
         $properties = [];
         $values     = [];

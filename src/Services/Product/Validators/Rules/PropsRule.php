@@ -30,7 +30,7 @@ class PropsRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
     {
         $propertyFormatter = new PropertyFormatter();
 
-        $value = $propertyFormatter->formatterArray($value);
+        $value = $propertyFormatter->formatArray($value);
 
         try {
             $value = (new PropertyService())->validateProps($value);

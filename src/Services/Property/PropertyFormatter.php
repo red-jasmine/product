@@ -10,7 +10,7 @@ class PropertyFormatter
 {
 
 
-    public function formatterString(string $value = '') : string
+    public function formatString(string $value = null) : string
     {
         if (blank($value)) {
             return '';
@@ -18,7 +18,7 @@ class PropertyFormatter
         return $this->toString($this->toArray($value));
     }
 
-    public function formatterArray(array $value = []) : array
+    public function formatArray(array $value = []) : array
     {
         if (blank($value)) {
             return [];

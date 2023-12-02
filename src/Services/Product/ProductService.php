@@ -2,13 +2,16 @@
 
 namespace RedJasmine\Product\Services\Product;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
+use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
+use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
 class ProductService
@@ -22,12 +25,32 @@ class ProductService
      */
     public const MAX_QUANTITY = 999999999;
 
+    use HasQueryBuilder {
+        query as __query;
+    }
 
-    use HasQueryBuilder;
+    public function includes() : array
+    {
+        return [
+            'info', 'skus', 'skus.info'
+        ];
+    }
+
+    public function query() : QueryBuilder
+    {
+        $query = $this->__query();
+        return $query->productable();
+    }
+
 
     public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->query()->paginate();
+    }
+
+    public function find($id) : Product
+    {
+        return $this->query()->findOrFail($id);
     }
 
     /**
@@ -44,7 +67,6 @@ class ProductService
         $builder = new ProductBuilder();
         $data    = $builder->validate($data);
         return $this->save(null, $data);
-
     }
 
 
@@ -63,7 +85,6 @@ class ProductService
         // 验证数据
         $builder = new ProductBuilder();
         $data    = $builder->validate($data);
-
         return $this->save($id, $data);
     }
 
@@ -77,10 +98,9 @@ class ProductService
      */
     protected function save(?int $id = null, array $data = []) : Product
     {
-
         $builder = new ProductBuilder();
         if (filled($id)) {
-            $product     = Product::findOrFail($id);
+            $product     = $this->find($id);
             $productInfo = $product->info;
         } else {
             $product = new Product();
@@ -103,20 +123,17 @@ class ProductService
             foreach ($info as $infoKey => $infoValue) {
                 $productInfo->setAttribute($infoKey, $infoValue);
             }
+
             if (blank($product->owner_type)) {
                 $product->withOwner($this->getOwner());
             }
             if (blank($product->creator_type)) {
                 $product->withCreator($this->getOperator());
             }
-
             $product->withUpdater($this->getOperator());
-
 
             $product->save();
             $product->info()->save($productInfo);
-
-
             // 对多规格操作
             if (filled($data['has_skus'] ?? null)) {
 
@@ -135,31 +152,13 @@ class ProductService
 
                 $skus = collect($skus)->map(function ($sku) use ($product, $builder, $skuModelList) {
 
-                    $skuModel     = $skuModelList[$sku['properties']] ?? new Product();
+                    $skuModel     = $skuModelList[$sku['properties']] ?? new ($this->model)();
                     $skuModel->id = $skuModel->id ?? $builder->generateID();
 
-                    $skuModel->has_skus           = 0;
-                    $skuModel->is_sku             = 1;
-                    $skuModel->parent_id          = $product->parent_id;
-                    $skuModel->title              = $product->title;
-                    $skuModel->product_type       = $product->product_type;
-                    $skuModel->shipping_type      = $product->shipping_type;
-                    $skuModel->title              = $product->title;
-                    $skuModel->category_id        = $product->category_id;
-                    $skuModel->seller_category_id = $product->seller_category_id;
-                    $skuModel->freight_payer      = $product->freight_payer;
-                    $skuModel->postage_id         = $product->postage_id;
-                    $skuModel->sub_stock          = $product->sub_stock;
-                    $skuModel->delivery_time      = $product->delivery_time;
-                    $skuModel->vip                = $product->vip;
-                    $skuModel->points             = $product->points;
-                    $skuModel->status             = $product->status;
-                    $skuModel->owner_type         = $product->owner_type;
-                    $skuModel->owner_uid          = $product->owner_uid;
-                    $skuModel->deleted_at         = null;
+                    $this->copyProductAttributeToSku($product, $skuModel);
 
-                    if (blank($product->creator_type)) {
-                        $product->withCreator($this->getOperator());
+                    if (blank($skuModel->creator_type)) {
+                        $skuModel->withCreator($this->getOperator());
                     }
                     $skuModel->withUpdater($this->getOperator());
 
@@ -203,7 +202,33 @@ class ProductService
         return $product;
     }
 
+    public function copyProductAttributeToSku(Product $product, Product $sku) : void
+    {
+        $sku->owner_type         = $product->owner_type;
+        $sku->owner_uid          = $product->owner_uid;
+        $sku->has_skus           = 0;
+        $sku->is_sku             = 1;
+        $sku->parent_id          = $product->parent_id;
+        $sku->title              = $product->title;
+        $sku->product_type       = $product->product_type;
+        $sku->shipping_type      = $product->shipping_type;
+        $sku->title              = $product->title;
+        $sku->category_id        = $product->category_id;
+        $sku->seller_category_id = $product->seller_category_id;
+        $sku->freight_payer      = $product->freight_payer;
+        $sku->postage_id         = $product->postage_id;
+        $sku->sub_stock          = $product->sub_stock;
+        $sku->delivery_time      = $product->delivery_time;
+        $sku->vip                = $product->vip ?? 0;
+        $sku->points             = $product->points ?? 0;
+        $sku->status             = $product->status;
+
+        $sku->deleted_at = null;
+    }
+
     /**
+     * 删除
+     *
      * @param int   $id
      * @param array $data
      *
@@ -214,7 +239,41 @@ class ProductService
     {
         $builder = new ProductBuilder();
         $data    = $builder->validateOnly($data);
-
         return $this->save($id, $data);
+    }
+
+
+    /**
+     * 删除
+     *
+     * @param int $id
+     *
+     * @return true
+     * @throws AbstractException
+     * @throws Throwable
+     */
+    public function delete(int $id) : true
+    {
+        try {
+            DB::beginTransaction();
+            $product = $this->find($id);
+            $product->info->delete();
+            foreach ($product->skus as $sku) {
+                $sku->info->delete();
+            }
+            $product->skus()->delete();
+            $product->delete();
+            DB::commit();
+        } catch (AbstractException $exception) {
+            DB::rollBack();
+            throw  $exception;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            DB::rollBack();
+            throw  $modelNotFoundException;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
+        return true;
     }
 }

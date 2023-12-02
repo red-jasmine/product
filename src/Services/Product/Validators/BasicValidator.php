@@ -4,9 +4,11 @@ namespace RedJasmine\Product\Services\Product\Validators;
 
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
+use RedJasmine\Product\Enums\Product\FreightPayerEnum;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
+use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
@@ -54,44 +56,35 @@ class BasicValidator extends AbstractProductValidator
             'outer_id'           => [ 'attribute' => '商品编码', 'rules' => [ 'sometimes', 'max:64' ], ],
             'quantity'           => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0', 'max:' . ProductService::MAX_QUANTITY ], ],
             'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatus::class) ], ],
-
-            'price' => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
-
-            'has_skus' => [ 'attribute' => '多规格', 'rules' => [ 'required', 'integer', new Enum(BoolIntEnum::class) ], ],
-
-            'market_price' => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', ], ],
-            'cost_price'   => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', ], ],
-
-            'min'      => [ 'attribute' => '起购量', 'rules' => [ 'sometimes', 'integer' ], ],
-            'max'      => [ 'attribute' => '限购量', 'rules' => [ 'sometimes', 'integer' ], ],
-            'multiple' => [ 'attribute' => '倍数', 'rules' => [ 'sometimes', 'integer' ], ],
-
-
-            'freight_payer' => [ 'attribute' => '运费承担方', 'rules' => [ 'sometimes', 'integer' ], ],
-            'sub_stock'     => [ 'attribute' => '减库存方式', 'rules' => [], ],
-            'postage_id'    => [ 'attribute' => '运费模板', 'rules' => [], ],
-            'delivery_time' => [ 'attribute' => '发货时间', 'rules' => [ 'sometimes', 'integer' ], ],
-            'vip'           => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer' ], ],
-            'points'        => [ 'attribute' => '积分', 'rules' => [ 'sometimes', 'integer' ], ],
-            'keywords'      => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
-
-
-            'info.desc'       => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
-            'info.web_detail' => [ 'attribute' => '电脑详情', 'rules' => [], ],
-            'info.wap_detail' => [ 'attribute' => '手机详情', 'rules' => [], ],
-            'info.images'     => [ 'attribute' => '图片集', 'rules' => [], ],
-            'info.videos'     => [ 'attribute' => '视频集', 'rules' => [], ],
-            'info.weight'     => [ 'attribute' => '重量', 'rules' => [], ],
-            'info.width'      => [ 'attribute' => '宽度', 'rules' => [], ],
-            'info.height'     => [ 'attribute' => '高度', 'rules' => [], ],
-            'info.length'     => [ 'attribute' => '长度', 'rules' => [], ],
-            'info.size'       => [ 'attribute' => '大小', 'rules' => [], ],
-            'info.extends'    => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'array' ], ],
-            'info.tools'      => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'tools' ], ],
-            'info.remarks'    => [ 'attribute' => '备注', 'rules' => [], ],
-
-            'info.basic_props' => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', ], ],
-            'info.sale_props'  => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', ], ],
+            'price'              => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
+            'has_skus'           => [ 'attribute' => '多规格', 'rules' => [ 'required', new Enum(BoolIntEnum::class) ], ],
+            'market_price'       => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', ], ],
+            'cost_price'         => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', ], ],
+            'min'                => [ 'attribute' => '起购量', 'rules' => [ 'sometimes', 'integer' ], ],
+            'max'                => [ 'attribute' => '限购量', 'rules' => [ 'sometimes', 'integer' ], ],
+            'multiple'           => [ 'attribute' => '倍数', 'rules' => [ 'sometimes', 'integer' ], ],
+            'freight_payer'      => [ 'attribute' => '运费承担方', 'rules' => [ 'required', new Enum(FreightPayerEnum::class) ], ],
+            'sub_stock'          => [ 'attribute' => '减库存方式', 'rules' => [ 'required', new Enum(SubStockTypeEnum::class) ], ],
+            'postage_id'         => [ 'attribute' => '运费模板', 'rules' => [ 'sometimes' ], ],
+            'delivery_time'      => [ 'attribute' => '发货时间', 'rules' => [ 'required', 'integer' ], ],
+            'vip'                => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer' ], ],
+            'points'             => [ 'attribute' => '积分', 'rules' => [ 'sometimes', 'integer' ], ],
+            'keywords'           => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
+            'info.desc'          => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
+            'info.web_detail'    => [ 'attribute' => '电脑详情', 'rules' => [], ],
+            'info.wap_detail'    => [ 'attribute' => '手机详情', 'rules' => [], ],
+            'info.images'        => [ 'attribute' => '图片集', 'rules' => [], ],
+            'info.videos'        => [ 'attribute' => '视频集', 'rules' => [], ],
+            'info.weight'        => [ 'attribute' => '重量', 'rules' => [], ],
+            'info.width'         => [ 'attribute' => '宽度', 'rules' => [], ],
+            'info.height'        => [ 'attribute' => '高度', 'rules' => [], ],
+            'info.length'        => [ 'attribute' => '长度', 'rules' => [], ],
+            'info.size'          => [ 'attribute' => '大小', 'rules' => [], ],
+            'info.extends'       => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'array' ], ],
+            'info.tools'         => [ 'attribute' => '工具', 'rules' => [ 'sometimes', 'tools' ], ],
+            'info.remarks'       => [ 'attribute' => '备注', 'rules' => [], ],
+            'info.basic_props'   => [ 'attribute' => '基础属性', 'rules' => [ 'sometimes', ], ],
+            'info.sale_props'    => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', ], ],
         ];
 
         $sku = [
@@ -101,17 +94,14 @@ class BasicValidator extends AbstractProductValidator
             'skus.*.price'        => $fields['price'],
             'skus.*.market_price' => $fields['market_price'],
             'skus.*.cost_price'   => $fields['cost_price'],
-
-
-            'skus.*.min'      => $fields['min'],
-            'skus.*.max'      => $fields['max'],
-            'skus.*.multiple' => $fields['multiple'],
-
-            'skus.*.image'      => $fields['image'],
-            'skus.*.barcode'    => $fields['barcode'],
-            'skus.*.outer_id'   => $fields['outer_id'],
-            'skus.*.quantity'   => $fields['quantity'],
-            'skus.*.properties' => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
+            'skus.*.min'          => $fields['min'],
+            'skus.*.max'          => $fields['max'],
+            'skus.*.multiple'     => $fields['multiple'],
+            'skus.*.image'        => $fields['image'],
+            'skus.*.barcode'      => $fields['barcode'],
+            'skus.*.outer_id'     => $fields['outer_id'],
+            'skus.*.quantity'     => $fields['quantity'],
+            'skus.*.properties'   => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
         ];
 
 

@@ -4,6 +4,7 @@ namespace RedJasmine\Product\Services\Product;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use JsonException;
 use RedJasmine\Product\Services\Product\Validators\AbstractProductValidator;
 use RedJasmine\Product\Services\Product\Validators\BasicValidator;
 use RedJasmine\Product\Services\Product\Validators\PropsValidator;
@@ -24,10 +25,42 @@ class ProductValidate
     ];
     protected \Illuminate\Validation\Validator $validator;
 
-    public function __construct(protected array $data)
+    /**
+     * @param array $data
+     *
+     * @throws JsonException
+     */
+    public function __construct(array $data)
     {
-
+        $this->setData($data);
         $this->validator = $this->initValidator();
+    }
+
+    /**
+     * @param $data
+     *
+     * @return $this
+     * @throws JsonException
+     */
+    public function setData($data) : ProductValidate
+    {
+        $saleProps = $data['info']['sale_props'] ?? [];
+        if (is_string($saleProps) && filled($saleProps)) {
+            $data['info']['sale_props'] = json_decode($saleProps, true, 512, JSON_THROW_ON_ERROR);
+        }
+        $basicProps = $data['info']['basic_props'] ?? [];
+        if (is_string($basicProps) && filled($basicProps)) {
+            $data['info']['basic_props'] = json_decode($basicProps, true, 512, JSON_THROW_ON_ERROR);
+        }
+        $skus = $data['skus'] ?? [];
+        if (is_string($skus) && filled($skus)) {
+            $data['skus'] = json_decode($skus, true, 512, JSON_THROW_ON_ERROR);
+        }
+
+
+        $this->data = $data;
+
+        return $this;
     }
 
     public function initValidator() : \Illuminate\Validation\Validator

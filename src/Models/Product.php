@@ -2,23 +2,23 @@
 
 namespace RedJasmine\Product\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
+use RedJasmine\Product\Enums\Product\FreightPayerEnum;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
+use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
+use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\WithOperatorModel;
 use RedJasmine\Support\Traits\Models\WithOwnerModel;
 
-/**
- * @property string $owner_type
- * @property int    $owner_uid
- */
+
 class Product extends Model
 {
     use HasDateTimeFormatter;
@@ -36,12 +36,40 @@ class Product extends Model
         'product_type'  => ProductTypeEnum::class,  // 商品类型
         'shipping_type' => ShippingTypeEnum::class,// 发货类型
         'status'        => ProductStatus::class,// 状态
+        'sub_stock'     => SubStockTypeEnum::class,// 扣库存方式
+        'freight_payer' => FreightPayerEnum::class,// 运费承担方
+        'has_skus'      => BoolIntEnum::class,
+        'is_sku'        => BoolIntEnum::class,
         'modified_time' => 'datetime',
         'off_sale_time' => 'datetime',
         'on_sale_time'  => 'datetime',
-        'sold_out_time' => 'datetime',
+
 
     ];
+
+    /**
+     * 产品级查询
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeProductable(Builder $query) : Builder
+    {
+        return $query->where('parent_id', 0);
+    }
+
+    /**
+     * 库存规格级查询
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeSkuable(Builder $query) : Builder
+    {
+        return $query->where('is_sku', 1);
+    }
 
 
     /**
