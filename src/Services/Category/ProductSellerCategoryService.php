@@ -7,10 +7,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
+use RedJasmine\Product\Exceptions\SellerCategoryException;
 use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
+use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
 
 /**
@@ -21,11 +23,32 @@ class ProductSellerCategoryService
 
     use WithUserService;
 
+    use HasQueryBuilder;
+
+    public string $model = Model::class;
+
 
     public function find(int $id) : Model
     {
-        return Model::findOrFail($id);
+        return $this->query()->findOrFail($id);
     }
+
+
+    /**
+     * @param int $id
+     *
+     * @return Model
+     * @throws SellerCategoryException
+     */
+    public function isAllowUse(int $id) : Model
+    {
+        $model = $this->find($id);
+        if ($model->isAllowUse()) {
+            return $model;
+        }
+        throw new SellerCategoryException('当前分类不支持使用');
+    }
+
 
     /**
      * to tree
@@ -145,6 +168,7 @@ class ProductSellerCategoryService
 
     /**
      * 删除
+     *
      * @param int $id
      *
      * @return bool|null

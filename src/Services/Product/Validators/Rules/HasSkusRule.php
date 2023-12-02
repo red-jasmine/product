@@ -9,22 +9,8 @@ use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Validation\Validator;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
-class HasSkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
+class HasSkusRule extends AbstractRule
 {
-
-
-    protected array     $data;
-    protected Validator $validator;
-
-    public function setData(array $data) : void
-    {
-        $this->data = $data;
-    }
-
-    public function setValidator(Validator $validator) : void
-    {
-        $this->validator = $validator;
-    }
 
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {

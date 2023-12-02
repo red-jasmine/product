@@ -7,9 +7,12 @@ use Exception;
 use RedJasmine\Product\Services\Product\Contracts\ProductBuilderInterface;
 use RedJasmine\Product\Services\Product\ProductValidate;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Traits\WithUserService;
 
 class ProductBuilder implements ProductBuilderInterface
 {
+
+    use WithUserService;
 
 
     /**
@@ -23,6 +26,12 @@ class ProductBuilder implements ProductBuilderInterface
     }
 
 
+    /**
+     * @param array $data
+     *
+     * @return array
+     * @throws \JsonException
+     */
     public function validate(array $data) : array
     {
         $validatorService = new ProductValidate($data);
@@ -30,6 +39,12 @@ class ProductBuilder implements ProductBuilderInterface
     }
 
 
+    /**
+     * @param $data
+     *
+     * @return array
+     * @throws \JsonException
+     */
     public function validateOnly($data) : array
     {
         $validatorService = new ProductValidate($data);

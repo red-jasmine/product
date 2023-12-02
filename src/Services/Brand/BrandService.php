@@ -3,10 +3,12 @@
 namespace RedJasmine\Product\Services\Brand;
 
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
+use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
@@ -37,9 +39,28 @@ class BrandService
     protected string $model = Brand::class;
 
 
-    public function find(int $id) : ?Brand
+    /**
+     * @param int $id
+     *
+     * @return Brand
+     * @throws ModelNotFoundException
+     */
+    public function find(int $id) : Brand
     {
-        return Brand::findOrFail($id);
+        return $this->query()->findOrFail($id);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Brand|null
+     * @throws  BrandException
+     * @throws  ModelNotFoundException
+     */
+    public function isAllowUse(int $id) : ?Brand
+    {
+        return $this->find($id);
+
     }
 
     public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator

@@ -34,4 +34,7 @@ class Brand extends Model
         'logo',
         'logo',
     ];
+
+
+
 }

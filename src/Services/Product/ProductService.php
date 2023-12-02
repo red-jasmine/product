@@ -30,6 +30,22 @@ class ProductService
         query as __query;
     }
 
+    protected ?ProductBuilder $productBuilder = null;
+
+    public function productBuilder() : ProductBuilder
+    {
+        if ($this->productBuilder) {
+            return $this->productBuilder;
+        }
+
+        $this->productBuilder = new ProductBuilder();
+        $this->productBuilder
+            ->setOwner($this->getOwner())
+            ->setOperator($this->getOperator());
+        return $this->productBuilder;
+    }
+
+
     public function filters() : array
     {
         return [
@@ -54,7 +70,7 @@ class ProductService
     public function includes() : array
     {
         return [
-            'info', 'skus', 'skus.info'
+            'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory'
         ];
     }
 
@@ -86,8 +102,10 @@ class ProductService
     public function create(array $data) : Product
     {
         // 验证数据
-        $builder = new ProductBuilder();
-        $data    = $builder->validate($data);
+        $builder            = $this->productBuilder();
+        $data['owner_type'] = $this->getOwner()->getUserType();
+        $data['owner_uid']  = $this->getOwner()->getUID();
+        $data               = $builder->validate($data);
         return $this->save(null, $data);
     }
 
@@ -103,10 +121,12 @@ class ProductService
      */
     public function update(int $id, array $data) : Product
     {
-
+        $product = $this->find($id);
         // 验证数据
-        $builder = new ProductBuilder();
-        $data    = $builder->validate($data);
+        $builder            = $this->productBuilder();
+        $data['owner_type'] = $product->owner_type;
+        $data['owner_uid']  = $product->owner_uid;
+        $data               = $builder->validate($data);
         return $this->save($id, $data);
     }
 
@@ -120,7 +140,7 @@ class ProductService
      */
     protected function save(?int $id = null, array $data = []) : Product
     {
-        $builder = new ProductBuilder();
+        $builder = $this->productBuilder();
         if (filled($id)) {
             $product     = $this->find($id);
             $productInfo = $product->info;
@@ -259,8 +279,12 @@ class ProductService
      */
     public function modify(int $id, array $data) : Product
     {
-        $builder = new ProductBuilder();
-        $data    = $builder->validateOnly($data);
+        $product = $this->find($id);
+        // 验证数据
+        $builder            = $this->productBuilder();
+        $data['owner_type'] = $product->owner_type;
+        $data['owner_uid']  = $product->owner_uid;
+        $data               = $builder->validateOnly($data);
         return $this->save($id, $data);
     }
 

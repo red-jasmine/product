@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
+use RedJasmine\Product\Exceptions\CategoryException;
 use RedJasmine\Product\Models\ProductCategory as Model;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
@@ -25,6 +26,21 @@ class ProductCategoryService
     public function find(int $id) : Model
     {
         return Model::findOrFail($id);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Model
+     * @throws CategoryException
+     */
+    public function isAllowUse(int $id) : Model
+    {
+        $model = $this->find($id);
+        if ($model->isAllowUse()) {
+            return $model;
+        }
+        throw new CategoryException('类目不可使用');
     }
 
     /**

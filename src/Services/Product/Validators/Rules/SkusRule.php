@@ -8,14 +8,13 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Validation\Validator;
 use JsonException;
+use RedJasmine\Item\Exceptions\ItemPropertyException;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
-class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
+class SkusRule extends AbstractRule
 {
 
-    protected array     $data;
-    protected Validator $validator;
 
     protected PropertyFormatter $propertyFormatter;
 
@@ -25,6 +24,7 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
      * @param Closure $fail
      *
      * @return void
+     * @throws ItemPropertyException
      */
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
@@ -60,7 +60,13 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
     }
 
-    public function propertiesName($properties)
+    /**
+     * @param $properties
+     *
+     * @return string
+     * @throws \RedJasmine\Item\Exceptions\ItemPropertyException
+     */
+    public function propertiesName($properties) : string
     {
         $props = $this->propertyFormatter->toArray($properties);
         $names = [];
@@ -99,7 +105,6 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
             }
 
-
         }
 
         return [
@@ -109,14 +114,5 @@ class SkusRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 
     }
 
-    public function setData(array $data) : void
-    {
-        $this->data = $data;
-    }
-
-    public function setValidator(Validator $validator) : void
-    {
-        $this->validator = $validator;
-    }
 
 }

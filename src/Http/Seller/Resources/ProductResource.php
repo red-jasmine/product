@@ -43,6 +43,21 @@ class ProductResource extends JsonResource
             $skus = static::collection($this->skus);
         }
 
+        $brand = null;
+        if ($this->relationLoaded('brand')) {
+            $brand = new BrandResource($this->brand);
+        }
+        $category = null;
+        if ($this->relationLoaded('category')) {
+            $category = new ProductCategoryResource($this->category);
+        }
+
+        $sellerCategory = null;
+        if ($this->relationLoaded('sellerCategory')) {
+            $sellerCategory = new ProductSellerCategoryResource($this->sellerCategory);
+        }
+
+
         return [
             'id'                 => $this->id,
             'title'              => $this->title,
@@ -90,7 +105,10 @@ class ProductResource extends JsonResource
             'updated_at'         => $this->updated_at?->toDateTimeString(),
             'deleted_at'         => $this->deleted_at?->toDateTimeString(),
             'info'               => $info,
-            'skus'               => $skus
+            'skus'               => $skus,
+            $this->mergeWhen($this->relationLoaded('brand'), [ 'brand' => $brand ]),
+            $this->mergeWhen($this->relationLoaded('category'), [ 'category' => $category ]),
+            $this->mergeWhen($this->relationLoaded('sellerCategory'), [ 'seller_category' => $sellerCategory ]),
 
         ];
     }

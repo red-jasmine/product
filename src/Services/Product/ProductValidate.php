@@ -44,6 +44,7 @@ class ProductValidate
      */
     public function setData($data) : ProductValidate
     {
+
         $saleProps = $data['info']['sale_props'] ?? [];
         if (is_string($saleProps) && filled($saleProps)) {
             $data['info']['sale_props'] = json_decode($saleProps, true, 512, JSON_THROW_ON_ERROR);
@@ -65,7 +66,8 @@ class ProductValidate
 
     public function initValidator() : \Illuminate\Validation\Validator
     {
-        $validator = Validator::make($this->data, []);
+        $validator = Validator::make($this->data, [], [], []);
+
         foreach ($this->getValidators() as $validatorName) {
             $productValidator = app($validatorName);
             if ($productValidator instanceof AbstractProductValidator) {
@@ -73,9 +75,9 @@ class ProductValidate
 
                 // 加载后续验证器
                 $productValidator->withValidator($validator);
-
                 $validator->addRules($productValidator->rules());
                 $validator->addCustomAttributes($productValidator->attributes());
+                $validator->setCustomMessages($productValidator->messages());
 
             }
         }

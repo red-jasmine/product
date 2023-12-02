@@ -10,7 +10,11 @@ use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Product\Services\Product\ProductService;
+use RedJasmine\Product\Services\Product\Validators\Rules\BrandRule;
+use RedJasmine\Product\Services\Product\Validators\Rules\CategoryRule;
+use RedJasmine\Product\Services\Product\Validators\Rules\SellerCategoryRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Support\Rules\NotZeroExistsRule;
 
 class BasicValidator extends AbstractProductValidator
 {
@@ -45,9 +49,9 @@ class BasicValidator extends AbstractProductValidator
     public function fields() : array
     {
         $fields = [
-            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', 'integer' ], ],
-            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', 'integer' ], ],
-            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', 'integer' ], ],
+            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', 'integer', new CategoryRule() ], ],
+            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', 'integer', new BrandRule() ], ],
+            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', 'integer', new SellerCategoryRule() ], ],
             'product_type'       => [ 'attribute' => '商品类型', 'rules' => [ new Enum(ProductTypeEnum::class) ], ],
             'shipping_type'      => [ 'attribute' => '发货方式', 'rules' => [ new Enum(ShippingTypeEnum::class) ], ],
             'title'              => [ 'attribute' => '标题', 'rules' => [ 'required', 'max:60', 'min:2' ], ],

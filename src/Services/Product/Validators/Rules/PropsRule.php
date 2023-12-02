@@ -11,11 +11,8 @@ use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
 use RedJasmine\Product\Services\Property\PropertyService;
 
-class PropsRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
+class PropsRule extends AbstractRule
 {
-
-    protected array     $data;
-    protected Validator $validator;
 
     /**
      * 属性验证
@@ -40,17 +37,6 @@ class PropsRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
         }
         $this->validator->setValue($attribute, $value);
 
-    }
-
-
-    public function setData(array $data) : void
-    {
-        $this->data = $data;
-    }
-
-    public function setValidator(Validator $validator) : void
-    {
-        $this->validator = $validator;
     }
 
 
