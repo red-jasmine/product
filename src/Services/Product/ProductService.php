@@ -11,6 +11,7 @@ use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
@@ -28,6 +29,27 @@ class ProductService
     use HasQueryBuilder {
         query as __query;
     }
+
+    public function filters() : array
+    {
+        return [
+            AllowedFilter::exact('id'),
+            AllowedFilter::exact('owner_type'),
+            AllowedFilter::exact('owner_uid'),
+            AllowedFilter::exact('product_type'),
+            AllowedFilter::exact('shipping_type'),
+            AllowedFilter::partial('title'),
+            AllowedFilter::exact('outer_id'),
+            AllowedFilter::exact('has_skus'),
+            AllowedFilter::exact('status'),
+            AllowedFilter::exact('brand_id'),
+            AllowedFilter::exact('category_id'),
+            AllowedFilter::exact('seller_category_id'),
+            AllowedFilter::exact('vip'),
+            static::searchFilter([ 'title', 'keywords' ])
+        ];
+    }
+
 
     public function includes() : array
     {
