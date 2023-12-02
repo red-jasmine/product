@@ -37,15 +37,16 @@ class BrandService
     protected string $model = Brand::class;
 
 
+    public function find(int $id) : ?Brand
+    {
+        return Brand::findOrFail($id);
+    }
+
     public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->query()->paginate();
     }
 
-    public function find(int $id) : ?Brand
-    {
-        return Brand::findOrFail($id);
-    }
 
     /**
      * 品牌

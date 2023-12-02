@@ -22,7 +22,7 @@ class BrandTest extends TestCase
     public function testCreate()
     {
         $attributes = [
-            'name'    => 'Test',
+            'name'    => '李宁',
             'logo'    => 'https://picsum.photos/400/300',
             'status'  => BrandStatusEnum::ENABLE,
             'sort'    => rand(1, 99),
@@ -31,7 +31,7 @@ class BrandTest extends TestCase
 
 
         $brand = $this->service()->create($attributes);
-        $this->assertEquals('Test', $brand->name);
+        $this->assertEquals('李宁', $brand->name);
 
         return $brand;
     }
@@ -45,7 +45,7 @@ class BrandTest extends TestCase
     {
 
         $attributes = [
-            'name'    => 'Test2',
+            'name'    => '安踏',
             'logo'    => 'https://picsum.photos/400/300',
             'status'  => BrandStatusEnum::DISABLE,
             'sort'    => rand(1, 99),
@@ -53,7 +53,7 @@ class BrandTest extends TestCase
         ];
 
         $brandNew = $this->service()->update($brand->id, $attributes);
-        $this->assertEquals('Test2', $brandNew->name);
+        $this->assertEquals('安踏', $brandNew->name);
         $this->assertEquals(BrandStatusEnum::DISABLE, $brandNew->status);
 
         return $brandNew;
@@ -71,12 +71,12 @@ class BrandTest extends TestCase
     {
 
         $attributes = [
-            'name'   => 'Test3',
+            'name'   => '安踏',
             'status' => BrandStatusEnum::ENABLE,
 
         ];
         $brandNew   = $this->service()->modify($brand->id, $attributes);
-        $this->assertEquals('Test3', $brandNew->name);
+        $this->assertEquals('安踏', $brandNew->name);
         $this->assertEquals(BrandStatusEnum::ENABLE, $brandNew->status);
 
     }

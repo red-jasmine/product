@@ -4,6 +4,7 @@ namespace RedJasmine\Product\Http\Seller\Controllers;
 
 use Illuminate\Support\Facades\Route;
 use RedJasmine\Product\Http\Seller\Controllers\Api\BrandController;
+use RedJasmine\Product\Http\Seller\Controllers\Api\ProductController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductSellerCategoryController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductCategoryController;
 
@@ -32,6 +33,7 @@ class ProductSellerRoute
 
 
                 Route::apiResource('product-seller-categories', ProductSellerCategoryController::class)->names('product.seller.product-seller-categories');
+                Route::apiResource('products', ProductController::class)->names('product.seller.products');
 
 
             });

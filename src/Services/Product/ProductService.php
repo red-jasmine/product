@@ -7,6 +7,7 @@ use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
+use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
 use Throwable;
 
@@ -14,11 +15,20 @@ class ProductService
 {
     use WithUserService;
 
+
+    public string $model = Product::class;
     /**
      * 最大库存
      */
     public const MAX_QUANTITY = 999999999;
 
+
+    use HasQueryBuilder;
+
+    public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->query()->paginate();
+    }
 
     /**
      * 创建商品
