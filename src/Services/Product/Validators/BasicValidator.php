@@ -12,6 +12,7 @@ use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Product\Validators\Rules\BrandRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\CategoryRule;
+use RedJasmine\Product\Services\Product\Validators\Rules\PriceRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SellerCategoryRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
@@ -60,9 +61,9 @@ class BasicValidator extends AbstractProductValidator
             'outer_id'           => [ 'attribute' => '商品编码', 'rules' => [ 'sometimes', 'max:64' ], ],
             'stock'              => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0', 'max:' . ProductService::MAX_QUANTITY ], ],
             'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatus::class) ], ],
-            'price'              => [ 'attribute' => '价格', 'rules' => [ 'required', ], ],
-            'market_price'       => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', ], ],
-            'cost_price'         => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', ], ],
+            'price'              => [ 'attribute' => '价格', 'rules' => [ 'required', new PriceRule() ], ],
+            'market_price'       => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', new PriceRule(true) ], ],
+            'cost_price'         => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', new PriceRule(true) ], ],
             'is_multiple_spec'   => [ 'attribute' => '多规格', 'rules' => [ 'required', new Enum(BoolIntEnum::class) ], ],
             'min'                => [ 'attribute' => '起购量', 'rules' => [ 'sometimes', 'integer' ], ],
             'max'                => [ 'attribute' => '限购量', 'rules' => [ 'sometimes', 'integer' ], ],
