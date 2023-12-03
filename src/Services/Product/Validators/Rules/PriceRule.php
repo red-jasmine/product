@@ -10,14 +10,16 @@ class PriceRule extends AbstractRule
      *
      * @param bool $isAllowZero 是否允许为0
      */
-    public function __construct(protected bool $isAllowZero = false)
+    public function __construct(protected bool $isAllowZero = false, protected bool $isAllowNull = false)
     {
     }
 
 
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
-
+        if ($this->isAllowNull === true && blank($value)) {
+            return;
+        }
         if ($this->checkPrice($value, $this->isAllowZero) === false) {
             $fail(':attribute 不正确');
         }

@@ -33,16 +33,16 @@ class Product extends Model
 
 
     protected $casts = [
-        'product_type'  => ProductTypeEnum::class,  // 商品类型
-        'shipping_type' => ShippingTypeEnum::class,// 发货类型
-        'status'        => ProductStatus::class,// 状态
-        'sub_stock'     => SubStockTypeEnum::class,// 扣库存方式
-        'freight_payer' => FreightPayerEnum::class,// 运费承担方
-        'is_multiple_spec'      => BoolIntEnum::class,
-        'is_sku'        => BoolIntEnum::class,
-        'modified_time' => 'datetime',
-        'off_sale_time' => 'datetime',
-        'on_sale_time'  => 'datetime',
+        'product_type'     => ProductTypeEnum::class,  // 商品类型
+        'shipping_type'    => ShippingTypeEnum::class,// 发货类型
+        'status'           => ProductStatus::class,// 状态
+        'sub_stock'        => SubStockTypeEnum::class,// 扣库存方式
+        'freight_payer'    => FreightPayerEnum::class,// 运费承担方
+        'is_multiple_spec' => BoolIntEnum::class,
+        'is_sku'           => BoolIntEnum::class,
+        'modified_time'    => 'datetime',
+        'off_sale_time'    => 'datetime',
+        'on_sale_time'     => 'datetime',
 
 
     ];

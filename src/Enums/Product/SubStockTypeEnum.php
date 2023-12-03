@@ -2,8 +2,12 @@
 
 namespace RedJasmine\Product\Enums\Product;
 
+use RedJasmine\Support\Helpers\Enums\EnumsHelper;
+
 enum SubStockTypeEnum: int
 {
+    use EnumsHelper;
+
     case DEFAULT = 0;
 
     case ORDER = 1;

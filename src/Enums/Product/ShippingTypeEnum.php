@@ -2,11 +2,14 @@
 
 namespace RedJasmine\Product\Enums\Product;
 
+use RedJasmine\Support\Helpers\Enums\EnumsHelper;
+
 /**
  * 发货类型
  */
 enum ShippingTypeEnum: string
 {
+    use EnumsHelper;
     case LOGISTICS = 'express'; // 物流 快递
 
     case VIRTUAL = 'virtual'; // 虚拟

@@ -61,7 +61,6 @@ class ProductService
             AllowedFilter::exact('brand_id'),
             AllowedFilter::exact('category_id'),
             AllowedFilter::exact('seller_category_id'),
-            AllowedFilter::exact('vip'),
             static::searchFilter([ 'title', 'keywords' ])
         ];
     }
@@ -131,6 +130,27 @@ class ProductService
         return $this->save($id, $data);
     }
 
+    /**
+     * 删除
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @return Product
+     * @throws Throwable
+     */
+    public function modify(int $id, array $data) : Product
+    {
+        $product = $this->find($id);
+        // 验证数据
+        $builder            = $this->productBuilder();
+        $data['owner_type'] = $product->owner_type;
+        $data['owner_uid']  = $product->owner_uid;
+        $data               = $builder->validateOnly($data);
+
+        return $this->save($id, $data);
+    }
+
 
     /**
      * @param int|null $id
@@ -174,7 +194,8 @@ class ProductService
                 $product->withCreator($this->getOperator());
             }
             $product->withUpdater($this->getOperator());
-
+            $this->linkageTime($product);
+            $product->modified_time = now();
             $product->save();
             $product->info()->save($productInfo);
             // 对多规格操作
@@ -197,8 +218,8 @@ class ProductService
 
                     $skuModel     = $skuModelList[$sku['properties']] ?? new ($this->model)();
                     $skuModel->id = $skuModel->id ?? $builder->generateID();
-
                     $this->copyProductAttributeToSku($product, $skuModel);
+                    $this->linkageTime($product);
 
                     if (blank($skuModel->creator_type)) {
                         $skuModel->withCreator($this->getOperator());
@@ -245,7 +266,60 @@ class ProductService
         return $product;
     }
 
-    public function copyProductAttributeToSku(Product $product, Product $sku) : void
+
+    /**
+     * 联动设置时间
+     *
+     * @param Product $product
+     *
+     * @return void
+     */
+    protected function linkageTime(Product $product) : void
+    {
+
+        if (!$product->isDirty('status')) {
+            return;
+        }
+        switch ($product->status) {
+            case ProductStatus::IN_STOCK: // 仓库中
+                $product->sold_out_time = now();
+                break;
+            case ProductStatus::ON_SALE: // 在售
+                $product->on_sale_time = now();
+                break;
+            case ProductStatus::OUT_OF_STOCK: // 缺货
+                $product->sold_out_time = now();
+                break;
+            case ProductStatus::SOLD_OUT: // 售停
+                $product->sold_out_time = now();
+                break;
+            case ProductStatus::OFF_SHELF: // 下架
+                $product->off_sale_time = now();
+                break;
+            case ProductStatus::PRE_SALE:
+
+                break;
+            case ProductStatus::FORCED_OFF_SHELF:// 强制下架
+                $product->on_sale_time  = null;
+                $product->sold_out_time = null;
+                $product->off_sale_time = $product->off_sale_time ?? now();
+                break;
+            case ProductStatus::DELETED:
+
+                break;
+
+        }
+    }
+
+    /**
+     * 复制商品的值
+     *
+     * @param Product $product
+     * @param Product $sku
+     *
+     * @return void
+     */
+    protected function copyProductAttributeToSku(Product $product, Product $sku) : void
     {
         $sku->owner_type         = $product->owner_type;
         $sku->owner_uid          = $product->owner_uid;
@@ -268,27 +342,6 @@ class ProductService
 
         $sku->deleted_at = null;
     }
-
-    /**
-     * 删除
-     *
-     * @param int   $id
-     * @param array $data
-     *
-     * @return Product
-     * @throws Throwable
-     */
-    public function modify(int $id, array $data) : Product
-    {
-        $product = $this->find($id);
-        // 验证数据
-        $builder            = $this->productBuilder();
-        $data['owner_type'] = $product->owner_type;
-        $data['owner_uid']  = $product->owner_uid;
-        $data               = $builder->validateOnly($data);
-        return $this->save($id, $data);
-    }
-
 
     /**
      * 删除

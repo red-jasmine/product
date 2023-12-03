@@ -15,6 +15,8 @@ class ProductValidate
 
     use WithUserService;
 
+    protected array $data = [];
+
     /**
      * 基础验证器
      * @var AbstractProductValidator[]
@@ -105,7 +107,9 @@ class ProductValidate
     public function validateOnly() : array
     {
         $validator = $this->initValidator();
-        $validator->setRules(Arr::only($validator->getRules(), array_keys($this->data)));
+        $keys      = Arr::dot($this->data);
+        // TODO skus 这个是数组没有获取所有的 *
+        $validator->setRules(Arr::only($validator->getRules(), array_keys($keys)));
         $validator->validated();
         return $validator->safe()->all();
     }
