@@ -71,6 +71,7 @@ class BasicValidator extends AbstractProductValidator
             'freight_payer'      => [ 'attribute' => '运费承担方', 'rules' => [ 'required', new Enum(FreightPayerEnum::class) ], ],
             'sub_stock'          => [ 'attribute' => '减库存方式', 'rules' => [ 'required', new Enum(SubStockTypeEnum::class) ], ],
             'stock'              => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0' ], ],
+            'fake_sales'         => [ 'attribute' => '虚拟销量', 'rules' => [ 'sometimes', 'integer', 'min:0' ], ],
             'postage_id'         => [ 'attribute' => '运费模板', 'rules' => [ 'sometimes' ], ],
             'delivery_time'      => [ 'attribute' => '发货时间', 'rules' => [ 'required', 'integer' ], ],
             'vip'                => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer' ], ],

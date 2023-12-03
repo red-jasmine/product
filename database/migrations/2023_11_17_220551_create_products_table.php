@@ -57,7 +57,8 @@ return new class extends Migration {
             $table->unsignedTinyInteger('sub_stock')->default(0)->comment('减库存方式');
             $table->unsignedBigInteger('stock')->default(999999999)->comment('库存');
             $table->unsignedBigInteger('hold_stock')->default(0)->comment('预扣库存');
-            $table->unsignedBigInteger('sales')->default(0)->comment('销售数量');
+            $table->unsignedBigInteger('sales')->default(0)->comment('销量');
+            $table->unsignedBigInteger('fake_sales')->default(0)->comment('虚假销量');
             // 发货类
             $table->unsignedInteger('delivery_time')->default(0)->comment('发货时间:小时');
             // 用户类
