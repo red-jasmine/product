@@ -3,13 +3,18 @@
 namespace RedJasmine\Product\Services\Property;
 
 use Illuminate\Support\Arr;
-use RedJasmine\Item\Exceptions\ItemPropertyException;
-use RedJasmine\Item\Services\Items\ItemPropertyToolsService;
+use RedJasmine\Product\Exceptions\ProductPropertyException;
 
 class PropertyFormatter
 {
 
 
+    /**
+     * @param string|null $value
+     *
+     * @return string
+     * @throws ProductPropertyException
+     */
     public function formatString(string $value = null) : string
     {
         if (blank($value)) {
@@ -18,6 +23,12 @@ class PropertyFormatter
         return $this->toString($this->toArray($value));
     }
 
+    /**
+     * @param array $value
+     *
+     * @return array
+     * @throws ProductPropertyException
+     */
     public function formatArray(array $value = []) : array
     {
         if (blank($value)) {
@@ -100,6 +111,12 @@ class PropertyFormatter
     }
 
 
+    /**
+     * @param string $propsString
+     *
+     * @return array
+     * @throws ProductPropertyException
+     */
     public function toArray(string $propsString = '') : array
     {
 
@@ -135,7 +152,7 @@ class PropertyFormatter
             }
             asort($properties);
         } catch (\Throwable $throwable) {
-            throw new ItemPropertyException('属性格式错误', ItemPropertyException::WRONG_FORMAT);
+            throw new ProductPropertyException('属性格式错误');
         }
 
 

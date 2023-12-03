@@ -3,12 +3,7 @@
 namespace RedJasmine\Product\Services\Product\Validators\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\DataAwareRule;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Contracts\Validation\ValidatorAwareRule;
-use Illuminate\Validation\Validator;
-use JsonException;
-use RedJasmine\Item\Exceptions\ItemPropertyException;
+use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
@@ -24,7 +19,7 @@ class SkusRule extends AbstractRule
      * @param Closure $fail
      *
      * @return void
-     * @throws ItemPropertyException
+     * @throws ProductPropertyException
      */
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
@@ -64,7 +59,7 @@ class SkusRule extends AbstractRule
      * @param $properties
      *
      * @return string
-     * @throws \RedJasmine\Item\Exceptions\ItemPropertyException
+     * @throws ProductPropertyException
      */
     public function propertiesName($properties) : string
     {
