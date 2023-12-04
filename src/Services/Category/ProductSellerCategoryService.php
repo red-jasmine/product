@@ -9,6 +9,7 @@ use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\SellerCategoryException;
 use RedJasmine\Product\Models\ProductSellerCategory as Model;
+use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
@@ -90,10 +91,11 @@ class ProductSellerCategoryService
 
     protected function rules() : array
     {
+        $table = (new Model())->getTable();
 
         return [
             'id'         => [],
-            'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule('product_seller_categories', 'id'), ],
+            'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), new CategoryParentRule($table) ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'max:100' ],
             'image'      => [ 'sometimes', 'max:255' ],
