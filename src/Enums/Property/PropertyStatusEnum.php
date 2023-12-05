@@ -20,8 +20,8 @@ enum PropertyStatusEnum: int
     public static function names() : array
     {
         return [
-            self::ENABLE->value  => __('enable'),
-            self::DISABLE->value => __('disable'),
+            self::ENABLE->value  => __('global.enable'),
+            self::DISABLE->value => __('global.disable'),
         ];
 
     }

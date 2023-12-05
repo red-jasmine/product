@@ -12,12 +12,23 @@ use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
+use RedJasmine\Product\Services\Property\Query\PropertyQuery;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+
 use RedJasmine\Support\Traits\WithUserService;
 
 class PropertyService
 {
     use WithUserService;
+
+
+    /**
+     * @return PropertyQuery
+     */
+    public function propertyQuery() : PropertyQuery
+    {
+        return new PropertyQuery();
+    }
 
     /**
      * @return int
@@ -79,6 +90,28 @@ class PropertyService
 
     }
 
+    /**
+     * 更新
+     *
+     * @param int   $pid
+     * @param array $data
+     *
+     * @return ProductProperty
+     */
+    public function updateName(int $pid, array $data) : ProductProperty
+    {
+        $productProperty = ProductProperty::findOrFail($pid);
+        $validator       = $this->nameValidator($data);
+        $validator->validate();
+        $safe = $validator->safe()->all();
+        foreach ($safe as $key => $value) {
+            $productProperty->setAttribute($key, $value);
+        }
+        $productProperty->withUpdater($this->getOperator());
+        $productProperty->save();
+        return $productProperty;
+    }
+
 
     /**
      * @param int    $pid
@@ -114,6 +147,30 @@ class PropertyService
         ];
         return ProductPropertyValue::firstOrCreate($attributes, $values);
     }
+
+
+    /**
+     * 更新
+     *
+     * @param int   $vid
+     * @param array $data
+     *
+     * @return ProductPropertyValue
+     */
+    public function updateValue(int $vid, array $data) : ProductPropertyValue
+    {
+        $productPropertyValue = ProductPropertyValue::findOrFail($vid);
+        $validator            = $this->valueValidator($data);
+        $validator->validate();
+        $safe = $validator->safe()->all();
+        foreach ($safe as $key => $value) {
+            $productPropertyValue->setAttribute($key, $value);
+        }
+        $productPropertyValue->withUpdater($this->getOperator());
+        $productPropertyValue->save();
+        return $productPropertyValue;
+    }
+
 
     public function nameValidator(array $data = []) : \Illuminate\Validation\Validator
     {
