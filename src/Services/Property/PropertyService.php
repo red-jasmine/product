@@ -13,6 +13,7 @@ use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
 use RedJasmine\Product\Services\Property\Query\PropertyQuery;
+use RedJasmine\Product\Services\Property\Query\PropertyValueQuery;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 use RedJasmine\Support\Traits\WithUserService;
@@ -28,6 +29,14 @@ class PropertyService
     public function propertyQuery() : PropertyQuery
     {
         return new PropertyQuery();
+    }
+
+    /**
+     * @return PropertyValueQuery
+     */
+    public function valueQuery() : PropertyValueQuery
+    {
+        return new PropertyValueQuery();
     }
 
     /**

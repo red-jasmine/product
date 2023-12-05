@@ -107,9 +107,14 @@ class ProductValidate
     public function validateOnly() : array
     {
         $validator = $this->initValidator();
-        $keys      = Arr::dot($this->data);
+        $keys      = array_keys($this->data);
+
+        foreach ($this->data['info']??[] as $key=>$value){
+            $keys[] = 'info.'.$key;
+        }
+
         // TODO skus 这个是数组没有获取所有的 *
-        $validator->setRules(Arr::only($validator->getRules(), array_keys($keys)));
+        $validator->setRules(Arr::only($validator->getRules(), $keys));
         $validator->validated();
         return $validator->safe()->all();
     }

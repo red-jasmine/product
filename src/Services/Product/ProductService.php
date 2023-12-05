@@ -146,6 +146,7 @@ class ProductService
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
+
         $data               = $builder->validateOnly($data);
 
         return $this->save($id, $data);
