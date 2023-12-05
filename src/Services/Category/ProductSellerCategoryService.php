@@ -65,6 +65,12 @@ class ProductSellerCategoryService
         return $query->toTree();
     }
 
+    public function selectOptions(){
+     return   Model::selectOptions(function ($query){
+          return  $query->owner($this->getOwner());
+        });
+    }
+
     /**
      * @param array $attributes
      *
