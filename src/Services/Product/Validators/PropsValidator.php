@@ -27,10 +27,9 @@ class PropsValidator extends AbstractProductValidator
     public function rules() : array
     {
         return [
-            'is_multiple_spec'         => [ new HasSkusRule() ],
+            'is_multiple_spec' => [ new HasSkusRule() ],
             'info.basic_props' => [ 'sometimes', new PropsRule() ],
-            'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule() ],
-            'skus'             => [ 'sometimes', new SkusRule() ],
+            'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule(), new SkusRule() ],
         ];
     }
 

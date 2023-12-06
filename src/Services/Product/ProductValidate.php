@@ -113,9 +113,20 @@ class ProductValidate
             $keys[] = 'info.'.$key;
         }
 
+        if (filled($this->data['skus'] ?? [])) {
+            foreach ($this->data['skus'] as $index=> $sku){
+                foreach ($sku as $key=>$value){
+                    $name = 'skus.'.$index.'.'.$key;
+
+                    $keys[$name] = $name;
+                }
+            }
+        }
+
         // TODO skus 这个是数组没有获取所有的 *
-        $validator->setRules(Arr::only($validator->getRules(), $keys));
+        $validator->setRules(Arr::only($validator->getRules(), array_values($keys)));
         $validator->validated();
+        // skus 不是安全的
         return $validator->safe()->all();
     }
 

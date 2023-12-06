@@ -23,9 +23,10 @@ class SkusRule extends AbstractRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
-
+        $value = $this->data['skus']??[];
         $hasSkus = BoolIntEnum::from($this->data['is_multiple_spec'] ?? 0);
         if ($hasSkus === BoolIntEnum::NO) {
+            $this->validator->setValue('skus',[]);
             return;
         }
 
@@ -51,7 +52,7 @@ class SkusRule extends AbstractRule
             $sku['properties_name'] = $this->propertiesName($sku['properties']);
         }
 
-        $this->validator->setValue($attribute, $value);
+        $this->validator->setValue('skus', $value);
 
     }
 
