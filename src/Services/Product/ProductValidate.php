@@ -109,14 +109,14 @@ class ProductValidate
         $validator = $this->initValidator();
         $keys      = array_keys($this->data);
 
-        foreach ($this->data['info']??[] as $key=>$value){
-            $keys[] = 'info.'.$key;
+        foreach ($this->data['info'] ?? [] as $key => $value) {
+            $keys[] = 'info.' . $key;
         }
 
         if (filled($this->data['skus'] ?? [])) {
-            foreach ($this->data['skus'] as $index=> $sku){
-                foreach ($sku as $key=>$value){
-                    $name = 'skus.'.$index.'.'.$key;
+            foreach ($this->data['skus'] as $index => $sku) {
+                foreach ($sku as $key => $value) {
+                    $name = 'skus.' . $index . '.' . $key;
 
                     $keys[$name] = $name;
                 }
@@ -125,14 +125,15 @@ class ProductValidate
 
         // TODO skus 这个是数组没有获取所有的 *
         $validator->setRules(Arr::only($validator->getRules(), array_values($keys)));
-        $validator->validated();
+        $validator->validate();
+
         // skus 不是安全的
         return $validator->safe()->all();
     }
 
     public function validate() : array
     {
-        $this->validator->validated();
+        $this->validator->validate();
         return $this->validator->safe()->all();
     }
 

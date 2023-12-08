@@ -5,6 +5,7 @@ namespace RedJasmine\Product\Services\Product\Validators;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 use RedJasmine\Product\Services\Product\Validators\Rules\HasSkusRule;
+use RedJasmine\Product\Services\Product\Validators\Rules\PropsCheckRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\PropsRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SalePropsRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SkusRule;
@@ -28,8 +29,8 @@ class PropsValidator extends AbstractProductValidator
     {
         return [
             'is_multiple_spec' => [ new HasSkusRule() ],
-            'info.basic_props' => [ 'sometimes', new PropsRule() ],
-            'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule(), new SkusRule() ],
+            'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule(), new SkusRule(),new PropsCheckRule() ],
+            'info.basic_props' => [ 'sometimes', new PropsRule(), new PropsCheckRule() ],
         ];
     }
 
