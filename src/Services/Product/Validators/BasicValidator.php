@@ -102,9 +102,8 @@ class BasicValidator extends AbstractProductValidator
         ];
 
         $sku = [
-            //'skus.*.product_type'  => $fields['product_type'],
-            //'skus.*.shipping_type' => $fields['shipping_type'],
-            //'skus.*.title'         => $fields['title'],
+            'skus.*.properties'   => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
+            'skus.*.status'       => $fields['status'],
             'skus.*.price'        => $fields['price'],
             'skus.*.market_price' => $fields['market_price'],
             'skus.*.cost_price'   => $fields['cost_price'],
@@ -115,7 +114,7 @@ class BasicValidator extends AbstractProductValidator
             'skus.*.barcode'      => $fields['barcode'],
             'skus.*.outer_id'     => $fields['outer_id'],
             'skus.*.stock'        => $fields['stock'],
-            'skus.*.properties'   => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
+
         ];
 
 

@@ -25,12 +25,12 @@ enum ProductStatus: string
     case DELETED = 'deleted'; // 删除
 
 
-    public static function names():array
+    public static function names() : array
     {
         return [
             self::ON_SALE->value          => '在售',
             self::OUT_OF_STOCK->value     => '缺货',
-            self::SOLD_OUT->value         => '售停',
+            self::SOLD_OUT->value         => '停售',
             self::IN_STOCK->value         => '仓库中',
             self::OFF_SHELF->value        => '下架',
             self::PRE_SALE->value         => '预售',
@@ -40,5 +40,12 @@ enum ProductStatus: string
 
     }
 
+    public static function skusStatus() : array
+    {
+        return [
+            self::ON_SALE->value  => '在售',
+            self::SOLD_OUT->value => '售停',
+        ];
+    }
 
 }
