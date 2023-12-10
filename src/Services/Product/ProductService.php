@@ -44,8 +44,6 @@ class ProductService
             ->setOperator($this->getOperator());
         return $this->productBuilder;
     }
-
-
     public function filters() : array
     {
         return [
@@ -73,6 +71,7 @@ class ProductService
         ];
     }
 
+
     public function query() : QueryBuilder
     {
         $query = $this->__query();
@@ -85,6 +84,11 @@ class ProductService
         return $this->query()->paginate();
     }
 
+    /**
+     * @param $id
+     *
+     * @return Product
+     */
     public function find($id) : Product
     {
         return $this->query()->findOrFail($id);
@@ -147,7 +151,7 @@ class ProductService
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
 
-        $data               = $builder->validateOnly($data);
+        $data = $builder->validateOnly($data);
 
         return $this->save($id, $data);
     }
@@ -375,6 +379,107 @@ class ProductService
             DB::rollBack();
             throw  $throwable;
         }
+        return true;
+    }
+
+
+    /**
+     *  强制删除
+     *
+     * @param int $id
+     *
+     * @return bool
+     * @throws AbstractException
+     * @throws Throwable
+     */
+    public function forceDelete(int $id) : bool
+    {
+        try {
+            DB::beginTransaction();
+            /**
+             * @var Product $product
+             */
+            $product = $this->query()->onlyTrashed()->find($id);
+            $product->info()->onlyTrashed()->forceDelete();
+
+            foreach ($product->skus as $sku) {
+                $sku->info()->onlyTrashed()->forceDelete();
+            }
+            $product->skus()->onlyTrashed()->forceDelete();
+            $product->forceDelete();
+            DB::commit();
+        } catch (AbstractException $exception) {
+            DB::rollBack();
+            throw  $exception;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            DB::rollBack();
+            throw  $modelNotFoundException;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
+        return true;
+
+
+    }
+
+    /**
+     * 恢复
+     *
+     * @param int $id
+     *
+     * @return bool
+     * @throws AbstractException
+     * @throws Throwable
+     */
+    public function restore(int $id) : bool
+    {
+        try {
+            DB::beginTransaction();
+            /**
+             * @var Product $product
+             */
+            $product = $this->query()->onlyTrashed()->find($id);
+            $product->info()->onlyTrashed()->restore();
+
+            foreach ($product->skus()->withTrashed()->where('status', '<>', ProductStatus::DELETED->value)->get() as $sku) {
+                $sku->info()->onlyTrashed()->restore();
+            }
+            $product->skus()->onlyTrashed()->where('status', '<>', ProductStatus::DELETED->value)->restore();
+            $product->restore();
+            DB::commit();
+        } catch (AbstractException $exception) {
+            DB::rollBack();
+            throw  $exception;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            DB::rollBack();
+            throw  $modelNotFoundException;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
+        return true;
+
+
+    }
+
+
+    /**
+     * 设状态
+     *
+     * @param int           $id
+     * @param ProductStatus $productStatus
+     *
+     * @return bool
+     */
+    public function updateStatus(int $id, ProductStatus $productStatus) : bool
+    {
+        $product                = $this->find($id);
+        $product->status        = $productStatus;
+        $product->modified_time = now();
+        $product->withUpdater($this->getOperator());
+        $product->save();
+
         return true;
     }
 }
