@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Services\Product;
 
 use BadMethodCallException;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Traits\Macroable;
 use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
@@ -41,7 +42,16 @@ class ProductStock
     }
 
 
+    // TODO 库存的变更
+    public function updateTableStock(int $id, array $data)
+    {
+
+    }
+
+
     /**
+     * 全量更新
+     *
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param int                        $skuID
      * @param int                        $resultStock
@@ -57,7 +67,7 @@ class ProductStock
     }
 
     /**
-     * 更新库存
+     * 增量变更
      *
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param int                        $skuID
@@ -71,6 +81,38 @@ class ProductStock
     public function changeStock(ProductStockChangeTypeEnum $changeTypeEnum, int $skuID = 0, int $changeStock) : ?ProductStockLog
     {
         return $this->updateCore($changeTypeEnum, $skuID, $changeStock);
+    }
+
+
+    /**
+     * 记录变更
+     *
+     * @param Product                    $sku
+     * @param ProductStockChangeTypeEnum $changeTypeEnum
+     * @param int                        $beforeStock
+     * @param int                        $changeStock
+     * @param int                        $resultStock
+     *
+     * @return ProductStockLog|null
+     * @throws Exception
+     */
+    public function log(Product $sku, ProductStockChangeTypeEnum $changeTypeEnum, int $beforeStock, int $changeStock, int $resultStock) : ?ProductStockLog
+    {
+        if (bccomp($beforeStock, $resultStock, 0) === 0) {
+            return null;
+        }
+        $productStockLog     = new ProductStockLog();
+        $productStockLog->id = Snowflake::getInstance()->nextId();
+        $productStockLog->withOwner($sku->getOwner());
+        $productStockLog->withCreator($this->getOperator());
+        $productStockLog->sku_id       = $sku->id;
+        $productStockLog->product_id   = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
+        $productStockLog->change_type  = $changeTypeEnum;
+        $productStockLog->before_stock = $beforeStock;
+        $productStockLog->change_stock = $changeStock;
+        $productStockLog->result_stock = $resultStock;
+        $productStockLog->save();
+        return $productStockLog;
     }
 
     /**
@@ -118,23 +160,12 @@ class ProductStock
             //  对库存 单位进行处理
             $sku->stock = (int)$resultStock;
             $sku->save();
-
             if ($sku->spu_id) {
                 // 对 商品级 同步
                 Product::where('id', $sku->spu_id)->increment('stock', (int)$changeStock);
             }
-            $productStockLog     = new ProductStockLog();
-            $productStockLog->id = Snowflake::getInstance()->nextId();
-            $productStockLog->withOwner($sku->getOwner());
-            $productStockLog->withCreator($this->getOperator());
-            $productStockLog->sku_id       = $sku->id;
-            $productStockLog->product_id   = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
-            $productStockLog->change_type  = $changeTypeEnum;
-            $productStockLog->before_stock = $beforeStock;
-            $productStockLog->change_stock = $changeStock;
-            $productStockLog->result_stock = $resultStock;
-            $productStockLog->save();
-
+            // 添加更变日志
+            $productStockLog = $this->log($sku, $changeTypeEnum, $beforeStock, $changeStock, $resultStock);
             DB::commit();
             return $productStockLog;
         } catch (AbstractException $exception) {
