@@ -232,9 +232,9 @@ class ProductService
                 });
                 // 无效的SKU 进行关闭
                 foreach ($skuModelList as $properties => $sku) {
-                    if (!in_array($properties, $keys, true)) {
+                    if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
                         $sku->status     = ProductStatus::DELETED;
-                        $sku->deleted_at = now();
+                        $sku->deleted_at = $sku->deleted_at ?? now();
                         $sku->withUpdater($this->getOperator());
                         $sku->info->deleted_at = now();
                         $sku->save();
