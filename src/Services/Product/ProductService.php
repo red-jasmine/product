@@ -2,22 +2,43 @@
 
 namespace RedJasmine\Product\Services\Product;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
+use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
-use RedJasmine\Support\Traits\Services\HasQueryBuilder;
 use RedJasmine\Support\Traits\WithUserService;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
 class ProductService
 {
     use WithUserService;
+
+
+    public function queries() : ProductQuery
+    {
+        return new ProductQuery($this);
+    }
+
+
+    public function stock() : ProductStock
+    {
+        return new ProductStock($this);
+    }
+
+    public function query() : Builder
+    {
+        return Product::query()->productable();
+    }
+
+    public function find(int $id) : Product
+    {
+        return $this->query()->findOrFail($id);
+    }
 
 
     public string $model = Product::class;
@@ -26,9 +47,6 @@ class ProductService
      */
     public const MAX_QUANTITY = 18446744073709551615;
 
-    use HasQueryBuilder {
-        query as __query;
-    }
 
     protected ?ProductBuilder $productBuilder = null;
 
@@ -44,55 +62,7 @@ class ProductService
             ->setOperator($this->getOperator());
         return $this->productBuilder;
     }
-    public function filters() : array
-    {
-        return [
-            AllowedFilter::exact('id'),
-            AllowedFilter::exact('owner_type'),
-            AllowedFilter::exact('owner_uid'),
-            AllowedFilter::exact('product_type'),
-            AllowedFilter::exact('shipping_type'),
-            AllowedFilter::partial('title'),
-            AllowedFilter::exact('outer_id'),
-            AllowedFilter::exact('is_multiple_spec'),
-            AllowedFilter::exact('status'),
-            AllowedFilter::exact('brand_id'),
-            AllowedFilter::exact('category_id'),
-            AllowedFilter::exact('seller_category_id'),
-            static::searchFilter([ 'title', 'keywords' ])
-        ];
-    }
 
-
-    public function includes() : array
-    {
-        return [
-            'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory'
-        ];
-    }
-
-
-    public function query() : QueryBuilder
-    {
-        $query = $this->__query();
-        return $query->productable();
-    }
-
-
-    public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
-    {
-        return $this->query()->paginate();
-    }
-
-    /**
-     * @param $id
-     *
-     * @return Product
-     */
-    public function find($id) : Product
-    {
-        return $this->query()->findOrFail($id);
-    }
 
     /**
      * 创建商品
@@ -109,6 +79,7 @@ class ProductService
         $data['owner_type'] = $this->getOwner()->getUserType();
         $data['owner_uid']  = $this->getOwner()->getUID();
         $data               = $builder->validate($data);
+        // 如果是创建操作 那么需要对库存进行 统计 // TODO
         return $this->save(null, $data);
     }
 
@@ -129,8 +100,8 @@ class ProductService
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
-
-        $data = $builder->validate($data);
+        $data               = $builder->validate($data);
+        // 修改操作支持更新库存
         return $this->save($id, $data);
     }
 
@@ -145,14 +116,14 @@ class ProductService
      */
     public function modify(int $id, array $data) : Product
     {
+
         $product = $this->find($id);
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
-
-        $data = $builder->validateOnly($data);
-
+        $data               = $builder->validateOnly($data);
+        // 修改操作支持更新库存
         return $this->save($id, $data);
     }
 
@@ -175,8 +146,18 @@ class ProductService
 
             $productInfo = new ProductInfo();
         }
-        $product->id     = $product->id ?? $builder->generateID();
-        $productInfo->id = $product->id;
+        $product->id               = $product->id ?? $builder->generateID();
+        $productInfo->id           = $product->id;
+        $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
+        // 必要字段填写
+        $product->spu_id = 0;
+        if ($product->is_multiple_spec === BoolIntEnum::YES) {
+            $product->is_sku = BoolIntEnum::NO;
+        } else {
+            $product->is_sku = BoolIntEnum::YES;
+
+        }
+
         // 保存数据
         DB::beginTransaction();
         try {
@@ -479,4 +460,6 @@ class ProductService
 
         return true;
     }
+
+
 }

@@ -16,13 +16,13 @@ class ProductController extends Controller
 
     public function index() : AnonymousResourceCollection
     {
-        $result = $this->service->lists();
+        $result = $this->service->queries()->lists();
         return ProductResource::collection($result);
     }
 
     public function show($id) : ProductResource
     {
-        $result = $this->service->find($id);
+        $result = $this->service->queries()->find($id);
         return new ProductResource($result);
     }
 

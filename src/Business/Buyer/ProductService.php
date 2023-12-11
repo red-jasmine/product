@@ -2,14 +2,14 @@
 
 namespace RedJasmine\Product\Business\Buyer;
 
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductService extends \RedJasmine\Product\Services\Product\ProductService
 {
     /**
-     * @return QueryBuilder
+     * @return Builder
      */
-    public function query() : QueryBuilder
+    public function query() : Builder
     {
         $query = parent::query();
         return $query;
