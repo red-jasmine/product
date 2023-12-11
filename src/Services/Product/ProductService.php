@@ -24,7 +24,7 @@ class ProductService
     /**
      * 最大库存
      */
-    public const MAX_QUANTITY = 999999999;
+    public const MAX_QUANTITY = 18446744073709551615;
 
     use HasQueryBuilder {
         query as __query;
@@ -286,9 +286,6 @@ class ProductService
             return;
         }
         switch ($product->status) {
-            case ProductStatus::IN_STOCK: // 仓库中
-                $product->sold_out_time = now();
-                break;
             case ProductStatus::ON_SALE: // 在售
                 $product->on_sale_time = now();
                 break;
@@ -304,7 +301,7 @@ class ProductService
             case ProductStatus::PRE_SALE:
 
                 break;
-            case ProductStatus::FORCED_OFF_SHELF:// 强制下架
+            case ProductStatus::FORBID:// 强制下架
                 $product->on_sale_time  = null;
                 $product->sold_out_time = null;
                 $product->off_sale_time = $product->off_sale_time ?? now();
