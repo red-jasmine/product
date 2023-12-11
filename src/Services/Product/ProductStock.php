@@ -35,15 +35,26 @@ class ProductStock
 
     }
 
+    // TODO 冻结库存处理
 
-    public function holdSockt(int $productID, int $skuID = 0, int $number = 1)
+    public function holdStock(ProductStockChangeTypeEnum $changeTypeEnum, int $skuID = 0, int $quantity)
     {
+        // 查询库存
+        // 添加冻结记录
+        //  更变冻结库存
+        //  更变
+        // 同步 SPU
+        // 记录冻结 日志
+    }
+
+    public function repayStock(ProductStockChangeTypeEnum $changeTypeEnum, int $skuID = 0, int $quantity)
+    {
+        // 查询冻结库存
 
     }
 
-
-    // TODO 库存的变更
-    public function updateTableStock(int $id, array $data)
+    // 更变冻结库存
+    public function changeHoldStock(ProductStockChangeTypeEnum $changeTypeEnum, int $skuID = 0, int $quantity)
     {
 
     }
@@ -133,7 +144,7 @@ class ProductStock
 
         try {
             DB::beginTransaction();
-            $sku = Product::lockForUpdate()->select([ 'owner_type', 'owner_uid', 'id', 'stock', 'is_sku', 'spu_id' ])->findOrFail($skuID);
+            $sku = Product::lockForUpdate()->withTrashed()->select([ 'owner_type', 'owner_uid', 'id', 'stock', 'is_sku', 'spu_id' ])->findOrFail($skuID);
             if ($sku->is_sku === BoolIntEnum::NO) {
                 throw new ProductStockException('只能操作库存单位');
             }
