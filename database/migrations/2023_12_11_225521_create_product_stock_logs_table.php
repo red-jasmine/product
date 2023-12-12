@@ -22,6 +22,9 @@ return new class extends Migration {
             $table->bigInteger('change_stock')->comment('变更值');
             $table->unsignedBigInteger('result_stock')->comment('结果库存');
 
+            $table->string('channel_type')->nullable()->comment('渠道类型');
+            $table->unsignedBigInteger('channel_id')->nullable()->comment('渠道ID');
+
             $table->string('creator_type', 20)->nullable()->comment('创建者类型');
             $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
 

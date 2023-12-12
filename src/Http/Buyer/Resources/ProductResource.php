@@ -86,7 +86,7 @@ class ProductResource extends JsonResource
             'multiple'           => $this->multiple,
             'sub_stock'          => $this->sub_stock,
             'stock'              => $this->stock,
-            'hold_stock'         => $this->hold_stock,
+            'lock_stock'         => $this->lock_stock,
             'sales'              => $this->sales,
             'delivery_time'      => $this->delivery_time,
             'vip'                => $this->vip,
