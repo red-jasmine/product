@@ -37,7 +37,7 @@ class ProductStock
 
 
     /**
-     * 渠道逻辑库存
+     * 渠道渠道库存
      * @return ProductStockChannel
      */
     public function channel() : ProductStockChannel
@@ -55,12 +55,12 @@ class ProductStock
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param string|null                $changeDetail
      *
-     * @return ProductStockLog
+     * @return ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
      */
-    public function setStock(int $skuID, int $stock, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = null) : ProductStockLog
+    public function setStock(int $skuID, int $stock, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = null) : ?ProductStockLog
     {
 
         if (bccomp($stock, 0, 0) < 0) {
@@ -72,7 +72,7 @@ class ProductStock
             $sku         = $this->getSKU($skuID);
             $beforeStock = $sku->stock;
             if (bccomp($sku->stock, $stock, 0) === 0) {
-                throw new ProductStockException('库存没有改变');
+                return null;
             }
             // 可售库存
             $saleableStock = bcsub($sku->stock, $sku->channel_stock, 0);
@@ -82,7 +82,7 @@ class ProductStock
 
             // 如果减少的库存 大于了 可售库存
             if (bcadd($saleableStock, $quantity, 0) < 0) {
-                throw new ProductStockException('逻辑库存占用', 0, [ 'channel_stock' => $sku->channel_stock ]);
+                throw new ProductStockException('渠道库存占用:'.$sku->channel_stock, 0, [ 'channel_stock' => $sku->channel_stock ]);
             }
 
             // 更新库存
@@ -216,14 +216,14 @@ class ProductStock
 
             // 可售库存
             // 1、渠道扣减: 可售库存 = 辑渠可售库存
-            //    前提条件  规格可售库存 必须大于等级 逻辑渠道可售库存
-            // 2、普通扣减: 可售库存 = 规格可售库存 - 总逻辑可售库存
+            //    前提条件  规格可售库存 必须大于等级 渠道渠道可售库存
+            // 2、普通扣减: 可售库存 = 规格可售库存 - 总渠道可售库存
             if ($channel instanceof StockChannelInterface) {
                 // 渠道扣减
                 $channelStock  = $this->getChannelStock($skuID, $channel);
                 $saleableStock = $channelStock->channel_stock;
                 if (bccomp($sku->stock, $channelStock->channel_stock, 0) < 0) {
-                    throw new ProductStockException('实际库存小于逻辑库存');
+                    throw new ProductStockException('实际库存小于渠道库存');
                 }
             } else {
                 // 普通扣减
@@ -232,7 +232,7 @@ class ProductStock
             // 可售库存 - 数量  必须 > 0
             if (bccomp(bcsub($saleableStock, $quantity, 0), 0, 0) < 0) {
                 if (bccomp($sku->channel_stock, 0) > 0) {
-                    throw new ProductStockException('库存不足,逻辑库存占用');
+                    throw new ProductStockException('库存不足,渠道库存占用');
                 }
                 throw new ProductStockException('库存不足');
             }
@@ -245,14 +245,14 @@ class ProductStock
                 $sku->lock_stock = bcadd($sku->lock_stock, $quantity, 0);
             }
 
-            // 逻辑库存操作
+            // 渠道库存操作
             if ($channel instanceof StockChannelInterface) {
-                // 总逻辑库存 = 原逻辑库存 - 数量
+                // 总渠道库存 = 原渠道库存 - 数量
                 $sku->channel_stock = bcsub($sku->channel_stock, $quantity, 0);
-                // 逻辑可售库存 = 原逻辑可售库存 - 数量
+                // 渠道可售库存 = 原渠道可售库存 - 数量
                 $channelStock->channel_stock = bcsub($channelStock->channel_stock, $quantity, 0);
                 if ($lock) {
-                    // 逻辑锁定库存 = 原逻辑锁定库存 + 数量
+                    // 渠道锁定库存 = 原渠道锁定库存 + 数量
                     $channelStock->channel_lock_stock = bcadd($channelStock->channel_lock_stock, $quantity, 0);
                 }
                 $channelStock->save();
@@ -334,7 +334,7 @@ class ProductStock
             // 实物库存操作
             $sku->stock      = bcadd($sku->stock, $quantity, 0); // 反向操作
             $sku->lock_stock = bcsub($sku->lock_stock, $quantity, 0);
-            // 逻辑库存操作
+            // 渠道库存操作
             if ($channel instanceof StockChannelInterface) {
                 // 总渠道库存
                 $sku->channel_stock               = bcadd($sku->channel_stock, $quantity, 0);
@@ -390,7 +390,7 @@ class ProductStock
                 // 渠道扣减
                 $channelStock = $this->getChannelStock($skuID, $channel);
                 if (bccomp(bcsub($channelStock->channel_lock_stock, $quantity, 0), 0, 0) < 0) {
-                    throw new ProductStockException('逻辑锁定库存不足');
+                    throw new ProductStockException('渠道锁定库存不足');
                 }
 
             }
@@ -398,10 +398,10 @@ class ProductStock
             // 总锁定库存 = 总锁定库存 - 数量
             $sku->lock_stock = bcsub($sku->lock_stock, $quantity, 0);
 
-            // 逻辑库存操作
+            // 渠道库存操作
             if ($channel instanceof StockChannelInterface) {
 
-                // 逻辑锁定库存 = 逻辑锁定库存 - 数量
+                // 渠道锁定库存 = 渠道锁定库存 - 数量
                 $channelStock->channel_lock_stock = bcsub($channelStock->channel_lock_stock, $quantity, 0);
                 $channelStock->save();
             }

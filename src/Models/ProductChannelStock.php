@@ -10,7 +10,7 @@ use RedJasmine\Support\Traits\Models\WithOwnerModel;
 
 /**
  * 渠道库存
- * 逻辑库存
+ * 渠道库存
  */
 class ProductChannelStock extends Model
 {

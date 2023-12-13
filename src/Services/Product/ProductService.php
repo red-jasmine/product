@@ -81,7 +81,7 @@ class ProductService
         $data['owner_uid']  = $this->getOwner()->getUID();
         $data               = $builder->validate($data);
 
-        return $this->saveCreate($data);
+        return $this->createSave($data);
     }
 
 
@@ -130,14 +130,14 @@ class ProductService
 
 
     /**
-     * 保存操作
+     * 创建保存
      *
      * @param array $data
      *
      * @return Product
      * @throws Throwable
      */
-    protected function saveCreate(array $data = []) : Product
+    protected function createSave(array $data = []) : Product
     {
         $builder                   = $this->productBuilder();
         $product                   = new Product();
@@ -152,7 +152,6 @@ class ProductService
         } else {
             $product->is_sku = BoolIntEnum::YES;
         }
-        $stockService = $this->stock();
         // 保存数据
         DB::beginTransaction();
         try {
@@ -172,9 +171,6 @@ class ProductService
 
             foreach ($data as $key => $value) {
                 $product->setAttribute($key, $value);
-                if ($key === 'stock' && $product->is_sku === BoolIntEnum::YES) {
-                    $stockService->log($product, ProductStockChangeTypeEnum::SELLER, 0, (int)$value, (int)$value);
-                }
             }
             foreach ($info as $infoKey => $infoValue) {
                 $productInfo->setAttribute($infoKey, $infoValue);
@@ -185,17 +181,13 @@ class ProductService
             $product->save();
             $product->info()->save($productInfo);
             // 对多规格操作
-            if (filled($data['is_multiple_spec'] ?? null)) {
+            if ($product->is_multiple_spec === BoolIntEnum::YES) {
 
-                // 获取数据库中所有的SKU
-                $skuModelList = collect([]);
-                $skus         = collect($skus)->map(function ($sku) use ($product, $builder, $skuModelList, $stockService) {
-
+                $skus = collect($skus)->map(function ($sku) use ($product, $builder) {
                     $skuModel     = new ($this->model)();
                     $skuModel->id = $skuModel->id ?? $builder->generateID();
                     $this->copyProductAttributeToSku($product, $skuModel);
                     $this->linkageTime($product);
-
                     if (blank($skuModel->creator_type)) {
                         $skuModel->withCreator($this->getOperator());
                     }
@@ -204,8 +196,6 @@ class ProductService
                     foreach ($sku as $key => $value) {
                         $skuModel->setAttribute($key, $value);
                     }
-                    $stockService->log($skuModel, ProductStockChangeTypeEnum::SELLER, 0, (int)$skuModel->stock, (int)$skuModel->stock);
-
                     return $skuModel;
                 })->keyBy('properties');
                 $product->skus()->saveMany($skus);
@@ -230,18 +220,18 @@ class ProductService
     }
 
 
-    protected function saveUpdate(?int $id = null, array $data = []) : Product
+    /**
+     * @param int   $id
+     * @param array $data
+     *
+     * @return Product
+     * @throws Throwable
+     */
+    protected function saveUpdate(int $id, array $data = []) : Product
     {
-        $builder = $this->productBuilder();
-        if (filled($id)) {
-            $product     = $this->find($id);
-            $productInfo = $product->info;
-        } else {
-            $product     = new Product();
-            $productInfo = new ProductInfo();
-        }
-        $product->id               = $product->id ?? $builder->generateID();
-        $productInfo->id           = $product->id;
+        $builder                   = $this->productBuilder();
+        $product                   = $this->find($id);
+        $productInfo               = $product->info;
         $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
         // 必要字段填写
         $product->spu_id = 0;
@@ -269,11 +259,17 @@ class ProductService
             $product->withUpdater($this->getOperator());
 
             foreach ($data as $key => $value) {
-                $product->setAttribute($key, $value);
-                if ($key === 'stock' && $product->is_sku === BoolIntEnum::YES) {
-                    $stockService->log($product, ProductStockChangeTypeEnum::SELLER, 0, (int)$value, (int)$value);
+                // 不支持更新的字段
+                if ($key === 'stock') {
+                    continue;
                 }
+                $product->setAttribute($key, $value);
             }
+            // 如果设置了库存 那么就需要操作库存
+            if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
+                $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
+            }
+
             foreach ($info as $infoKey => $infoValue) {
                 $productInfo->setAttribute($infoKey, $infoValue);
             }

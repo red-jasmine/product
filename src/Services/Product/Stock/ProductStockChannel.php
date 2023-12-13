@@ -25,7 +25,7 @@ class ProductStockChannel
 
 
     /**
-     * 创建逻辑库存
+     * 创建渠道库存
      *
      * @param int                   $skuID
      * @param int                   $quantity
@@ -43,8 +43,8 @@ class ProductStockChannel
             DB::beginTransaction();
             $sku = $this->stockService->getSKU($skuID);
 
-            // 可用库存  必须大于等于 逻辑库存
-            // 可用库存 = 可售库存 - 逻辑库存
+            // 可用库存  必须大于等于 渠道库存
+            // 可用库存 = 可售库存 - 渠道库存
             $ableStock = bcsub($sku->stock, $sku->channel_stock, 0);
             if (bccomp($ableStock, $quantity, 0) < 0) {
                 throw new ProductStockException('可用库存不足');
@@ -53,7 +53,7 @@ class ProductStockChannel
             // 创建可用库存
             try {
                 $this->stockService->getChannelStock($skuID, $channel);
-                throw new ProductStockException('逻辑库存存在 不可重复创建');
+                throw new ProductStockException('渠道库存存在 不可重复创建');
             } catch (ModelNotFoundException $modelNotFoundException) {
 
             }
@@ -86,7 +86,7 @@ class ProductStockChannel
 
 
     /**
-     * 追加逻辑库存
+     * 追加渠道库存
      *
      * @param int                   $skuID
      * @param int                   $quantity
@@ -103,14 +103,14 @@ class ProductStockChannel
             DB::beginTransaction();
             $sku = $this->stockService->getSKU($skuID);
 
-            // 可用库存  必须大于等于 逻辑库存
-            // 可用库存 = 可售库存 - 逻辑库存
+            // 可用库存  必须大于等于 渠道库存
+            // 可用库存 = 可售库存 - 渠道库存
             $ableStock = bcsub($sku->stock, $sku->channel_stock, 0);
             if (bccomp($ableStock, $quantity, 0) < 0) {
                 throw new ProductStockException('可用库存不足');
             }
 
-            // 操作逻辑库存
+            // 操作渠道库存
             $productChannelStock = $this->stockService->getChannelStock($skuID, $channel);
             $sku->channel_stock  = bcadd($sku->channel_stock, $quantity, 0);
             $sku->save();
@@ -134,7 +134,7 @@ class ProductStockChannel
 
 
     /**
-     * 减少逻辑库存
+     * 减少渠道库存
      *
      * @param int                   $skuID
      * @param int                   $quantity
@@ -151,19 +151,19 @@ class ProductStockChannel
             DB::beginTransaction();
             $sku = $this->stockService->getSKU($skuID);
 
-            // 验证逻辑逻辑库存
+            // 验证渠道渠道库存
             $productChannelStock = $this->stockService->getChannelStock($skuID, $channel);
-            // 判断逻辑库存 的 逻辑可售库存 必须大于等级 数量
+            // 判断渠道库存 的 渠道可售库存 必须大于等级 数量
             if (bccomp($productChannelStock->channel_stock, $quantity, 0) < 0) {
-                throw new ProductStockException('逻辑可用库存不足');
+                throw new ProductStockException('渠道可用库存不足');
             }
-            // 操作 总逻辑库存
-            // 逻辑库存 = 逻辑库存 - 数量
-            // 逻辑可用库存 = 逻辑可用库存 - 数量
+            // 操作 总渠道库存
+            // 渠道库存 = 渠道库存 - 数量
+            // 渠道可用库存 = 渠道可用库存 - 数量
             $productChannelStock->channel_total_stock = bcsub($productChannelStock->channel_total_stock, $quantity, 0);
             $productChannelStock->channel_stock       = bcsub($productChannelStock->channel_stock, $quantity, 0);
             $productChannelStock->save();
-            //  总逻辑库存 =  总逻辑库存 - 数量
+            //  总渠道库存 =  总渠道库存 - 数量
             $sku->channel_stock = bcsub($sku->channel_stock, $quantity, 0);
             $sku->save();
             DB::commit();
