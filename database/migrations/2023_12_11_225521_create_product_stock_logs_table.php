@@ -25,6 +25,8 @@ return new class extends Migration {
             $table->string('channel_type')->nullable()->comment('渠道类型');
             $table->unsignedBigInteger('channel_id')->nullable()->comment('渠道ID');
 
+            $table->unsignedTinyInteger('is_lock')->default(0)->comment('是否操作锁定');
+
             $table->string('creator_type', 20)->nullable()->comment('创建者类型');
             $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
 
