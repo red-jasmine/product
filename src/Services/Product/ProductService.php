@@ -5,11 +5,14 @@ namespace RedJasmine\Product\Services\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
+use RedJasmine\Product\Services\Product\Stock\ProductStock;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Traits\WithUserService;
@@ -103,7 +106,8 @@ class ProductService
         $data['owner_uid']  = $product->owner_uid;
         $data               = $builder->validate($data);
         // 修改操作支持更新库存 TODO 更新库存操作
-        return $this->saveUpdate($id, $data);
+        return $this->updateSave($id, $data);
+
     }
 
     /**
@@ -125,7 +129,7 @@ class ProductService
         $data['owner_uid']  = $product->owner_uid;
         $data               = $builder->validateOnly($data);
         // 修改操作支持更新库存
-        return $this->saveUpdate($id, $data);
+        return $this->updateSave($id, $data);
     }
 
 
@@ -221,18 +225,23 @@ class ProductService
 
 
     /**
+     *
      * @param int   $id
      * @param array $data
      *
      * @return Product
      * @throws Throwable
      */
-    protected function saveUpdate(int $id, array $data = []) : Product
+    protected function updateSave(int $id, array $data = []) : Product
     {
+
+
         $builder                   = $this->productBuilder();
         $product                   = $this->find($id);
         $productInfo               = $product->info;
         $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
+
+
         // 必要字段填写
         $product->spu_id = 0;
         if ($product->is_multiple_spec === BoolIntEnum::YES) {
@@ -242,8 +251,9 @@ class ProductService
         }
         $stockService = $this->stock();
         // 保存数据
-        DB::beginTransaction();
+
         try {
+            DB::beginTransaction();
             // 生成商品ID
             $info = $data['info'] ?? [];
             unset($data['info']);
@@ -259,15 +269,23 @@ class ProductService
             $product->withUpdater($this->getOperator());
 
             foreach ($data as $key => $value) {
-                // 不支持更新的字段
-                if ($key === 'stock') {
+                if (($key === 'stock')) {
                     continue;
                 }
                 $product->setAttribute($key, $value);
             }
             // 如果设置了库存 那么就需要操作库存
             if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
-                $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
+                try {
+                    $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
+                } catch (Throwable $throwable) {
+                    throw new ProductStockException($throwable->getMessage(), 432,
+                        [
+                            'stock' => [ $throwable->getMessage() ],
+                        ], 422
+                    );
+
+                }
             }
 
             foreach ($info as $infoKey => $infoValue) {
@@ -294,9 +312,14 @@ class ProductService
                                         ->keyBy('properties');
 
 
-                $skus = collect($skus)->map(function ($sku) use ($product, $builder, $skuModelList, $stockService) {
+                $skus = collect($skus)->map(function ($sku, $index) use ($product, $builder, $skuModelList, $stockService) {
 
-                    $skuModel     = $skuModelList[$sku['properties']] ?? new ($this->model)();
+
+                    $skuModel = $skuModelList[$sku['properties']] ?? new ($this->model)();
+                    $isNew    = false;
+                    if (blank($skuModel->id)) {
+                        $isNew = true;
+                    }
                     $skuModel->id = $skuModel->id ?? $builder->generateID();
                     $this->copyProductAttributeToSku($product, $skuModel);
                     $this->linkageTime($product);
@@ -307,9 +330,21 @@ class ProductService
                     $skuModel->withUpdater($this->getOperator());
 
                     foreach ($sku as $key => $value) {
+                        if (($key === 'stock') && $isNew === false) {
+                            continue;
+                        }
                         $skuModel->setAttribute($key, $value);
-                        if ($key === 'stock' && $product->is_sku) {
-                            $stockService->log($skuModel, ProductStockChangeTypeEnum::SELLER, 0, (int)$value, (int)$value);
+                    }
+                    if ($isNew === false) {
+                        try {
+                            $stockService->setStock($skuModel->id, (int)$sku['stock'], ProductStockChangeTypeEnum::SELLER);
+                        } catch (Throwable $throwable) {
+                            throw new ProductStockException($throwable->getMessage(), 432,
+                                [
+                                    'skus.' . $index . '.stock' => [ $throwable->getMessage() ],
+                                ], 422
+                            );
+
                         }
                     }
                     return $skuModel;
@@ -323,7 +358,7 @@ class ProductService
                      */
                     $productInfo             = $sku->info ?? new ProductInfo();
                     $productInfo->id         = $sku->id;
-                    $productInfo->deleted_at = null;
+                    $productInfo->deleted_at = null; // 可以对已删除的进行恢复
                     $productInfo->save();
 
                 });
@@ -343,6 +378,7 @@ class ProductService
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollBack();
+
             throw $throwable;
         }
 
@@ -449,7 +485,7 @@ class ProductService
         } catch (ModelNotFoundException $modelNotFoundException) {
             DB::rollBack();
             throw  $modelNotFoundException;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
@@ -488,7 +524,7 @@ class ProductService
         } catch (ModelNotFoundException $modelNotFoundException) {
             DB::rollBack();
             throw  $modelNotFoundException;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
@@ -528,7 +564,7 @@ class ProductService
         } catch (ModelNotFoundException $modelNotFoundException) {
             DB::rollBack();
             throw  $modelNotFoundException;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }

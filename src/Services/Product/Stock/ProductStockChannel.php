@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\ProductChannelStock;
 use RedJasmine\Product\Services\Product\ProductService;
-use RedJasmine\Product\Services\Product\ProductStock;
 use RedJasmine\Product\Services\Product\ServiceExtends;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;

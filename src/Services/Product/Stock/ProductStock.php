@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product;
+namespace RedJasmine\Product\Services\Product\Stock;
 
 use BadMethodCallException;
 use Exception;
@@ -11,8 +11,8 @@ use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductChannelStock;
 use RedJasmine\Product\Models\ProductStockLog;
-use RedJasmine\Product\Services\Product\Stock\ProductStockChannel;
-use RedJasmine\Product\Services\Product\Stock\StockChannelInterface;
+use RedJasmine\Product\Services\Product\ProductService;
+use RedJasmine\Product\Services\Product\ServiceExtends;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;
@@ -63,6 +63,7 @@ class ProductStock
     public function setStock(int $skuID, int $stock, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = null) : ?ProductStockLog
     {
 
+
         if (bccomp($stock, 0, 0) < 0) {
             throw new ProductStockException('库存 数量必须大于等于 0');
         }
@@ -72,6 +73,7 @@ class ProductStock
             $sku         = $this->getSKU($skuID);
             $beforeStock = $sku->stock;
             if (bccomp($sku->stock, $stock, 0) === 0) {
+                DB::commit();
                 return null;
             }
             // 可售库存
@@ -82,7 +84,7 @@ class ProductStock
 
             // 如果减少的库存 大于了 可售库存
             if (bcadd($saleableStock, $quantity, 0) < 0) {
-                throw new ProductStockException('渠道库存占用:'.$sku->channel_stock, 0, [ 'channel_stock' => $sku->channel_stock ]);
+                throw new ProductStockException('渠道库存占用:' . $sku->channel_stock, 0, [ 'channel_stock' => $sku->channel_stock ]);
             }
 
             // 更新库存
@@ -161,6 +163,7 @@ class ProductStock
      * @param int                        $skuID
      * @param int                        $quantity
      * @param ProductStockChangeTypeEnum $changeTypeEnum
+     * @param string                     $changeDetail
      *
      * @return ProductStockLog|null
      * @throws AbstractException
