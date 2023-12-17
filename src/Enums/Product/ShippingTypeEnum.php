@@ -10,6 +10,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 enum ShippingTypeEnum: string
 {
     use EnumsHelper;
+
     case LOGISTICS = 'express'; // 物流 快递
 
     case VIRTUAL = 'virtual'; // 虚拟
@@ -22,7 +23,7 @@ enum ShippingTypeEnum: string
         return [
             self::LOGISTICS->value => '物流发货',
             self::VIRTUAL->value   => '虚拟发货',
-            self::CARD_KEY->value  => '自动发货(卡密/网盘)',
+            self::CARD_KEY->value  => '卡密发货',
         ];
 
     }

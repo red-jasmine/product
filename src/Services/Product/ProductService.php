@@ -5,7 +5,6 @@ namespace RedJasmine\Product\Services\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Exceptions\ProductStockException;
@@ -31,6 +30,8 @@ class ProductService
 
     public function stock() : ProductStock
     {
+        // 如何累积商品级库存
+        //
         return new ProductStock($this);
     }
 
@@ -49,7 +50,7 @@ class ProductService
     /**
      * 最大库存
      */
-    public const MAX_QUANTITY = 18446744073709551615;
+    public const MAX_QUANTITY = 9999999999;
 
 
     protected ?ProductBuilder $productBuilder = null;
@@ -203,15 +204,6 @@ class ProductService
                     return $skuModel;
                 })->keyBy('properties');
                 $product->skus()->saveMany($skus);
-                collect($skus)->each(function ($sku) {
-                    /**
-                     * @var Product $sku
-                     */
-                    $productInfo             = $sku->info ?? new ProductInfo();
-                    $productInfo->id         = $sku->id;
-                    $productInfo->deleted_at = null;
-                    $productInfo->save();
-                });
             }
 
             DB::commit();
@@ -268,12 +260,7 @@ class ProductService
             }
             $product->withUpdater($this->getOperator());
 
-            foreach ($data as $key => $value) {
-                if (($key === 'stock')) {
-                    continue;
-                }
-                $product->setAttribute($key, $value);
-            }
+
             // 如果设置了库存 那么就需要操作库存
             if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
                 try {
@@ -287,7 +274,11 @@ class ProductService
 
                 }
             }
-
+            unset($data['stock']);
+            // 设置其他属性
+            foreach ($data as $key => $value) {
+                $product->setAttribute($key, $value);
+            }
             foreach ($info as $infoKey => $infoValue) {
                 $productInfo->setAttribute($infoKey, $infoValue);
             }
@@ -328,13 +319,6 @@ class ProductService
                         $skuModel->withCreator($this->getOperator());
                     }
                     $skuModel->withUpdater($this->getOperator());
-
-                    foreach ($sku as $key => $value) {
-                        if (($key === 'stock') && $isNew === false) {
-                            continue;
-                        }
-                        $skuModel->setAttribute($key, $value);
-                    }
                     if ($isNew === false) {
                         try {
                             $stockService->setStock($skuModel->id, (int)$sku['stock'], ProductStockChangeTypeEnum::SELLER);
@@ -346,31 +330,25 @@ class ProductService
                             );
 
                         }
+                        // 去除库存设置
+                        unset($sku['stock']);
                     }
+                    foreach ($sku as $key => $value) {
+                        $skuModel->setAttribute($key, $value);
+                    }
+
                     return $skuModel;
                 })->keyBy('properties');
 
                 $keys = $skus->keys()->all();
                 $product->skus()->saveMany($skus);
-                collect($skus)->each(function ($sku) {
-                    /**
-                     * @var Product $sku
-                     */
-                    $productInfo             = $sku->info ?? new ProductInfo();
-                    $productInfo->id         = $sku->id;
-                    $productInfo->deleted_at = null; // 可以对已删除的进行恢复
-                    $productInfo->save();
-
-                });
                 // 无效的SKU 进行关闭
                 foreach ($skuModelList as $properties => $sku) {
                     if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
                         $sku->status     = ProductStatus::DELETED;
                         $sku->deleted_at = $sku->deleted_at ?? now();
                         $sku->withUpdater($this->getOperator());
-                        $sku->info->deleted_at = now();
                         $sku->save();
-                        $sku->info->save();
                     }
                 }
             }
@@ -424,6 +402,12 @@ class ProductService
                 break;
 
         }
+    }
+
+
+    protected function setStock(Product $product, int $stock)
+    {
+
     }
 
     /**
