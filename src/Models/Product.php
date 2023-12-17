@@ -43,8 +43,7 @@ class Product extends Model
         'modified_time'    => 'datetime',
         'off_sale_time'    => 'datetime',
         'on_sale_time'     => 'datetime',
-
-
+        'sold_out_time'    => 'datetime',
     ];
 
     /**
@@ -111,5 +110,6 @@ class Product extends Model
     {
         return $this->hasMany(static::class, 'spu_id', 'id');
     }
+
 
 }

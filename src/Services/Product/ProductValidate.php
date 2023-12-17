@@ -21,10 +21,12 @@ class ProductValidate
      * 基础验证器
      * @var AbstractProductValidator[]
      */
-    public static array                        $validators = [
+    public static array $validators = [
         BasicValidator::class,
         PropsValidator::class
     ];
+
+
     protected \Illuminate\Validation\Validator $validator;
 
     /**
@@ -59,7 +61,6 @@ class ProductValidate
         if (is_string($skus) && filled($skus)) {
             $data['skus'] = json_decode($skus, true, 512, JSON_THROW_ON_ERROR);
         }
-
 
         $this->data = $data;
 

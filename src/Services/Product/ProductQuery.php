@@ -20,6 +20,10 @@ class ProductQuery
     {
     }
 
+    /**
+     *
+     * @return QueryBuilder|Product
+     */
     public function query() : QueryBuilder
     {
         $query = $this->__query();

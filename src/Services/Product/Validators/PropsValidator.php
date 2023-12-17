@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Product\Services\Product\Validators;
 
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 use RedJasmine\Product\Services\Product\Validators\Rules\HasSkusRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\PropsCheckRule;
@@ -13,29 +12,57 @@ use RedJasmine\Support\Enums\BoolIntEnum;
 
 class PropsValidator extends AbstractProductValidator
 {
+
+    protected bool $hasSkuRules = false;
+
     public function withValidator(Validator $validator) : void
     {
         // 在调用之前
         $is_multiple_spec = $validator->getValue('is_multiple_spec');
-        if (BoolIntEnum::from($is_multiple_spec) === BoolIntEnum::NO) {
+        if (BoolIntEnum::tryFrom($is_multiple_spec) === BoolIntEnum::YES) {
+
+            $this->hasSkuRules = true;
+        }
+
+        if (BoolIntEnum::tryFrom($is_multiple_spec) === BoolIntEnum::NO) {
             // 如果不是多规格 重置 销售属性
             $validator->setValue('info.sale_props', []);
-            $validator->setValue('skus', []);
-            $validator->setValue('is_sku', BoolIntEnum::YES->value);
-        }else{
-            $validator->setValue('is_sku', BoolIntEnum::NO->value);
+            $validator->setValue('skus', null);
+            $this->hasSkuRules = false;
+            return;
         }
+
+        // 如果传了SKU 不传 是否多规格 那么就必须验证
+        if ($is_multiple_spec === null && filled($validator->getValue('skus'))) {
+            $this->hasSkuRules = true;
+        }
+
     }
 
+    public function attributes() : array
+    {
+        return collect($this->fields())->keys()->combine(collect($this->fields())->pluck('attribute'))->toArray();
+
+    }
+
+    public function fields() : array
+    {
+        $fields = [
+            'is_multiple_spec' => [ 'attribute' => '多规格', 'rules' => [ new HasSkusRule() ] ],
+            'info.sale_props'  => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', new PropsRule(), new SalePropsRule(), new SkusRule(), new PropsCheckRule() ] ],
+            'info.basic_props' => [ 'attribute' => '基础属性', 'rules' => [ 'sometimes', new PropsRule(), new PropsCheckRule() ] ],
+        ];
+
+        if ($this->hasSkuRules) {
+            $basicValidator = new BasicValidator();
+            return array_merge($fields, $basicValidator->skuRules());
+        }
+        return $fields;
+    }
 
     public function rules() : array
     {
-        return [
-            'is_multiple_spec' => [ new HasSkusRule() ],
-            'is_sku'           => [],
-            'info.sale_props'  => [ 'sometimes', new PropsRule(), new SalePropsRule(), new SkusRule(), new PropsCheckRule() ],
-            'info.basic_props' => [ 'sometimes', new PropsRule(), new PropsCheckRule() ],
-        ];
+        return collect($this->fields())->keys()->combine(collect($this->fields())->pluck('rules'))->toArray();
     }
 
 

@@ -101,7 +101,15 @@ class BasicValidator extends AbstractProductValidator
             'info.sale_props'  => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', ], ],
         ];
 
-        $sku = [
+
+        return $fields;
+    }
+
+
+    public function skuRules()
+    {
+        $fields = $this->fields();
+        return [
             'skus.*.properties'   => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
             'skus.*.status'       => $fields['status'],
             'skus.*.price'        => $fields['price'],
@@ -114,11 +122,7 @@ class BasicValidator extends AbstractProductValidator
             'skus.*.barcode'      => $fields['barcode'],
             'skus.*.outer_id'     => $fields['outer_id'],
             'skus.*.stock'        => $fields['stock'],
-
         ];
-
-
-        return array_merge($fields, $sku);
     }
 
     public function rules() : array

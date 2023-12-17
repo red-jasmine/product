@@ -30,11 +30,15 @@ class ProductService
 
     public function stock() : ProductStock
     {
-        // 如何累积商品级库存
-        //
+        // 1、多规格 商品级 库存如何统计
+        // 2、单规格 变成多规格商品时 库存如何处理
+        // 3、
         return new ProductStock($this);
     }
 
+    /**
+     * @return Builder|Product
+     */
     public function query() : Builder
     {
         return Product::query()->productable();
@@ -90,7 +94,7 @@ class ProductService
 
 
     /**
-     * 商品更新
+     * 更新
      *
      * @param int   $id
      * @param array $data
@@ -106,13 +110,12 @@ class ProductService
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
         $data               = $builder->validate($data);
-        // 修改操作支持更新库存 TODO 更新库存操作
         return $this->updateSave($id, $data);
 
     }
 
     /**
-     * 删除
+     * 修改
      *
      * @param int   $id
      * @param array $data
@@ -133,314 +136,6 @@ class ProductService
         return $this->updateSave($id, $data);
     }
 
-
-    /**
-     * 创建保存
-     *
-     * @param array $data
-     *
-     * @return Product
-     * @throws Throwable
-     */
-    protected function createSave(array $data = []) : Product
-    {
-        $builder                   = $this->productBuilder();
-        $product                   = new Product();
-        $productInfo               = new ProductInfo();
-        $product->id               = $builder->generateID();
-        $productInfo->id           = $product->id;
-        $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
-        // 必要字段填写
-        $product->spu_id = 0;
-        if ($product->is_multiple_spec === BoolIntEnum::YES) {
-            $product->is_sku = BoolIntEnum::NO;
-        } else {
-            $product->is_sku = BoolIntEnum::YES;
-        }
-        // 保存数据
-        DB::beginTransaction();
-        try {
-            // 生成商品ID
-            $info = $data['info'] ?? [];
-            unset($data['info']);
-            $skus = $data['skus'] ?? [];
-            unset($data['skus']);
-
-            if (blank($product->owner_type)) {
-                $product->withOwner($this->getOwner());
-            }
-            if (blank($product->creator_type)) {
-                $product->withCreator($this->getOperator());
-            }
-            $product->withUpdater($this->getOperator());
-
-            foreach ($data as $key => $value) {
-                $product->setAttribute($key, $value);
-            }
-            foreach ($info as $infoKey => $infoValue) {
-                $productInfo->setAttribute($infoKey, $infoValue);
-            }
-
-            $this->linkageTime($product);
-            $product->modified_time = now();
-            $product->save();
-            $product->info()->save($productInfo);
-            // 对多规格操作
-            if ($product->is_multiple_spec === BoolIntEnum::YES) {
-
-                $skus = collect($skus)->map(function ($sku) use ($product, $builder) {
-                    $skuModel     = new ($this->model)();
-                    $skuModel->id = $skuModel->id ?? $builder->generateID();
-                    $this->copyProductAttributeToSku($product, $skuModel);
-                    $this->linkageTime($product);
-                    if (blank($skuModel->creator_type)) {
-                        $skuModel->withCreator($this->getOperator());
-                    }
-                    $skuModel->withUpdater($this->getOperator());
-
-                    foreach ($sku as $key => $value) {
-                        $skuModel->setAttribute($key, $value);
-                    }
-                    return $skuModel;
-                })->keyBy('properties');
-                $product->skus()->saveMany($skus);
-            }
-
-            DB::commit();
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-            throw $throwable;
-        }
-
-        return $product;
-    }
-
-
-    /**
-     *
-     * @param int   $id
-     * @param array $data
-     *
-     * @return Product
-     * @throws Throwable
-     */
-    protected function updateSave(int $id, array $data = []) : Product
-    {
-
-
-        $builder                   = $this->productBuilder();
-        $product                   = $this->find($id);
-        $productInfo               = $product->info;
-        $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
-
-
-        // 必要字段填写
-        $product->spu_id = 0;
-        if ($product->is_multiple_spec === BoolIntEnum::YES) {
-            $product->is_sku = BoolIntEnum::NO;
-        } else {
-            $product->is_sku = BoolIntEnum::YES;
-        }
-        $stockService = $this->stock();
-        // 保存数据
-
-        try {
-            DB::beginTransaction();
-            // 生成商品ID
-            $info = $data['info'] ?? [];
-            unset($data['info']);
-            $skus = $data['skus'] ?? [];
-            unset($data['skus']);
-
-            if (blank($product->owner_type)) {
-                $product->withOwner($this->getOwner());
-            }
-            if (blank($product->creator_type)) {
-                $product->withCreator($this->getOperator());
-            }
-            $product->withUpdater($this->getOperator());
-
-
-            // 如果设置了库存 那么就需要操作库存
-            if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
-                try {
-                    $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
-                } catch (Throwable $throwable) {
-                    throw new ProductStockException($throwable->getMessage(), 432,
-                        [
-                            'stock' => [ $throwable->getMessage() ],
-                        ], 422
-                    );
-
-                }
-            }
-            unset($data['stock']);
-            // 设置其他属性
-            foreach ($data as $key => $value) {
-                $product->setAttribute($key, $value);
-            }
-            foreach ($info as $infoKey => $infoValue) {
-                $productInfo->setAttribute($infoKey, $infoValue);
-            }
-
-            $this->linkageTime($product);
-            $product->modified_time = now();
-            $product->save();
-            $product->info()->save($productInfo);
-            // 对多规格操作
-            if (filled($data['is_multiple_spec'] ?? null)) {
-
-                // 获取数据库中所有的SKU
-                /**
-                 * @var array|Product[] $skuModelList
-                 */
-                $skuModelList = $product->skus()
-                                        ->withTrashed()
-                                        ->with([ 'info' => function ($query) {
-                                            $query->withTrashed();
-                                        } ])
-                                        ->get()
-                                        ->keyBy('properties');
-
-
-                $skus = collect($skus)->map(function ($sku, $index) use ($product, $builder, $skuModelList, $stockService) {
-
-
-                    $skuModel = $skuModelList[$sku['properties']] ?? new ($this->model)();
-                    $isNew    = false;
-                    if (blank($skuModel->id)) {
-                        $isNew = true;
-                    }
-                    $skuModel->id = $skuModel->id ?? $builder->generateID();
-                    $this->copyProductAttributeToSku($product, $skuModel);
-                    $this->linkageTime($product);
-
-                    if (blank($skuModel->creator_type)) {
-                        $skuModel->withCreator($this->getOperator());
-                    }
-                    $skuModel->withUpdater($this->getOperator());
-                    if ($isNew === false) {
-                        try {
-                            $stockService->setStock($skuModel->id, (int)$sku['stock'], ProductStockChangeTypeEnum::SELLER);
-                        } catch (Throwable $throwable) {
-                            throw new ProductStockException($throwable->getMessage(), 432,
-                                [
-                                    'skus.' . $index . '.stock' => [ $throwable->getMessage() ],
-                                ], 422
-                            );
-
-                        }
-                        // 去除库存设置
-                        unset($sku['stock']);
-                    }
-                    foreach ($sku as $key => $value) {
-                        $skuModel->setAttribute($key, $value);
-                    }
-
-                    return $skuModel;
-                })->keyBy('properties');
-
-                $keys = $skus->keys()->all();
-                $product->skus()->saveMany($skus);
-                // 无效的SKU 进行关闭
-                foreach ($skuModelList as $properties => $sku) {
-                    if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
-                        $sku->status     = ProductStatus::DELETED;
-                        $sku->deleted_at = $sku->deleted_at ?? now();
-                        $sku->withUpdater($this->getOperator());
-                        $sku->save();
-                    }
-                }
-            }
-
-            DB::commit();
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-
-            throw $throwable;
-        }
-
-        return $product;
-    }
-
-    /**
-     * 联动设置时间
-     *
-     * @param Product $product
-     *
-     * @return void
-     */
-    protected function linkageTime(Product $product) : void
-    {
-
-        if (!$product->isDirty('status')) {
-            return;
-        }
-        switch ($product->status) {
-            case ProductStatus::ON_SALE: // 在售
-                $product->on_sale_time = now();
-                break;
-            case ProductStatus::OUT_OF_STOCK: // 缺货
-                $product->sold_out_time = now();
-                break;
-            case ProductStatus::SOLD_OUT: // 售停
-                $product->sold_out_time = now();
-                break;
-            case ProductStatus::OFF_SHELF: // 下架
-                $product->off_sale_time = now();
-                break;
-            case ProductStatus::PRE_SALE:
-
-                break;
-            case ProductStatus::FORBID:// 强制下架
-                $product->on_sale_time  = null;
-                $product->sold_out_time = null;
-                $product->off_sale_time = $product->off_sale_time ?? now();
-                break;
-            case ProductStatus::DELETED:
-
-                break;
-
-        }
-    }
-
-
-    protected function setStock(Product $product, int $stock)
-    {
-
-    }
-
-    /**
-     * 复制商品的值
-     *
-     * @param Product $product
-     * @param Product $sku
-     *
-     * @return void
-     */
-    protected function copyProductAttributeToSku(Product $product, Product $sku) : void
-    {
-        $sku->owner_type         = $product->owner_type;
-        $sku->owner_uid          = $product->owner_uid;
-        $sku->is_multiple_spec   = 0;
-        $sku->is_sku             = 1;
-        $sku->spu_id             = $product->id;
-        $sku->title              = $product->title;
-        $sku->product_type       = $product->product_type;
-        $sku->shipping_type      = $product->shipping_type;
-        $sku->title              = $product->title;
-        $sku->category_id        = $product->category_id;
-        $sku->seller_category_id = $product->seller_category_id;
-        $sku->freight_payer      = $product->freight_payer;
-        $sku->postage_id         = $product->postage_id;
-        $sku->sub_stock          = $product->sub_stock;
-        $sku->delivery_time      = $product->delivery_time;
-        $sku->vip                = $product->vip ?? 0;
-        $sku->points             = $product->points ?? 0;
-        $sku->status             = $product->status;
-
-        $sku->deleted_at = null;
-    }
 
     /**
      * 删除
@@ -575,6 +270,300 @@ class ProductService
         $product->save();
 
         return true;
+    }
+
+
+    /**
+     * 创建保存
+     *
+     * @param array $data
+     *
+     * @return Product
+     * @throws Throwable
+     */
+    protected function createSave(array $data = []) : Product
+    {
+        $builder         = $this->productBuilder();
+        $product         = new Product();
+        $productInfo     = new ProductInfo();
+        $product->id     = $builder->generateID();
+        $productInfo->id = $product->id;
+        // 保存数据
+        DB::beginTransaction();
+        try {
+            // 生成商品ID
+            $info = $data['info'] ?? [];
+            unset($data['info']);
+            $skus = $data['skus'] ?? [];
+            unset($data['skus']);
+
+            if (blank($product->owner_type)) {
+                $product->withOwner($this->getOwner());
+            }
+            if (blank($product->creator_type)) {
+                $product->withCreator($this->getOperator());
+            }
+            $product->withUpdater($this->getOperator());
+
+            $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
+            $product->is_sku           = ($product->is_multiple_spec === BoolIntEnum::YES) ? BoolIntEnum::NO : BoolIntEnum::YES;
+
+            foreach ($data as $key => $value) {
+                $product->setAttribute($key, $value);
+            }
+            foreach ($info as $infoKey => $infoValue) {
+                $productInfo->setAttribute($infoKey, $infoValue);
+            }
+
+            $this->linkageTime($product);
+            $product->modified_time = now();
+            $product->save();
+            $product->info()->save($productInfo);
+            // 对多规格操作
+            if ($product->is_multiple_spec === BoolIntEnum::YES) {
+
+                $skus = collect($skus)->map(function ($sku) use ($product, $builder) {
+                    $skuModel     = new ($this->model)();
+                    $skuModel->id = $skuModel->id ?? $builder->generateID();
+                    $this->copyProductAttributeToSku($product, $skuModel);
+                    $this->linkageTime($product);
+                    if (blank($skuModel->creator_type)) {
+                        $skuModel->withCreator($this->getOperator());
+                    }
+                    $skuModel->withUpdater($this->getOperator());
+                    foreach ($sku as $key => $value) {
+                        $skuModel->setAttribute($key, $value);
+                    }
+                    return $skuModel;
+                })->keyBy('properties');
+                $product->skus()->saveMany($skus);
+            }
+
+            DB::commit();
+        } catch (Throwable $throwable) {
+            DB::rollBack();
+            throw $throwable;
+        }
+
+        return $product;
+    }
+
+
+    /**
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @return Product
+     * @throws Throwable
+     */
+    protected function updateSave(int $id, array $data = []) : Product
+    {
+        $builder     = $this->productBuilder();
+        $product     = $this->find($id);
+        $productInfo = $product->info;
+
+        try {
+            DB::beginTransaction();
+            $product->spu_id = 0;
+            if (blank($product->owner_type)) {
+                $product->withOwner($this->getOwner());
+            }
+
+            if (blank($product->creator_type)) {
+                $product->withCreator($this->getOperator());
+            }
+            $product->withUpdater($this->getOperator());
+
+            $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
+            $product->is_sku           = ($product->is_multiple_spec === BoolIntEnum::YES) ? BoolIntEnum::NO : BoolIntEnum::YES;
+            // 生成商品ID
+            $info = $data['info'] ?? [];
+            unset($data['info']);
+            $skus = $data['skus'] ?? [];
+            unset($data['skus']);
+            // 如果更变了 多规格类型
+
+            // 如果 更变规格类型
+            if ($product->isDirty('is_multiple_spec')) {
+                // 重置规格
+                $product->stock         = 0;
+                $product->lock_stock    = 0;
+                $product->channel_stock = 0;
+            }
+            // 库存服务
+            $stockService = $this->stock();
+            // TODO
+            // 如果设置了库存 那么就需要操作库存
+            if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
+                try {
+                    $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
+                } catch (Throwable $throwable) {
+                    throw new ProductStockException($throwable->getMessage(), 432,
+                        [
+                            'stock' => [ $throwable->getMessage() ],
+                        ], 422
+                    );
+
+                }
+            }
+            unset($data['stock']);
+            // 设置其他属性
+            foreach ($data as $key => $value) {
+                $product->setAttribute($key, $value);
+            }
+            foreach ($info as $infoKey => $infoValue) {
+                $productInfo->setAttribute($infoKey, $infoValue);
+            }
+
+            $this->linkageTime($product);
+            $product->modified_time = now();
+            $product->save();
+            $product->info()->save($productInfo);
+            // 如果对多规格类型做了修改
+            if ($product->isDirty('is_multiple_spec') && filled($skus)) {
+                // 获取数据库中所有的SKU
+                /**
+                 * @var array|Product[] $skuModelList
+                 */
+                $skuModelList = $product->skus()
+                                        ->withTrashed()
+                                        ->with([ 'info' => function ($query) {
+                                            $query->withTrashed();
+                                        } ])
+                                        ->get()
+                                        ->keyBy('properties');
+
+
+                $skus = collect($skus)->map(function ($sku, $index) use ($product, $builder, $skuModelList, $stockService) {
+
+
+                    $skuModel = $skuModelList[$sku['properties']] ?? new ($this->model)();
+                    $isNew    = false;
+                    if (blank($skuModel->id)) {
+                        $isNew = true;
+                    }
+                    $skuModel->id = $skuModel->id ?? $builder->generateID();
+                    $this->copyProductAttributeToSku($product, $skuModel);
+                    $this->linkageTime($product);
+
+                    if (blank($skuModel->creator_type)) {
+                        $skuModel->withCreator($this->getOperator());
+                    }
+                    $skuModel->withUpdater($this->getOperator());
+                    if ($isNew === false) {
+                        try {
+                            $stockService->setStock($skuModel->id, (int)$sku['stock'], ProductStockChangeTypeEnum::SELLER);
+                        } catch (Throwable $throwable) {
+                            throw new ProductStockException($throwable->getMessage(), 432,
+                                [
+                                    'skus.' . $index . '.stock' => [ $throwable->getMessage() ],
+                                ], 422
+                            );
+
+                        }
+                        // 去除库存设置
+                        unset($sku['stock']);
+                    }
+                    foreach ($sku as $key => $value) {
+                        $skuModel->setAttribute($key, $value);
+                    }
+
+                    return $skuModel;
+                })->keyBy('properties');
+
+                $keys = $skus->keys()->all();
+                $product->skus()->saveMany($skus);
+                // 无效的SKU 进行关闭
+                foreach ($skuModelList as $properties => $sku) {
+                    if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
+                        $sku->status     = ProductStatus::DELETED;
+                        $sku->deleted_at = $sku->deleted_at ?? now();
+                        $sku->withUpdater($this->getOperator());
+                        $sku->save();
+                    }
+                }
+            }
+            DB::commit();
+        } catch (Throwable $throwable) {
+            DB::rollBack();
+
+            throw $throwable;
+        }
+
+        return $product;
+    }
+
+    /**
+     * 联动设置时间
+     *
+     * @param Product $product
+     *
+     * @return void
+     */
+    protected function linkageTime(Product $product) : void
+    {
+
+        if (!$product->isDirty('status')) {
+            return;
+        }
+        switch ($product->status) {
+            case ProductStatus::ON_SALE: // 在售
+                $product->on_sale_time = now();
+                break;
+            case ProductStatus::OUT_OF_STOCK: // 缺货
+                $product->sold_out_time = now();
+                break;
+            case ProductStatus::SOLD_OUT: // 售停
+                $product->sold_out_time = now();
+                break;
+            case ProductStatus::OFF_SHELF: // 下架
+                $product->off_sale_time = now();
+                break;
+            case ProductStatus::DELETED:
+            case ProductStatus::PRE_SALE:
+
+                break;
+            case ProductStatus::FORBID:// 强制下架
+                $product->on_sale_time  = null;
+                $product->sold_out_time = null;
+                $product->off_sale_time = $product->off_sale_time ?? now();
+                break;
+
+        }
+    }
+
+    /**
+     * 复用字段
+     *
+     * @param Product $product
+     * @param Product $sku
+     *
+     * @return void
+     */
+    protected function copyProductAttributeToSku(Product $product, Product $sku) : void
+    {
+        $sku->owner_type = $product->owner_type;
+        $sku->owner_uid  = $product->owner_uid;
+
+        $sku->is_multiple_spec   = BoolIntEnum::NO;
+        $sku->is_sku             = BoolIntEnum::YES;
+        $sku->spu_id             = $product->id;
+        $sku->title              = $product->title;
+        $sku->product_type       = $product->product_type;
+        $sku->shipping_type      = $product->shipping_type;
+        $sku->title              = $product->title;
+        $sku->category_id        = $product->category_id;
+        $sku->seller_category_id = $product->seller_category_id;
+        $sku->freight_payer      = $product->freight_payer;
+        $sku->postage_id         = $product->postage_id;
+        $sku->sub_stock          = $product->sub_stock;
+        $sku->delivery_time      = $product->delivery_time;
+        $sku->vip                = (int)($product->vip ?? 0);
+        $sku->points             = (int)($product->points ?? 0);
+        $sku->status             = $product->status;
+
+        $sku->deleted_at = null;
     }
 
 
