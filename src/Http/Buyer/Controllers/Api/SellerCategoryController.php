@@ -19,7 +19,7 @@ class SellerCategoryController extends Controller
 
         $owner = new UserObjectBuilder([
                                            'type' => $request->input('owner_type'),
-                                           'uid'  => $request->input('owner_uid'),
+                                           'id'  => $request->input('owner_id'),
                                        ]);
         $this->service->setOwner($owner);
         return SellerCategoryResource::collection($this->service->tree());

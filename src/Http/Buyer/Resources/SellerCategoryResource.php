@@ -27,7 +27,7 @@ class SellerCategoryResource extends JsonResource
             'image'      => $this->image,
             'extends'    => $this->extends,
             'owner_type' => $this->owner_type,
-            'owner_uid'  => $this->owner_uid,
+            'owner_id'  => $this->owner_id,
             'children'   => $this->children ? static::collection(collect($this->children)) : null,
         ];
     }

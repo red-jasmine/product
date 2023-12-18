@@ -55,7 +55,7 @@ class ProductQuery
         return [
             AllowedFilter::exact('id'),
             AllowedFilter::exact('owner_type'),
-            AllowedFilter::exact('owner_uid'),
+            AllowedFilter::exact('owner_id'),
             AllowedFilter::exact('product_type'),
             AllowedFilter::exact('shipping_type'),
             AllowedFilter::partial('title'),

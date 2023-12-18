@@ -12,8 +12,8 @@ return new class extends Migration {
             $price_decimal_precision = config('red-jasmine.product.price_decimal_precision', 2);
             $table->unsignedBigInteger('id')->primary()->comment('ID');
             // 卖家信息
-            $table->string('owner_type', 20)->comment('所属者类型');
-            $table->unsignedBigInteger('owner_uid')->comment('所属者UID');
+            $table->morphs('owner');
+
             // 商品类型 实物、虚拟、拍卖、酒店订单、外卖
             $table->string('product_type', 20)->comment('商品类型');
             // 发货类型 物流 虚拟 卡密 在线服务 线下服务等 主要处理 发货流程 运费计算等 决定收货时间
@@ -77,10 +77,8 @@ return new class extends Migration {
 
             $table->timestamp('modified_time')->nullable()->comment('修改时间');
             // 操作人
-            $table->string('creator_type', 20)->nullable()->comment('创建者类型');
-            $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
-            $table->string('updater_type', 20)->nullable()->comment('更新者类型');
-            $table->unsignedBigInteger('updater_uid')->nullable()->comment('更新者UID');
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('updater');
 
             $table->timestamps();
             $table->softDeletes();

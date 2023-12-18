@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Product\Validators;
 
 use Illuminate\Validation\Validator;
-use RedJasmine\Support\Traits\WithUserService;
+use RedJasmine\Support\Traits\Services\WithUserService;
 
 abstract class AbstractProductValidator
 {

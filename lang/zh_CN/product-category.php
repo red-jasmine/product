@@ -16,9 +16,9 @@ return [
         'sort'         => '排序',
         'status'       => '状态',
         'creator_type' => '创建者',
-        'creator_uid'  => '创建者ID',
+        'creator_id'  => '创建者ID',
         'updater_type' => '更新者',
-        'updater_uid'  => '更新者UID',
+        'updater_id'  => '更新者UID',
     ],
     'options'    => [
     ],

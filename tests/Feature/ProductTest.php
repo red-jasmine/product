@@ -23,7 +23,7 @@ class ProductTest extends ProductPropertyTest
     {
         $service = new ProductService();
         $service->setOwner(new SystemUser());
-        $service->setOperator(new UserObjectBuilder([ 'uid' => 1, 'type' => 'admin', 'nickname' => 'Admin' ]));
+        $service->setOperator(new UserObjectBuilder([ 'id' => 1, 'type' => 'admin', 'nickname' => 'Admin' ]));
 
         return $service;
     }

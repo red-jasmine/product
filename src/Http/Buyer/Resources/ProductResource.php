@@ -62,7 +62,7 @@ class ProductResource extends JsonResource
             'id'                 => $this->id,
             'title'              => $this->title,
             'owner_type'         => $this->owner_type,
-            'owner_uid'          => $this->owner_uid,
+            'owner_id'          => $this->owner_id,
             'product_type'       => $this->product_type,
             'shipping_type'      => $this->shipping_type,
             'image'              => $this->image,

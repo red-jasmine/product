@@ -12,7 +12,7 @@ use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
-use RedJasmine\Support\Traits\WithUserService;
+use RedJasmine\Support\Traits\Services\WithUserService;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class BrandService

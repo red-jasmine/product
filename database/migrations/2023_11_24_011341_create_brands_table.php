@@ -15,12 +15,8 @@ return new class extends Migration {
             $table->json('extends')->nullable()->comment('扩展字段');
 
 
-            $table->string('creator_type', 20)->nullable()->comment('创建者类型');
-            $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
-
-            $table->string('updater_type', 20)->nullable()->comment('更新者类型');
-            $table->unsignedBigInteger('updater_uid')->nullable()->comment('更新者UID');
-
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('updater');
             $table->timestamps();
             $table->softDeletes();
             $table->comment('商品-品牌');

@@ -9,8 +9,7 @@ return new class extends Migration {
     {
         Schema::create('product_stock_logs', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary()->comment('ID');
-            $table->string('owner_type', 20)->comment('所属者类型');
-            $table->unsignedBigInteger('owner_uid')->comment('所属者UID');
+            $table->morphs('owner');
 
             $table->string('change_type', 20)->comment('更变类型');
             $table->string('change_detail')->nullable()->comment('变更明细');
@@ -22,13 +21,11 @@ return new class extends Migration {
             $table->bigInteger('change_stock')->comment('变更值');
             $table->unsignedBigInteger('result_stock')->comment('结果库存');
 
-            $table->string('channel_type')->nullable()->comment('渠道类型');
-            $table->unsignedBigInteger('channel_id')->nullable()->comment('渠道ID');
+            $table->morphs('channel');
 
             $table->unsignedTinyInteger('is_lock')->default(0)->comment('是否操作锁定');
 
-            $table->string('creator_type', 20)->nullable()->comment('创建者类型');
-            $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
+            $table->nullableMorphs('creator');
 
 
             $table->timestamps();

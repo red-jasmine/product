@@ -15,8 +15,7 @@ use RedJasmine\Product\Models\ProductPropertyValue;
 use RedJasmine\Product\Services\Property\Query\PropertyQuery;
 use RedJasmine\Product\Services\Property\Query\PropertyValueQuery;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-
-use RedJasmine\Support\Traits\WithUserService;
+use RedJasmine\Support\Traits\Services\WithUserService;
 
 class PropertyService
 {
@@ -90,7 +89,7 @@ class PropertyService
 
         if ($this->getOperator()) {
             $values['creator_type'] = $this->getOperator()->getUserType();
-            $values['creator_uid']  = $this->getOperator()->getUID();
+            $values['creator_id']  = $this->getOperator()->getID();
         }
         $attributes = [
             'name' => $name,
@@ -148,7 +147,7 @@ class PropertyService
 
         if ($this->getOperator()) {
             $values['creator_type'] = $this->getOperator()->getUserType();
-            $values['creator_uid']  = $this->getOperator()->getUID();
+            $values['creator_id']  = $this->getOperator()->getID();
         }
         $attributes = [
             'pid'  => $pid,

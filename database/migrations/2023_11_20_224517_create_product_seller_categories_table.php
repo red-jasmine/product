@@ -9,8 +9,7 @@ return new class extends Migration {
     {
         Schema::create('product_seller_categories', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary()->comment('类目ID');
-            $table->string('owner_type', 20)->comment('所属者类型');
-            $table->string('owner_uid', 64)->comment('所属者UID');
+            $table->morphs('owner');
             $table->string('name')->comment('类目名称');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父级类目');
             $table->string('group_name')->nullable()->comment('分组');
@@ -22,12 +21,8 @@ return new class extends Migration {
 
 
 
-            $table->string('creator_type', 20)->nullable()->comment('创建者类型');
-            $table->unsignedBigInteger('creator_uid')->nullable()->comment('创建者UID');
-
-            $table->string('updater_type', 20)->nullable()->comment('更新者类型');
-            $table->unsignedBigInteger('updater_uid')->nullable()->comment('更新者UID');
-
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('updater');
 
             $table->timestamps();
             $table->comment('商品-卖家分类表');

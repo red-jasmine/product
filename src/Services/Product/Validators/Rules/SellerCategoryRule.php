@@ -25,7 +25,7 @@ class SellerCategoryRule extends AbstractRule
         $service->disableRequest();
         $service->setOwner(new UserObjectBuilder([
                                                      'type' => $this->data['owner_type'],
-                                                     'uid'  => $this->data['owner_uid'],
+                                                     'id'  => $this->data['owner_id'],
                                                  ]));
         try {
             $sellerCategory = $service->isAllowUse($value);

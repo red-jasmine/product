@@ -29,7 +29,7 @@ class ProductProperty extends Model
         'extends',
         'sort',
         'creator_type',
-        'creator_uid',
+        'creator_id',
 
 
     ];

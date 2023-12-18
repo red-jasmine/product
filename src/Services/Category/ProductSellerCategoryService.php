@@ -14,7 +14,7 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
-use RedJasmine\Support\Traits\WithUserService;
+use RedJasmine\Support\Traits\Services\WithUserService;
 
 /**
  * 商品类目服务
@@ -125,9 +125,9 @@ class ProductSellerCategoryService
             'status'       => __('red-jasmine/product::product-seller-category.attributes.status'),
             'extends'      => __('red-jasmine/product::product-seller-category.attributes.extends'),
             'creator_type' => __('red-jasmine/product::product-seller-category.attributes.creator_type'),
-            'creator_uid'  => __('red-jasmine/product::product-seller-category.attributes.creator_uid'),
+            'creator_id'  => __('red-jasmine/product::product-seller-category.attributes.creator_id'),
             'updater_type' => __('red-jasmine/product::product-seller-category.attributes.updater_type'),
-            'updater_uid'  => __('red-jasmine/product::product-seller-category.attributes.updater_uid'),
+            'updater_id'  => __('red-jasmine/product::product-seller-category.attributes.updater_id'),
         ];
     }
 

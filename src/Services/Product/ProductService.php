@@ -14,7 +14,7 @@ use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Product\Services\Product\Stock\ProductStock;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
-use RedJasmine\Support\Traits\WithUserService;
+use RedJasmine\Support\Traits\Services\WithUserService;
 use Throwable;
 
 class ProductService
@@ -91,7 +91,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $this->getOwner()->getUserType();
-        $data['owner_uid']  = $this->getOwner()->getUID();
+        $data['owner_id']  = $this->getOwner()->getID();
         $data               = $builder->validate($data);
 
         return $this->createSave($data);
@@ -113,7 +113,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
-        $data['owner_uid']  = $product->owner_uid;
+        $data['owner_id']  = $product->owner_id;
         $data               = $builder->validate($data);
         return $this->updateSave($id, $data);
 
@@ -135,7 +135,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
-        $data['owner_uid']  = $product->owner_uid;
+        $data['owner_id']  = $product->owner_id;
         $data               = $builder->validateOnly($data);
 
         // 修改操作支持更新库存
@@ -526,7 +526,7 @@ class ProductService
     protected function copyProductAttributeToSku(Product $product, Product $sku) : void
     {
         $sku->owner_type = $product->owner_type;
-        $sku->owner_uid  = $product->owner_uid;
+        $sku->owner_id  = $product->owner_id;
 
         $sku->is_multiple_spec   = BoolIntEnum::NO;
         $sku->is_sku             = BoolIntEnum::YES;

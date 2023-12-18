@@ -117,7 +117,7 @@ class ProductStock
     {
         $sku = Product::lockForUpdate()
                       ->withTrashed()
-                      ->select([ 'owner_type', 'owner_uid', 'id', 'spu_id', 'stock', 'lock_stock', 'channel_stock', 'is_sku' ])
+                      ->select([ 'owner_type', 'owner_id', 'id', 'spu_id', 'stock', 'lock_stock', 'channel_stock', 'is_sku' ])
                       ->findOrFail($skuID);
         if ($sku->is_sku === BoolIntEnum::NO) {
             throw new ProductStockException('只能操作库存单位');
