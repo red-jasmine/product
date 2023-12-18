@@ -27,13 +27,18 @@ class ProductService
         return new ProductQuery($this);
     }
 
+    protected ?ProductStock $stockService = null;
 
     public function stock() : ProductStock
     {
+        if ($this->stockService) {
+            return $this->stockService;
+        }
         // 1、多规格 商品级 库存如何统计
         // 2、单规格 变成多规格商品时 库存如何处理
         // 3、
-        return new ProductStock($this);
+        $this->stockService = new ProductStock($this);
+        return $this->stockService;
     }
 
     /**
@@ -132,6 +137,7 @@ class ProductService
         $data['owner_type'] = $product->owner_type;
         $data['owner_uid']  = $product->owner_uid;
         $data               = $builder->validateOnly($data);
+
         // 修改操作支持更新库存
         return $this->updateSave($id, $data);
     }
@@ -152,9 +158,6 @@ class ProductService
             DB::beginTransaction();
             $product = $this->find($id);
             $product->info->delete();
-            foreach ($product->skus as $sku) {
-                $sku->info->delete();
-            }
             $product->skus()->delete();
             $product->delete();
             DB::commit();
@@ -190,10 +193,6 @@ class ProductService
              */
             $product = $this->query()->onlyTrashed()->find($id);
             $product->info()->onlyTrashed()->forceDelete();
-
-            foreach ($product->skus as $sku) {
-                $sku->info()->onlyTrashed()->forceDelete();
-            }
             $product->skus()->onlyTrashed()->forceDelete();
             $product->forceDelete();
             DB::commit();
@@ -230,10 +229,6 @@ class ProductService
              */
             $product = $this->query()->onlyTrashed()->find($id);
             $product->info()->onlyTrashed()->restore();
-
-            foreach ($product->skus()->withTrashed()->where('status', '<>', ProductStatus::DELETED->value)->get() as $sku) {
-                $sku->info()->onlyTrashed()->restore();
-            }
             $product->skus()->onlyTrashed()->where('status', '<>', ProductStatus::DELETED->value)->restore();
             $product->restore();
             DB::commit();
@@ -383,27 +378,22 @@ class ProductService
             $skus = $data['skus'] ?? [];
             unset($data['skus']);
             // 如果更变了 多规格类型
+            // 库存服务
 
-            // 如果 更变规格类型
+            // 如果是改变了规格类型的情况下 那么就 重置库存
             if ($product->isDirty('is_multiple_spec')) {
-                // 重置规格
+                // 重置库存 库存为 传入数据
                 $product->stock         = 0;
                 $product->lock_stock    = 0;
                 $product->channel_stock = 0;
+                // TODO
+                // 清空渠道库存
             }
-            // 库存服务
-            $stockService = $this->stock();
-            // TODO
-            // 如果设置了库存 那么就需要操作库存
-            if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
-                try {
-                    $stockService->setStock($product->id, (int)$data['stock'], ProductStockChangeTypeEnum::SELLER);
-                } catch (Throwable $throwable) {
-                    throw new ProductStockException($throwable->getMessage(), 432,
-                        [
-                            'stock' => [ $throwable->getMessage() ],
-                        ], 422
-                    );
+            if ($product->isDirty('is_multiple_spec') === false) {
+                // 如果没有改变规格类型
+                // 如果是 单规格商品 那么通过 设置库存操作完成
+                if ($product->is_sku === BoolIntEnum::YES && filled($data['stock'] ?? null)) {
+                    $this->setStock($product, $data['stock']);
 
                 }
             }
@@ -417,25 +407,18 @@ class ProductService
             }
 
             $this->linkageTime($product);
-            $product->modified_time = now();
-            $product->save();
-            $product->info()->save($productInfo);
-            // 如果对多规格类型做了修改
-            if ($product->isDirty('is_multiple_spec') && filled($skus)) {
+
+            // 如果 如果修改了多规格类型, 如果是多规格商品 那么传了 skus 那么就进行更新
+            if ($product->isDirty('is_multiple_spec') || ($product->is_multiple_spec === BoolIntEnum::YES && filled($skus))) {
                 // 获取数据库中所有的SKU
                 /**
                  * @var array|Product[] $skuModelList
                  */
-                $skuModelList = $product->skus()
-                                        ->withTrashed()
-                                        ->with([ 'info' => function ($query) {
-                                            $query->withTrashed();
-                                        } ])
-                                        ->get()
-                                        ->keyBy('properties');
-
-
-                $skus = collect($skus)->map(function ($sku, $index) use ($product, $builder, $skuModelList, $stockService) {
+                $skuModelList = $product->skus()->withTrashed()->get()->keyBy('properties');
+                /**
+                 * @var array|\Illuminate\Support\Collection|Product[] $skus
+                 */
+                $skus = collect($skus)->map(function ($sku, $index) use ($product, $builder, $skuModelList) {
 
 
                     $skuModel = $skuModelList[$sku['properties']] ?? new ($this->model)();
@@ -452,16 +435,8 @@ class ProductService
                     }
                     $skuModel->withUpdater($this->getOperator());
                     if ($isNew === false) {
-                        try {
-                            $stockService->setStock($skuModel->id, (int)$sku['stock'], ProductStockChangeTypeEnum::SELLER);
-                        } catch (Throwable $throwable) {
-                            throw new ProductStockException($throwable->getMessage(), 432,
-                                [
-                                    'skus.' . $index . '.stock' => [ $throwable->getMessage() ],
-                                ], 422
-                            );
-
-                        }
+                        // 如果 是新创建的
+                        $this->setStock($skuModel, $sku['stock'], 'skus.' . $index . '.stock');
                         // 去除库存设置
                         unset($sku['stock']);
                     }
@@ -470,11 +445,15 @@ class ProductService
                     }
 
                     return $skuModel;
-                })->keyBy('properties');
-
-                $keys = $skus->keys()->all();
+                });
+                $skus = $skus->keyBy('properties');
+                // 保存所有规格
                 $product->skus()->saveMany($skus);
+                if ($product->is_multiple_spec === BoolIntEnum::YES) {
+                    $product->stock = $skus->sum('stock');
+                }
                 // 无效的SKU 进行关闭
+                $keys = $skus->keys()->all();
                 foreach ($skuModelList as $properties => $sku) {
                     if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
                         $sku->status     = ProductStatus::DELETED;
@@ -484,6 +463,9 @@ class ProductService
                     }
                 }
             }
+            $product->modified_time = now();
+            $product->save();
+            $product->info()->save($productInfo);
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollBack();
@@ -564,6 +546,32 @@ class ProductService
         $sku->status             = $product->status;
 
         $sku->deleted_at = null;
+    }
+
+
+    /**
+     * 设置库存
+     *
+     * @param Product $product
+     * @param int     $stock
+     * @param string  $field
+     *
+     * @return void
+     * @throws ProductStockException
+     */
+    protected function setStock(Product $product, int $stock, string $field = 'stock') : void
+    {
+        $stockService = $this->stock();
+        try {
+            $stockService->setStock($product->id, $stock, ProductStockChangeTypeEnum::SELLER);
+            $product->stock = $stock;
+        } catch (Throwable $throwable) {
+            throw new ProductStockException($throwable->getMessage(), 432,
+                [
+                    $field => [ $throwable->getMessage() ],
+                ], 422
+            );
+        }
     }
 
 

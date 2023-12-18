@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -111,5 +112,36 @@ class Product extends Model
         return $this->hasMany(static::class, 'spu_id', 'id');
     }
 
+    protected function marketPrice() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value, array $attributes) => $value,
+            set: fn($value) => trim($value) === '' ? null : $value,
+        );
+    }
+
+    protected function costPrice() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value, array $attributes) => $value,
+            set: fn($value) => trim($value) === '' ? null : $value,
+        );
+    }
+
+    protected function min() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value, array $attributes) => $value,
+            set: fn($value) => trim($value) === '' ? null : $value,
+        );
+    }
+
+    protected function max() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value, array $attributes) => $value,
+            set: fn($value) => trim($value) === '' ? null : $value,
+        );
+    }
 
 }
