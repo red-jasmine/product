@@ -12,10 +12,10 @@ use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductChannelStock;
 use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Product\ProductService;
-use RedJasmine\Product\Services\Product\ServiceExtends;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Throwable;
 
 /**

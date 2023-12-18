@@ -4,6 +4,7 @@ namespace RedJasmine\Product\Services\Product;
 
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
+use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
