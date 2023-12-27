@@ -106,7 +106,7 @@ class BasicValidator extends AbstractProductValidator
     }
 
 
-    public function skuRules()
+    public function skuRules() : array
     {
         $fields = $this->fields();
         return [
