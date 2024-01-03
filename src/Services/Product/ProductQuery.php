@@ -10,9 +10,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductQuery
 {
-    use HasQueryBuilder {
-        query as __query;
-    }
+    use HasQueryBuilder;
 
 
     use ServiceExtends;
@@ -27,7 +25,7 @@ class ProductQuery
      */
     public function query() : QueryBuilder
     {
-        $query = $this->__query();
+        $query = $this->queryBuilder();
         return $query->productable();
     }
 

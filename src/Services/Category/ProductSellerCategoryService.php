@@ -26,6 +26,14 @@ class ProductSellerCategoryService
 
     use HasQueryBuilder;
 
+    /**
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
+    public function query()
+    {
+        return $this->queryBuilder();
+    }
+
     public string $model = Model::class;
 
 

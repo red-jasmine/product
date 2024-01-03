@@ -41,6 +41,14 @@ class BrandService
 
 
     /**
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
+    public function query()
+    {
+        return $this->queryBuilder();
+    }
+
+    /**
      * @param int $id
      *
      * @return Brand

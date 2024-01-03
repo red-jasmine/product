@@ -11,6 +11,14 @@ class PropertyQuery
 
     use HasQueryBuilder;
 
+    /**
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
+    public function query()
+    {
+        return $this->queryBuilder();
+    }
+
     protected string $model = ProductProperty::class;
 
     public function filters() : array

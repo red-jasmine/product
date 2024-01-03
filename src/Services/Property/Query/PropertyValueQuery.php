@@ -12,6 +12,14 @@ class PropertyValueQuery
 
     use HasQueryBuilder;
 
+    /**
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
+    public function query()
+    {
+        return $this->queryBuilder();
+    }
+
     protected string $model = ProductPropertyValue::class;
 
     public function filters() : array
