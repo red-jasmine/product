@@ -17,7 +17,7 @@ enum PropertyStatusEnum: int
     /**
      * @return array
      */
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::ENABLE->value  => __('global.enable'),

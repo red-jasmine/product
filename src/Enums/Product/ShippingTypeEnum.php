@@ -18,7 +18,7 @@ enum ShippingTypeEnum: string
     case CARD_KEY = 'card_key'; // 卡密
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::LOGISTICS->value => '物流发货',

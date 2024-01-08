@@ -22,7 +22,7 @@ enum ProductStatus: string
 
     case DELETED = 'deleted'; // 删除 仅在 sku 中使用
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::ON_SALE->value      => '在售',

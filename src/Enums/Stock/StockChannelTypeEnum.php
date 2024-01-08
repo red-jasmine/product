@@ -14,7 +14,7 @@ enum StockChannelTypeEnum: string
     case  CUSTOM = 'custom';
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::ACTIVITY->value => '活动',

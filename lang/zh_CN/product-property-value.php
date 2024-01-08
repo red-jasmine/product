@@ -1,16 +1,15 @@
 <?php
 return [
     'labels'  => [
-        'ProductCategory'  => '商品类目',
-        'product-category' => '商品类目',
+        'ProductPropertyValue'   => '商品属性值',
+        'product-property-value' => '商品属性值',
     ],
     'fields'  => [
-        'parent_id'    => '父级类目',
-        'name'         => '类目名称',
-        'image'        => '图片',
-        'group_name'   => '分组',
+        'pid'          => '属性ID',
+        'vid'          => '属性值ID',
+        'name'         => '名称',
         'sort'         => '排序',
-        'is_leaf'      => '是否叶子类目',
+        'group_name'   => '分租',
         'status'       => '状态',
         'extends'      => '扩展字段',
         'creator_type' => '创建者类型',

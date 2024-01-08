@@ -15,7 +15,7 @@ enum SubStockTypeEnum: int
     case PAYMENT = 2;
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::DEFAULT->value => '默认',

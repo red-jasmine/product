@@ -15,7 +15,7 @@ enum ProductTypeEnum: string
 
     case VIRTUAL = 'virtual'; // 虚拟
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::GOODS->value   => '实物',

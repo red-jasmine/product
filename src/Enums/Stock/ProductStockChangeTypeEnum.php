@@ -15,7 +15,7 @@ enum ProductStockChangeTypeEnum: string
     case SALE = 'sale'; // 销售
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::SELLER->value => '卖家编辑',
