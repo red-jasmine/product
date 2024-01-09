@@ -442,10 +442,10 @@ class ProductStock
         if (bccomp($beforeStock, $resultStock, 0) === 0) {
             return null;
         }
-        $productStockLog     = new ProductStockLog();
-        $productStockLog->id = Snowflake::getInstance()->nextId();
-        $productStockLog->withOwner($sku->getOwner());
-        $productStockLog->withCreator($this->getOperator());
+        $productStockLog                = new ProductStockLog();
+        $productStockLog->id            = Snowflake::getInstance()->nextId();
+        $productStockLog->owner         = $sku->owner;
+        $productStockLog->creator       = $this->getOperator();
         $productStockLog->sku_id        = $sku->id;
         $productStockLog->product_id    = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
         $productStockLog->change_type   = $changeTypeEnum;

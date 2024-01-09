@@ -2,9 +2,8 @@
 
 namespace RedJasmine\Product\Services\Property\Query;
 
-use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
-use RedJasmine\Support\Traits\Services\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class PropertyValueQuery

@@ -60,9 +60,9 @@ class ProductStockChannel
             $sku->channel_stock = bcadd($sku->channel_stock, $quantity, 0);
             $sku->save();
 
-            $productChannelStock     = new ProductChannelStock();
-            $productChannelStock->id = Snowflake::getInstance()->nextId();
-            $productChannelStock->withOwner($sku->getOwner());
+            $productChannelStock                      = new ProductChannelStock();
+            $productChannelStock->id                  = Snowflake::getInstance()->nextId();
+            $productChannelStock->owner               = $sku->owner;
             $productChannelStock->sku_id              = $sku->id;
             $productChannelStock->product_id          = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
             $productChannelStock->channel_type        = $channel->channelType();

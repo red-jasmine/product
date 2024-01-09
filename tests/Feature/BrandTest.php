@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Tests\Feature;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Services\Brand\BrandService;
 use RedJasmine\Product\Tests\TestCase;
-use RedJasmine\Support\Services\SystemUser;
+use RedJasmine\Support\Helpers\User\SystemUser;
 
 class BrandTest extends TestCase
 {

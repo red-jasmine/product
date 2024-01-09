@@ -14,8 +14,8 @@ use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
 use RedJasmine\Product\Services\Property\Query\PropertyQuery;
 use RedJasmine\Product\Services\Property\Query\PropertyValueQuery;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\Services\WithUserService;
 
 class PropertyService
 {
@@ -115,7 +115,7 @@ class PropertyService
         foreach ($safe as $key => $value) {
             $productProperty->setAttribute($key, $value);
         }
-        $productProperty->withUpdater($this->getOperator());
+        $productProperty->updater = $this->getOperator();
         $productProperty->save();
         return $productProperty;
     }
@@ -174,7 +174,7 @@ class PropertyService
         foreach ($safe as $key => $value) {
             $productPropertyValue->setAttribute($key, $value);
         }
-        $productPropertyValue->withUpdater($this->getOperator());
+        $productPropertyValue->updater = $this->getOperator();
         $productPropertyValue->save();
         return $productPropertyValue;
     }

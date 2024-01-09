@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
 
 
 class Brand extends Model
@@ -15,7 +15,7 @@ class Brand extends Model
 
     use SoftDeletes;
 
-    use WithOperatorModel;
+    use HasOperator;
 
 
     public $incrementing = false;

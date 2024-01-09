@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Tests\Feature;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Services\Category\ProductCategoryService;
 use RedJasmine\Product\Tests\TestCase;
-use RedJasmine\Support\Services\SystemUser;
+use RedJasmine\Support\Helpers\User\SystemUser;
 
 class ProductCategoryTest extends TestCase
 {

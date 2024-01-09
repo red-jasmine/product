@@ -6,7 +6,7 @@ use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
 use RedJasmine\Product\Services\Property\PropertyService;
 use RedJasmine\Product\Tests\TestCase;
-use RedJasmine\Support\Services\SystemUser;
+use RedJasmine\Support\Helpers\User\SystemUser;
 
 class ProductPropertyTest extends TestCase
 {

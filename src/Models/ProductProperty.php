@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
 
 class ProductProperty extends Model
 {
 
     use HasDateTimeFormatter;
 
-    use WithOperatorModel;
+    use HasOperator;
 
 
     protected $primaryKey = 'pid';

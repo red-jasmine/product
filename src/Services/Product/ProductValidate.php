@@ -8,7 +8,7 @@ use JsonException;
 use RedJasmine\Product\Services\Product\Validators\AbstractProductValidator;
 use RedJasmine\Product\Services\Product\Validators\BasicValidator;
 use RedJasmine\Product\Services\Product\Validators\PropsValidator;
-use RedJasmine\Support\Traits\Services\WithUserService;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 
 class ProductValidate
 {

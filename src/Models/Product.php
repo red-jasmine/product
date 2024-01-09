@@ -16,8 +16,8 @@ use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
-use RedJasmine\Support\Traits\Models\WithOwnerModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Traits\Models\HasOwner;
 
 
 class Product extends Model
@@ -26,9 +26,9 @@ class Product extends Model
 
     use SoftDeletes;
 
-    use WithOwnerModel;
+    use HasOwner;
 
-    use WithOperatorModel;
+    use HasOperator;
 
     public $incrementing = false;
 

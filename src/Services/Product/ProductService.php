@@ -14,7 +14,7 @@ use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Product\Services\Product\Stock\ProductStock;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
-use RedJasmine\Support\Traits\Services\WithUserService;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use Throwable;
 
 class ProductService
@@ -91,7 +91,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $this->getOwner()->getUserType();
-        $data['owner_id']  = $this->getOwner()->getID();
+        $data['owner_id']   = $this->getOwner()->getID();
         $data               = $builder->validate($data);
 
         return $this->createSave($data);
@@ -113,7 +113,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
-        $data['owner_id']  = $product->owner_id;
+        $data['owner_id']   = $product->owner_id;
         $data               = $builder->validate($data);
         return $this->updateSave($id, $data);
 
@@ -135,7 +135,7 @@ class ProductService
         // 验证数据
         $builder            = $this->productBuilder();
         $data['owner_type'] = $product->owner_type;
-        $data['owner_id']  = $product->owner_id;
+        $data['owner_id']   = $product->owner_id;
         $data               = $builder->validateOnly($data);
 
         // 修改操作支持更新库存
@@ -261,7 +261,7 @@ class ProductService
         $product                = $this->find($id);
         $product->status        = $productStatus;
         $product->modified_time = now();
-        $product->withUpdater($this->getOperator());
+        $product->updater = $this->getOperator();
         $product->save();
 
         return true;
@@ -293,12 +293,12 @@ class ProductService
             unset($data['skus']);
 
             if (blank($product->owner_type)) {
-                $product->withOwner($this->getOwner());
+                $product->owner = $this->getOwner();
             }
             if (blank($product->creator_type)) {
-                $product->withCreator($this->getOperator());
+                $product->creator = $this->getOperator();
             }
-            $product->withUpdater($this->getOperator());
+            $product->updater = $this->getOperator();
 
             $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
             $product->is_sku           = ($product->is_multiple_spec === BoolIntEnum::YES) ? BoolIntEnum::NO : BoolIntEnum::YES;
@@ -323,9 +323,9 @@ class ProductService
                     $this->copyProductAttributeToSku($product, $skuModel);
                     $this->linkageTime($product);
                     if (blank($skuModel->creator_type)) {
-                        $skuModel->withCreator($this->getOperator());
+                        $skuModel->creator = $this->getOperator();
                     }
-                    $skuModel->withUpdater($this->getOperator());
+                    $skuModel->updater = $this->getOperator();
                     foreach ($sku as $key => $value) {
                         $skuModel->setAttribute($key, $value);
                     }
@@ -362,13 +362,13 @@ class ProductService
             DB::beginTransaction();
             $product->spu_id = 0;
             if (blank($product->owner_type)) {
-                $product->withOwner($this->getOwner());
+                $product->owner = $this->getOwner();
             }
 
             if (blank($product->creator_type)) {
-                $product->withCreator($this->getOperator());
+                $product->creator = $this->getOperator();
             }
-            $product->withUpdater($this->getOperator());
+            $product->updater = $this->getOperator();
 
             $product->is_multiple_spec = $data['is_multiple_spec'] ?? $product->is_multiple_spec;
             $product->is_sku           = ($product->is_multiple_spec === BoolIntEnum::YES) ? BoolIntEnum::NO : BoolIntEnum::YES;
@@ -431,9 +431,9 @@ class ProductService
                     $this->linkageTime($product);
 
                     if (blank($skuModel->creator_type)) {
-                        $skuModel->withCreator($this->getOperator());
+                        $skuModel->creator = $this->getOperator();
                     }
-                    $skuModel->withUpdater($this->getOperator());
+                    $skuModel->updater = $this->getOperator();
                     if ($isNew === false) {
                         // 如果 是新创建的
                         $this->setStock($skuModel, $sku['stock'], 'skus.' . $index . '.stock');
@@ -458,7 +458,7 @@ class ProductService
                     if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
                         $sku->status     = ProductStatus::DELETED;
                         $sku->deleted_at = $sku->deleted_at ?? now();
-                        $sku->withUpdater($this->getOperator());
+                        $sku->updater = $this->getOperator();
                         $sku->save();
                     }
                 }
@@ -526,7 +526,7 @@ class ProductService
     protected function copyProductAttributeToSku(Product $product, Product $sku) : void
     {
         $sku->owner_type = $product->owner_type;
-        $sku->owner_id  = $product->owner_id;
+        $sku->owner_id   = $product->owner_id;
 
         $sku->is_multiple_spec   = BoolIntEnum::NO;
         $sku->is_sku             = BoolIntEnum::YES;

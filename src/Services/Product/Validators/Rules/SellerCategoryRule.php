@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
 use RedJasmine\Support\Exceptions\AbstractException;
-use RedJasmine\Support\Helpers\UserObjectBuilder;
+use RedJasmine\Support\Helpers\User\UserObject;
 
 /**
  * 卖家分类验证规则
@@ -23,7 +23,7 @@ class SellerCategoryRule extends AbstractRule
 
         $service = new ProductSellerCategoryService;
         $service->disableRequest();
-        $service->setOwner(new UserObjectBuilder([
+        $service->setOwner(new UserObject([
                                                      'type' => $this->data['owner_type'],
                                                      'id'  => $this->data['owner_id'],
                                                  ]));

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
-use RedJasmine\Support\Traits\Models\WithOwnerModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Traits\Models\HasOwner;
 
 
 class ProductStockLog extends Model
@@ -17,9 +17,9 @@ class ProductStockLog extends Model
 
     use HasDateTimeFormatter;
 
-    use WithOwnerModel;
+    use HasOwner;
 
-    use WithOperatorModel;
+    use HasOperator;
 
     protected $casts = [
         'change_type' => ProductStockChangeTypeEnum::class

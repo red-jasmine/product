@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use RedJasmine\Product\Services\Product\Stock\StockChannelInterface;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\WithOwnerModel;
+use RedJasmine\Support\Traits\Models\HasOwner;
 
 /**
  * 渠道库存
@@ -19,7 +19,7 @@ class ProductChannelStock extends Model
 
     use HasDateTimeFormatter;
 
-    use WithOwnerModel;
+    use HasOwner;
 
 
     public function scopeChannel(Builder $query, StockChannelInterface $channel) : Builder

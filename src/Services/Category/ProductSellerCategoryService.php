@@ -10,11 +10,11 @@ use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\SellerCategoryException;
 use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
+use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
-use RedJasmine\Support\Traits\Services\HasQueryBuilder;
-use RedJasmine\Support\Traits\Services\WithUserService;
 
 /**
  * 商品类目服务
@@ -73,9 +73,10 @@ class ProductSellerCategoryService
         return $query->toTree();
     }
 
-    public function selectOptions(){
-     return   Model::selectOptions(function ($query){
-          return  $query->owner($this->getOwner());
+    public function selectOptions()
+    {
+        return Model::selectOptions(function ($query) {
+            return $query->owner($this->getOwner());
         });
     }
 
@@ -92,8 +93,8 @@ class ProductSellerCategoryService
         $validator           = $this->validator($attributes);
         $validator->validate();
         $productCategory->fill($validator->safe()->all());
-        $productCategory->withOwner($this->getOwner());
-        $productCategory->withCreator($this->getOperator());
+        $productCategory->owner   = $this->getOwner();
+        $productCategory->creator = $this->getOperator();
         $productCategory->save();
         return $productCategory;
     }
@@ -133,9 +134,9 @@ class ProductSellerCategoryService
             'status'       => __('red-jasmine/product::product-seller-category.attributes.status'),
             'extends'      => __('red-jasmine/product::product-seller-category.attributes.extends'),
             'creator_type' => __('red-jasmine/product::product-seller-category.attributes.creator_type'),
-            'creator_id'  => __('red-jasmine/product::product-seller-category.attributes.creator_id'),
+            'creator_id'   => __('red-jasmine/product::product-seller-category.attributes.creator_id'),
             'updater_type' => __('red-jasmine/product::product-seller-category.attributes.updater_type'),
-            'updater_id'  => __('red-jasmine/product::product-seller-category.attributes.updater_id'),
+            'updater_id'   => __('red-jasmine/product::product-seller-category.attributes.updater_id'),
         ];
     }
 
@@ -154,7 +155,7 @@ class ProductSellerCategoryService
         $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
         $validator->validated();
         $productCategory->fill($validator->safe()->all());
-        $productCategory->withUpdater($this->getOperator());
+        $productCategory->updater = $this->getOperator();
         $productCategory->save();
         return $productCategory;
     }
@@ -175,7 +176,7 @@ class ProductSellerCategoryService
         $validator->setRules(Arr::only($validator->getRules(), array_keys($attributes)));
         $validator->validated();
         $productCategory->fill($validator->safe()->all());
-        $productCategory->withUpdater($this->getOperator());
+        $productCategory->updater = $this->getOperator();
         $productCategory->save();
         return $productCategory;
 

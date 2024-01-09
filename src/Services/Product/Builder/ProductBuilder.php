@@ -5,8 +5,8 @@ namespace RedJasmine\Product\Services\Product\Builder;
 use Exception;
 use RedJasmine\Product\Services\Product\Contracts\ProductBuilderInterface;
 use RedJasmine\Product\Services\Product\ProductValidate;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\Services\WithUserService;
 
 class ProductBuilder implements ProductBuilderInterface
 {

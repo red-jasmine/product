@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Http\Buyer\Resources\SellerCategoryResource;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
-use RedJasmine\Support\Helpers\UserObjectBuilder;
+use RedJasmine\Support\Helpers\User\UserObject;
 
 class SellerCategoryController extends Controller
 {
@@ -17,7 +17,7 @@ class SellerCategoryController extends Controller
     public function index(Request $request) : AnonymousResourceCollection
     {
 
-        $owner = new UserObjectBuilder([
+        $owner = new UserObject([
                                            'type' => $request->input('owner_type'),
                                            'id'  => $request->input('owner_id'),
                                        ]);

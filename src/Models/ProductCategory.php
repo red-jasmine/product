@@ -9,15 +9,15 @@ use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\ModelTree;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
-use RedJasmine\Support\Traits\Models\WithOwnerModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Traits\Models\HasOwner;
 
 class ProductCategory extends Model
 {
     use HasDateTimeFormatter;
 
-    use WithOwnerModel;
-    use WithOperatorModel;
+    use HasOwner;
+    use HasOperator;
 
 
     use ModelTree;

@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Product\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use RedJasmine\Product\Enums\Product\FreightPayerEnum;
 use RedJasmine\Product\Enums\Product\ProductStatus;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
@@ -11,8 +10,8 @@ use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
-use RedJasmine\Support\Helpers\UserObjectBuilder;
-use RedJasmine\Support\Services\SystemUser;
+use RedJasmine\Support\Helpers\User\SystemUser;
+use RedJasmine\Support\Helpers\User\UserObject;
 
 
 class ProductTest extends ProductPropertyTest
@@ -23,7 +22,7 @@ class ProductTest extends ProductPropertyTest
     {
         $service = new ProductService();
         $service->setOwner(new SystemUser());
-        $service->setOperator(new UserObjectBuilder([ 'id' => 1, 'type' => 'admin', 'nickname' => 'Admin' ]));
+        $service->setOperator(new UserObject([ 'id' => 1, 'type' => 'admin', 'nickname' => 'Admin' ]));
 
         return $service;
     }

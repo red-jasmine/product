@@ -10,10 +10,10 @@ use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\CategoryException;
 use RedJasmine\Product\Models\ProductCategory as Model;
 use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
-use RedJasmine\Support\Traits\Services\WithUserService;
 
 /**
  * 商品类目服务
@@ -72,7 +72,7 @@ class ProductCategoryService
         foreach ($validator->safe()->all() as $key => $value) {
             $productCategory->setAttribute($key, $value);
         }
-        $productCategory->withCreator($this->getOperator());
+        $productCategory->creator = $this->getOperator();
         $productCategory->save();
         return $productCategory;
     }
@@ -136,7 +136,7 @@ class ProductCategoryService
         foreach ($validator->safe()->all() as $key => $value) {
             $productCategory->setAttribute($key, $value);
         }
-        $productCategory->withUpdater($this->getOperator());
+        $productCategory->updater = $this->getOperator();
         $productCategory->save();
         return $productCategory;
     }
@@ -159,7 +159,7 @@ class ProductCategoryService
         foreach ($validator->safe()->all() as $key => $value) {
             $productCategory->setAttribute($key, $value);
         }
-        $productCategory->withUpdater($this->getOperator());
+        $productCategory->updater = $this->getOperator();
         $productCategory->save();
         return $productCategory;
 

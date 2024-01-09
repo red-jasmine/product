@@ -10,9 +10,9 @@ use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
+use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\Services\HasQueryBuilder;
-use RedJasmine\Support\Traits\Services\WithUserService;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class BrandService
@@ -98,7 +98,7 @@ class BrandService
         $brand->id = $this->buildID();
 
         $brand->fill($validator->safe()->all());
-        $brand->withCreator($this->getOperator());
+        $brand->creator = $this->getOperator();
         $brand->save();
         return $brand;
 
@@ -157,7 +157,7 @@ class BrandService
         $validator = $this->validator($data);
         $validator->validate();
         $brand->fill($validator->safe()->all());
-        $brand->withUpdater($this->getOperator());
+        $brand->updater = $this->getOperator();
         $brand->save();
         return $brand;
     }
@@ -177,7 +177,7 @@ class BrandService
         $validator->setRules(Arr::only($validator->getRules(), array_keys($data)));
         $validator->validate();
         $brand->fill($validator->safe()->all());
-        $brand->withUpdater($this->getOperator());
+        $brand->updater = $this->getOperator();
         $brand->save();
         return $brand;
 
