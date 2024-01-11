@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Enums\Product\ProductStatus;
+use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
@@ -14,13 +14,14 @@ use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Product\Services\Product\Stock\ProductStock;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
+use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Foundation\Service\WithUserService;
 use Throwable;
 
-class ProductService
+class ProductService extends Service
 {
-    use WithUserService;
 
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions';
 
     public function queries() : ProductQuery
     {
@@ -86,12 +87,13 @@ class ProductService
      * @return Product
      * @throws Throwable
      */
-    public function create(array $data) : Product
+    public function createv2(array $data) : Product
     {
         // 验证数据
         $builder            = $this->productBuilder();
-        $data['owner_type'] = $this->getOwner()->getUserType();
+        $data['owner_type'] = $this->getOwner()->getType();
         $data['owner_id']   = $this->getOwner()->getID();
+
         $data               = $builder->validate($data);
 
         return $this->createSave($data);
@@ -229,7 +231,7 @@ class ProductService
              */
             $product = $this->query()->onlyTrashed()->find($id);
             $product->info()->onlyTrashed()->restore();
-            $product->skus()->onlyTrashed()->where('status', '<>', ProductStatus::DELETED->value)->restore();
+            $product->skus()->onlyTrashed()->where('status', '<>', ProductStatusEnum::DELETED->value)->restore();
             $product->restore();
             DB::commit();
         } catch (AbstractException $exception) {
@@ -251,17 +253,17 @@ class ProductService
     /**
      * 设状态
      *
-     * @param int           $id
-     * @param ProductStatus $productStatus
+     * @param int               $id
+     * @param ProductStatusEnum $productStatus
      *
      * @return bool
      */
-    public function updateStatus(int $id, ProductStatus $productStatus) : bool
+    public function updateStatus(int $id, ProductStatusEnum $productStatus) : bool
     {
         $product                = $this->find($id);
         $product->status        = $productStatus;
         $product->modified_time = now();
-        $product->updater = $this->getOperator();
+        $product->updater       = $this->getOperator();
         $product->save();
 
         return true;
@@ -455,10 +457,10 @@ class ProductService
                 // 无效的SKU 进行关闭
                 $keys = $skus->keys()->all();
                 foreach ($skuModelList as $properties => $sku) {
-                    if ($sku->status !== ProductStatus::DELETED && !in_array($properties, $keys, true)) {
-                        $sku->status     = ProductStatus::DELETED;
+                    if ($sku->status !== ProductStatusEnum::DELETED && !in_array($properties, $keys, true)) {
+                        $sku->status     = ProductStatusEnum::DELETED;
                         $sku->deleted_at = $sku->deleted_at ?? now();
-                        $sku->updater = $this->getOperator();
+                        $sku->updater    = $this->getOperator();
                         $sku->save();
                     }
                 }
@@ -483,30 +485,30 @@ class ProductService
      *
      * @return void
      */
-    protected function linkageTime(Product $product) : void
+    public function linkageTime(Product $product) : void
     {
 
         if (!$product->isDirty('status')) {
             return;
         }
         switch ($product->status) {
-            case ProductStatus::ON_SALE: // 在售
+            case ProductStatusEnum::ON_SALE: // 在售
                 $product->on_sale_time = now();
                 break;
-            case ProductStatus::OUT_OF_STOCK: // 缺货
+            case ProductStatusEnum::OUT_OF_STOCK: // 缺货
                 $product->sold_out_time = now();
                 break;
-            case ProductStatus::SOLD_OUT: // 售停
+            case ProductStatusEnum::SOLD_OUT: // 售停
                 $product->sold_out_time = now();
                 break;
-            case ProductStatus::OFF_SHELF: // 下架
+            case ProductStatusEnum::OFF_SHELF: // 下架
                 $product->off_sale_time = now();
                 break;
-            case ProductStatus::DELETED:
-            case ProductStatus::PRE_SALE:
+            case ProductStatusEnum::DELETED:
+            case ProductStatusEnum::PRE_SALE:
 
                 break;
-            case ProductStatus::FORBID:// 强制下架
+            case ProductStatusEnum::FORBID:// 强制下架
                 $product->on_sale_time  = null;
                 $product->sold_out_time = null;
                 $product->off_sale_time = $product->off_sale_time ?? now();
@@ -523,7 +525,7 @@ class ProductService
      *
      * @return void
      */
-    protected function copyProductAttributeToSku(Product $product, Product $sku) : void
+    public function copyProductAttributeToSku(Product $product, Product $sku) : void
     {
         $sku->owner_type = $product->owner_type;
         $sku->owner_id   = $product->owner_id;

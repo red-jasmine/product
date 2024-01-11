@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatus;
+use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
@@ -18,10 +18,13 @@ use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
+use RedJasmine\Support\Traits\Models\WithDTO;
 
 
 class Product extends Model
 {
+    use WithDTO;
+
     use HasDateTimeFormatter;
 
     use SoftDeletes;
@@ -36,7 +39,7 @@ class Product extends Model
     protected $casts = [
         'product_type'     => ProductTypeEnum::class,  // 商品类型
         'shipping_type'    => ShippingTypeEnum::class,// 发货类型
-        'status'           => ProductStatus::class,// 状态
+        'status'           => ProductStatusEnum::class,// 状态
         'sub_stock'        => SubStockTypeEnum::class,// 扣库存方式
         'freight_payer'    => FreightPayerEnum::class,// 运费承担方
         'is_multiple_spec' => BoolIntEnum::class,

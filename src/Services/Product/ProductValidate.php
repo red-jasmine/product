@@ -15,8 +15,6 @@ class ProductValidate
 
     use WithUserService;
 
-    protected array $data = [];
-
     /**
      * 基础验证器
      * @var AbstractProductValidator[]
@@ -25,8 +23,7 @@ class ProductValidate
         BasicValidator::class,
         PropsValidator::class
     ];
-
-
+    protected array $data = [];
     protected \Illuminate\Validation\Validator $validator;
 
     /**

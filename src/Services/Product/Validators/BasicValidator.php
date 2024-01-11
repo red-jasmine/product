@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Product\Validators;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatus;
+use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
@@ -60,7 +60,7 @@ class BasicValidator extends AbstractProductValidator
             'barcode'            => [ 'attribute' => '条形码', 'rules' => [ 'sometimes', 'max:64' ], ],
             'outer_id'           => [ 'attribute' => '商品编码', 'rules' => [ 'sometimes', 'max:64' ], ],
             'stock'              => [ 'attribute' => '库存', 'rules' => [ 'required', 'integer', 'min:0', 'max:' . ProductService::MAX_QUANTITY ], ],
-            'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatus::class) ], ],
+            'status'             => [ 'attribute' => '状态', 'rules' => [ 'required', new Enum(ProductStatusEnum::class) ], ],
             'price'              => [ 'attribute' => '价格', 'rules' => [ 'required', new PriceRule() ], ],
             'market_price'       => [ 'attribute' => '市场价', 'rules' => [ 'sometimes', new PriceRule(true, true) ], ],
             'cost_price'         => [ 'attribute' => '成本价', 'rules' => [ 'sometimes', new PriceRule(true, true) ], ],
@@ -94,8 +94,8 @@ class BasicValidator extends AbstractProductValidator
             'info.height'      => [ 'attribute' => '高度', 'rules' => [], ],
             'info.length'      => [ 'attribute' => '长度', 'rules' => [], ],
             'info.size'        => [ 'attribute' => '大小', 'rules' => [], ],
-            'info.extends'     => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'array' ], ],
-            'info.tools'       => [ 'attribute' => '工具', 'rules' => [ 'sometimes', 'tools' ], ],
+            'info.extends'     => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
+            'info.tools'       => [ 'attribute' => '工具', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
             'info.remarks'     => [ 'attribute' => '备注', 'rules' => [], ],
             'info.basic_props' => [ 'attribute' => '基础属性', 'rules' => [ 'sometimes', ], ],
             'info.sale_props'  => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', ], ],

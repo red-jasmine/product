@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Tests\Feature;
 
 use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatus;
+use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
@@ -46,7 +46,7 @@ class ProductTest extends ProductPropertyTest
         $product     = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatus::IN_STOCK->value,
+            'status'        => ProductStatusEnum::IN_STOCK->value,
             'title'         => '基础商品',
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -133,7 +133,7 @@ class ProductTest extends ProductPropertyTest
         $data         = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatus::IN_STOCK->value,
+            'status'        => ProductStatusEnum::IN_STOCK->value,
             'title'         => '基础商品',
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -229,7 +229,7 @@ class ProductTest extends ProductPropertyTest
         $data = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatus::OUT_OF_STOCK,
+            'status'        => ProductStatusEnum::OUT_OF_STOCK,
             'title'         => '基础商品-' . rand(1, 9999),
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -336,7 +336,7 @@ class ProductTest extends ProductPropertyTest
         $data = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatus::OUT_OF_STOCK,
+            'status'        => ProductStatusEnum::OUT_OF_STOCK,
             'title'         => '基础商品-' . rand(1, 9999),
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -396,7 +396,7 @@ class ProductTest extends ProductPropertyTest
         $data    = [
             'title'  => '修改价格',
             'price'  => '9988',
-            'status' => ProductStatus::OUT_OF_STOCK
+            'status' => ProductStatusEnum::OUT_OF_STOCK
 
         ];
         $product = $this->productService()->modify($product->id, $data);

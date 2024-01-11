@@ -34,6 +34,7 @@ class ProductBuilder implements ProductBuilderInterface
     public function validate(array $data) : array
     {
         $validatorService = new ProductValidate($data);
+
         return $validatorService->validate();
     }
 

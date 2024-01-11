@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Enums\Product;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-enum ProductStatus: string
+enum ProductStatusEnum: string
 {
     use EnumsHelper;
 

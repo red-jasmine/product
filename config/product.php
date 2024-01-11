@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     //
     'price_decimal_total' => 14,// 价格小数点精度
@@ -7,8 +8,19 @@ return [
 
     'price_decimal_precision' => 6,// 价格小数点精度
 
+    'actions' => [
+        'create' => RedJasmine\Product\Actions\Products\ProductCreateAction::class,
+    ],
+
+    'pipelines'  => [
+        'create' => [
+            \RedJasmine\Product\Pipelines\Products\ProductFillPipeline::class,
+            \RedJasmine\Product\Pipelines\Products\ProductValidatePipeline::class,
+        ],
+    ],
+
     // 商品验证器
-    'validators'              => [
+    'validators' => [
 
         // 类目验证
         // 卖家分类验证
