@@ -42,7 +42,7 @@ class SkusRule extends AbstractRule
         }
 
         $this->salePropsNames = $this->getSalePropsNames();
-        foreach ($value as &$sku) {
+        foreach ($value as $index => &$sku) {
             $sku['properties'] = $this->propertyFormatter->formatString($sku['properties']);
             if (!in_array($sku['properties'], $cross, true)) {
                 $fail('规格不在属性配置中');

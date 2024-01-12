@@ -88,7 +88,7 @@ class PropertyService
         $validator->validate();
 
         if ($this->getOperator()) {
-            $values['creator_type'] = $this->getOperator()->getUserType();
+            $values['creator_type'] = $this->getOperator()->getType();
             $values['creator_id']  = $this->getOperator()->getID();
         }
         $attributes = [
@@ -146,7 +146,7 @@ class PropertyService
         $validator->validate();
 
         if ($this->getOperator()) {
-            $values['creator_type'] = $this->getOperator()->getUserType();
+            $values['creator_type'] = $this->getOperator()->getType();
             $values['creator_id']  = $this->getOperator()->getID();
         }
         $attributes = [

@@ -44,7 +44,6 @@ class ProductInfoDTO extends Data
 
         if ($properties->offsetExists('basic_props')) {
             $properties->put('basic_props', Json::toArray($properties->get('basic_props', '')));
-
         }
         if ($properties->offsetExists('sale_props')) {
             $properties->put('sale_props', Json::toArray($properties->get('sale_props', '')));

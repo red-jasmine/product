@@ -110,18 +110,19 @@ class BasicValidator extends AbstractProductValidator
     {
         $fields = $this->fields();
         return [
-            'skus.*.properties'   => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
-            'skus.*.status'       => $fields['status'],
-            'skus.*.price'        => $fields['price'],
-            'skus.*.market_price' => $fields['market_price'],
-            'skus.*.cost_price'   => $fields['cost_price'],
-            'skus.*.min'          => $fields['min'],
-            'skus.*.max'          => $fields['max'],
-            'skus.*.multiple'     => $fields['multiple'],
-            'skus.*.image'        => $fields['image'],
-            'skus.*.barcode'      => $fields['barcode'],
-            'skus.*.outer_id'     => $fields['outer_id'],
-            'skus.*.stock'        => $fields['stock'],
+            'skus.*.properties'      => [ 'attribute' => '规格', 'rules' => [ 'sometimes', ], ],
+            'skus.*.properties_name' => [ 'attribute' => '规格名称', 'rules' => [ 'sometimes', ], ],
+            'skus.*.status'          => $fields['status'],
+            'skus.*.price'           => $fields['price'],
+            'skus.*.market_price'    => $fields['market_price'],
+            'skus.*.cost_price'      => $fields['cost_price'],
+            'skus.*.min'             => $fields['min'],
+            'skus.*.max'             => $fields['max'],
+            'skus.*.multiple'        => $fields['multiple'],
+            'skus.*.image'           => $fields['image'],
+            'skus.*.barcode'         => $fields['barcode'],
+            'skus.*.outer_id'        => $fields['outer_id'],
+            'skus.*.stock'           => $fields['stock'],
         ];
     }
 

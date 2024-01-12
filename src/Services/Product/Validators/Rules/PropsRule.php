@@ -22,13 +22,15 @@ class PropsRule extends AbstractRule
      * @param Closure $fail
      *
      * @return void
+     * @throws ProductPropertyException
      */
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
         $propertyFormatter = new PropertyFormatter();
-
+        if (blank($value)) {
+            return;
+        }
         $value = $propertyFormatter->formatArray($value);
-
         try {
             $value = (new PropertyService())->validateProps($value);
         } catch (ProductPropertyException $productPropertyException) {

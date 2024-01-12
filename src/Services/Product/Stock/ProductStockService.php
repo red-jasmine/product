@@ -100,10 +100,13 @@ class ProductStockService extends Service
     {
         $sku = Product::lockForUpdate()
                       ->withTrashed()
-                      ->select([ 'owner_type', 'owner_id', 'id', 'spu_id', 'stock', 'lock_stock', 'channel_stock', 'is_sku' ])
+                      ->select([
+                                   'owner_type', 'owner_id', 'id', 'spu_id',
+                                   'stock', 'lock_stock',
+                                   'channel_stock', 'is_sku' ])
                       ->findOrFail($skuID);
         if ($sku->is_sku === BoolIntEnum::NO) {
-            throw new ProductStockException('只能操作库存单位');
+           throw new ProductStockException('只能操作库存单位');
         }
         return $sku;
     }
@@ -428,9 +431,9 @@ class ProductStockService extends Service
             return null;
         }
 
-        $productStockLog                = new ProductStockLog();
-        $productStockLog->id            = Snowflake::getInstance()->nextId();
-        $productStockLog->owner         = $sku->owner;
+        $productStockLog        = new ProductStockLog();
+        $productStockLog->id    = Snowflake::getInstance()->nextId();
+        $productStockLog->owner = $sku->owner;
         // TODO
         //$productStockLog->creator       = $this->getOperator();
         $productStockLog->sku_id        = $sku->id;
