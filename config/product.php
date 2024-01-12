@@ -10,13 +10,11 @@ return [
 
     'actions' => [
         'create' => RedJasmine\Product\Actions\Products\ProductCreateAction::class,
+        'update' => RedJasmine\Product\Actions\Products\ProductUpdateAction::class,
     ],
 
     'pipelines'  => [
-        'create' => [
-            \RedJasmine\Product\Pipelines\Products\ProductFillPipeline::class,
-            \RedJasmine\Product\Pipelines\Products\ProductValidatePipeline::class,
-        ],
+        'create' => [],
     ],
 
     // 商品验证器

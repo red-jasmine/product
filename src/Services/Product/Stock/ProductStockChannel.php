@@ -16,7 +16,7 @@ class ProductStockChannel
 
     use ServiceExtends;
 
-    public function __construct(protected ProductService $service, protected ProductStock $stockService)
+    public function __construct(protected ProductStockService $stockService)
     {
 
 

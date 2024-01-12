@@ -15,6 +15,8 @@ class ProductSkuDTO extends Data
 {
     public ProductStatusEnum     $status;
     public BoolIntEnum           $isSku          = BoolIntEnum::YES;
+    public string                $properties;
+    public ?string               $propertiesName = null;
     public int                   $stock;
     public string|int|float      $price;
     public ?string               $image          = null;
@@ -27,7 +29,5 @@ class ProductSkuDTO extends Data
     public ?int                  $min            = null;
     public ?int                  $max            = null;
     public int                   $multiple       = 1;
-    public ?string               $properties     = null;
-    public ?string               $propertiesName = null;
 
 }

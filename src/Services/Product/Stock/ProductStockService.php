@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Product\Services\Product\Stock;
 
-use BadMethodCallException;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,35 +13,19 @@ use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
+use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Throwable;
 
-/**
- *
- * 库存服务
- * @mixin ProductService
- *
- */
-class ProductStock
+class ProductStockService extends Service
 {
-
-    use ServiceExtends;
-
-    public function __construct(protected ?ProductService $service)
-    {
-
-
-    }
-
-
     /**
      * 渠道渠道库存
      * @return ProductStockChannel
      */
     public function channel() : ProductStockChannel
     {
-        return new ProductStockChannel($this->service, $this);
+        return new ProductStockChannel($this);
     }
 
 
@@ -202,6 +185,7 @@ class ProductStock
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param StockChannelInterface|null $channel
      * @param bool                       $lock
+     * @param string                     $changeDetail
      *
      * @return ProductStockLog|null
      * @throws AbstractException
@@ -283,6 +267,7 @@ class ProductStock
      * @param int                        $quantity
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param StockChannelInterface|null $channel
+     * @param string                     $changeDetail
      *
      * @return ProductStockLog|null
      * @throws AbstractException
@@ -442,10 +427,12 @@ class ProductStock
         if (bccomp($beforeStock, $resultStock, 0) === 0) {
             return null;
         }
+
         $productStockLog                = new ProductStockLog();
         $productStockLog->id            = Snowflake::getInstance()->nextId();
         $productStockLog->owner         = $sku->owner;
-        $productStockLog->creator       = $this->getOperator();
+        // TODO
+        //$productStockLog->creator       = $this->getOperator();
         $productStockLog->sku_id        = $sku->id;
         $productStockLog->product_id    = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
         $productStockLog->change_type   = $changeTypeEnum;
@@ -463,26 +450,4 @@ class ProductStock
     }
 
 
-    /**
-     * Magically call the JWT instance.
-     *
-     * @param string $method
-     * @param array  $parameters
-     *
-     * @return mixed
-     *
-     * @throws BadMethodCallException
-     */
-    public function __call($method, $parameters)
-    {
-        if (method_exists($this->service, $method)) {
-            return call_user_func_array([ $this->service, $method ], $parameters);
-        }
-
-        if (static::hasMacro($method)) {
-            return $this->macroCall($method, $parameters);
-        }
-
-        throw new BadMethodCallException("Method [$method] does not exist.");
-    }
 }

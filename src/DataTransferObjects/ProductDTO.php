@@ -8,7 +8,7 @@ use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\Json\Json;
 use Spatie\LaravelData\Attributes\MapInputName;
@@ -21,12 +21,8 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapOutputName(SnakeCaseMapper::class)]
 class ProductDTO extends Data
 {
-
-
-    public ?int   $id;
-    public ?array $parameters = [];
-
-    public UserData              $owner;
+    public ?array                $parameters       = [];
+    public UserDTO               $owner;
     public string                $title;
     public ProductTypeEnum       $productType;
     public ShippingTypeEnum      $shippingType;
@@ -56,8 +52,6 @@ class ProductDTO extends Data
     public int                   $isNew            = 0;
     public int                   $isBest           = 0;
     public int                   $isBenefit        = 0;
-    public ?string               $properties       = null;
-    public ?string               $propertiesName   = null;
     public FreightPayerEnum      $freightPayer     = FreightPayerEnum::DEFAULT;
     public SubStockTypeEnum      $subStock         = SubStockTypeEnum::DEFAULT;
 
@@ -71,10 +65,9 @@ class ProductDTO extends Data
 
     public static function prepareForPipeline(Collection $properties) : Collection
     {
-
-
-        $properties->put('skus', Json::toArray($properties->get('skus', '')));
-
+        if ($properties->offsetExists('skus')) {
+            $properties->put('skus', Json::toArray($properties->get('skus', '')));
+        }
         return $properties;
     }
 

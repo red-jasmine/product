@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
+use RedJasmine\Product\Pipelines\Products\ProductFillPipeline;
+use RedJasmine\Product\Pipelines\Products\ProductValidatePipeline;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use Throwable;
@@ -17,6 +19,11 @@ class ProductCreateAction extends AbstractProductAction
 
     protected ?string $pipelinesConfigKey = 'red-jasmine.product.pipelines.create';
 
+
+    protected static array $commonPipes  = [
+        ProductFillPipeline::class,
+        ProductValidatePipeline::class
+    ];
     /**
      * 创建操作
      *
@@ -72,6 +79,7 @@ class ProductCreateAction extends AbstractProductAction
                 $this->service->copyProductAttributeToSku($product, $sku);
                 $this->service->linkageTime($sku);
             });
+            $product->stock = $product->skus->sum('stock');
             $product->skus()->saveMany($product->skus);
         }
 

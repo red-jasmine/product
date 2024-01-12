@@ -31,19 +31,25 @@ class ProductInfoDTO extends Data
     public ?string $size;
 
     /**
-     * @var DataCollection<ProductProp>|null
+     * @var DataCollection<ProductPropDTO>|null
      */
     public ?DataCollection $basicProps = null;
     /**
-     * @var DataCollection<ProductProp>|null
+     * @var DataCollection<ProductPropDTO>|null
      */
     public ?DataCollection $saleProps = null;
 
     public static function prepareForPipeline(Collection $properties) : Collection
     {
 
-        $properties->put('basic_props', Json::toArray($properties->get('basic_props', '')));
-        $properties->put('sale_props', Json::toArray($properties->get('sale_props', '')));
+        if ($properties->offsetExists('basic_props')) {
+            $properties->put('basic_props', Json::toArray($properties->get('basic_props', '')));
+
+        }
+        if ($properties->offsetExists('sale_props')) {
+            $properties->put('sale_props', Json::toArray($properties->get('sale_props', '')));
+
+        }
         return $properties;
     }
 
