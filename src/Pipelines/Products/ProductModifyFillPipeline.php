@@ -9,14 +9,6 @@ use RedJasmine\Support\Enums\BoolIntEnum;
 
 class ProductModifyFillPipeline extends ProductFillPipeline
 {
-    protected function fillSkus(Product $product) : void
-    {
-        // 如果原来是   现在变化了 单规格
-        if ($this->isNeedFillSkus($product)) {
-            parent::fillSkus($product);
-        }
-    }
-
     protected function isNeedFillSkus(Product $product) : bool
     {
         /**
@@ -48,6 +40,8 @@ class ProductModifyFillPipeline extends ProductFillPipeline
      */
     public function fillProduct(Product $product, ProductModifyDTO|ProductDTO $productDTO) : void
     {
+
+
         $data = $productDTO->toArray();
         $info = $data['info'] ?? [];
         unset($data['skus'], $data['info'], $data['parameters']);
@@ -59,8 +53,6 @@ class ProductModifyFillPipeline extends ProductFillPipeline
         foreach ($info as $infoKey => $infoValue) {
             $product->info->setAttribute($infoKey, $infoValue);
         }
-
-        $product->is_sku = $product->is_multiple_spec === BoolIntEnum::YES ? BoolIntEnum::NO : BoolIntEnum::YES;
 
     }
 

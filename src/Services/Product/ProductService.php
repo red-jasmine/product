@@ -4,17 +4,13 @@ namespace RedJasmine\Product\Services\Product;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Omnipay\Common\Http\Exception;
 use RedJasmine\Product\Actions\Products\ProductCreateAction;
 use RedJasmine\Product\Actions\Products\ProductUpdateAction;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
-use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Models\ProductInfo;
+use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Product\Services\Product\Stock\ProductStockService;
 use RedJasmine\Support\Enums\BoolIntEnum;
@@ -36,10 +32,9 @@ class ProductService extends Service
      * 最大库存
      */
     public const MAX_QUANTITY = 9999999999;
-    protected static ?string       $actionsConfigKey = 'red-jasmine.product.actions';
-    public string                  $model            = Product::class;
-    protected ?ProductStockService $stockService     = null;
-    protected ?ProductBuilder      $productBuilder   = null;
+    protected static ?string  $actionsConfigKey = 'red-jasmine.product.actions';
+    public string             $model            = Product::class;
+    protected ?ProductBuilder $productBuilder   = null;
 
     public function queries() : ProductQuery
     {
@@ -102,32 +97,27 @@ class ProductService extends Service
     /**
      * 复用字段
      *
-     * @param Product $product
-     * @param Product $sku
+     * @param Product    $product
+     * @param ProductSku $sku
      *
      * @return void
      */
-    public function copyProductAttributeToSku(Product $product, Product $sku) : void
+    public function copyProductAttributeToSku(Product $product, ProductSku $sku) : void
     {
-        $sku->owner_type         = $product->owner_type;
-        $sku->owner_id           = $product->owner_id;
-        $sku->is_multiple_spec   = BoolIntEnum::NO;
-        $sku->is_sku             = BoolIntEnum::YES;
-        $sku->spu_id             = $product->id;
-        $sku->title              = $product->title;
-        $sku->product_type       = $product->product_type;
-        $sku->shipping_type      = $product->shipping_type;
-        $sku->title              = $product->title;
-        $sku->category_id        = $product->category_id;
-        $sku->seller_category_id = $product->seller_category_id;
-        $sku->freight_payer      = $product->freight_payer;
-        $sku->postage_id         = $product->postage_id;
-        $sku->sub_stock          = $product->sub_stock;
-        $sku->delivery_time      = $product->delivery_time;
-        $sku->vip                = (int)($product->vip ?? 0);
-        $sku->points             = (int)($product->points ?? 0);
-        $sku->status             = $product->status;
-        $sku->deleted_at         = null;
+        $sku->product_id = $product->id;
+        $sku->status     = $product->status;
+        $sku->deleted_at = null;
+    }
+
+
+    public function productCountFields(Product $product)
+    {
+        // 统计值
+        $product->price        = $product->skus->min('price');
+        $product->cost_price   = $product->skus->min('cost_price');
+        $product->market_price = $product->skus->min('market_price');
+        $product->stock        = $product->skus->sum('stock');
+        $product->sales        = $product->skus->sum('sales');
     }
 
 
@@ -141,7 +131,7 @@ class ProductService extends Service
      */
     public function query() : Builder
     {
-        return Product::query()->productable();
+        return Product::query();
     }
 
     /**

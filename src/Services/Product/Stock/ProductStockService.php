@@ -9,8 +9,8 @@ use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductChannelStock;
+use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
-use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Service;
@@ -53,7 +53,8 @@ class ProductStockService extends Service
 
         try {
             DB::beginTransaction();
-            $sku         = $this->getSKU($skuID);
+            $sku = $this->getSKU($skuID);
+
             $beforeStock = $sku->stock;
             if (bccomp($sku->stock, $stock, 0) === 0) {
                 DB::commit();
@@ -93,22 +94,16 @@ class ProductStockService extends Service
      *
      * @param int $skuID
      *
-     * @return Product
-     * @throws ProductStockException
+     * @return ProductSku
      */
-    public function getSKU(int $skuID) : Product
+    public function getSKU(int $skuID) : ProductSku
     {
-        $sku = Product::lockForUpdate()
-                      ->withTrashed()
-                      ->select([
-                                   'owner_type', 'owner_id', 'id', 'spu_id',
-                                   'stock', 'lock_stock',
-                                   'channel_stock', 'is_sku' ])
-                      ->findOrFail($skuID);
-        if ($sku->is_sku === BoolIntEnum::NO) {
-           throw new ProductStockException('只能操作库存单位');
-        }
-        return $sku;
+        return ProductSku::lockForUpdate()
+                         ->withTrashed()
+                         ->select([ 'id', 'product_id', 'stock', 'lock_stock', 'channel_stock', ])
+                         ->findOrFail($skuID);
+
+
     }
 
     /**
@@ -413,7 +408,7 @@ class ProductStockService extends Service
     /**
      * 记录变更
      *
-     * @param Product                    $sku
+     * @param ProductSku                 $sku
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param int                        $beforeStock
      * @param int                        $changeStock
@@ -425,7 +420,7 @@ class ProductStockService extends Service
      * @return ProductStockLog|null
      * @throws Exception
      */
-    public function log(Product $sku, ProductStockChangeTypeEnum $changeTypeEnum, int $beforeStock, int $changeStock, int $resultStock, ?StockChannelInterface $channel = null, bool $lock = false, string $changeDetail = null) : ?ProductStockLog
+    public function log(ProductSku $sku, ProductStockChangeTypeEnum $changeTypeEnum, int $beforeStock, int $changeStock, int $resultStock, ?StockChannelInterface $channel = null, bool $lock = false, string $changeDetail = null) : ?ProductStockLog
     {
         if (bccomp($beforeStock, $resultStock, 0) === 0) {
             return null;
@@ -433,11 +428,11 @@ class ProductStockService extends Service
 
         $productStockLog        = new ProductStockLog();
         $productStockLog->id    = Snowflake::getInstance()->nextId();
-        $productStockLog->owner = $sku->owner;
+        $productStockLog->owner = $sku->product->owner;
         // TODO
         //$productStockLog->creator       = $this->getOperator();
         $productStockLog->sku_id        = $sku->id;
-        $productStockLog->product_id    = $sku->spu_id === 0 ? $sku->id : $sku->spu_id;
+        $productStockLog->product_id    = $sku->product_id;
         $productStockLog->change_type   = $changeTypeEnum;
         $productStockLog->change_detail = Str::limit((string)$changeDetail, 200, '');
         $productStockLog->before_stock  = $beforeStock;

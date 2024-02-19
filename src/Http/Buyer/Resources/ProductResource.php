@@ -67,10 +67,8 @@ class ProductResource extends JsonResource
             'shipping_type'      => $this->shipping_type,
             'image'              => $this->image,
             'barcode'            => $this->barcode,
-            'keywords'           => $this->keywords,
-            'spu_id'             => $this->spu_id,
             'is_multiple_spec'   => $this->is_multiple_spec,
-            'is_sku'             => $this->is_sku,
+
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,

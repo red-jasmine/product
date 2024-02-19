@@ -16,19 +16,22 @@ class ProductInfoDTO extends Data
 {
 
 
-    public ?string $desc;
-    public ?string $webDetail;
-    public ?string $wapDetail;
-    public ?array  $images = null;
-    public ?array  $videos = null;
+    public ?string $description = null;
+    public ?string $keywords    = null;
+    public ?string $detail      = null;
+    public ?array  $images      = null;
+    public ?array  $videos      = null;
+
     public ?string $weight;
     public ?string $width;
     public ?string $height;
     public ?string $length;
+    public ?string $size;
+
     public ?string $remarks;
     public ?array  $tools;
     public ?array  $extends;
-    public ?string $size;
+
 
     /**
      * @var DataCollection<ProductPropDTO>|null

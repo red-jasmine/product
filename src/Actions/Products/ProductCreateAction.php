@@ -9,6 +9,7 @@ use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Events\ProductCreatedEvent;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
+use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Pipelines\Products\ProductFillPipeline;
 use RedJasmine\Product\Pipelines\Products\ProductValidatePipeline;
 use RedJasmine\Support\Enums\BoolIntEnum;
@@ -77,16 +78,17 @@ class ProductCreateAction extends AbstractProductAction
         $this->service->linkageTime($product);
         $product->id      = $this->generateID();
         $product->creator = $this->service->getOperator();
-        if ($product->is_multiple_spec === BoolIntEnum::YES) {
-            $product->skus->each(function (Product $sku) use ($product) {
-                $sku->id = $this->generateID();
-                $this->service->copyProductAttributeToSku($product, $sku);
-                $this->service->linkageTime($sku);
-                $sku->creator = $this->service->getOperator();
-            });
-            $product->stock = $product->skus->sum('stock');
-            $product->skus()->saveMany($product->skus);
-        }
+        // 保存所有 SKU
+        $product->skus->each(function (ProductSku $sku) use ($product) {
+            $sku->id = $this->generateID();
+            $this->service->copyProductAttributeToSku($product, $sku);
+            $sku->creator = $this->service->getOperator();
+        });
+        $product->skus()->saveMany($product->skus);
+        // 统计值
+
+        $this->service->productCountFields($product);
+
         $product->info()->save($product->info);
         $product->save();
         return $product;

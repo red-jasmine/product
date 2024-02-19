@@ -68,10 +68,8 @@ class ProductResource extends JsonResource
             'image'              => $this->image,
             'barcode'            => $this->barcode,
             'outer_id'           => $this->outer_id,
-            'keywords'           => $this->keywords,
-            'spu_id'             => $this->spu_id,
             'is_multiple_spec'   => $this->is_multiple_spec,
-            'is_sku'             => $this->is_sku,
+
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,

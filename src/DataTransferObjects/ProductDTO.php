@@ -32,7 +32,7 @@ class ProductDTO extends Data
     public ?string               $image            = null;
     public ?string               $barcode          = null;
     public ?string               $outerId          = null;
-    public ?string               $keywords         = null;
+
     public int                   $sort             = 0;
     public BoolIntEnum           $isMultipleSpec   = BoolIntEnum::NO;
     public string|int|float|null $marketPrice      = null;
@@ -41,9 +41,11 @@ class ProductDTO extends Data
     public ?int                  $categoryId       = null;
     public ?int                  $sellerCategoryId = null;
     public ?int                  $postageId        = null;
+
     public ?int                  $min              = null;
     public ?int                  $max              = null;
     public int                   $multiple         = 1;
+
     public int                   $fakeSales        = 0;
     public int                   $deliveryTime     = 0;
     public int                   $vip              = 0;

@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up() : void
+    {
+        Schema::create('product_series_products', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('series_id')->comment('系列ID');
+            $table->unsignedBigInteger('product_id')->comment('商品ID');
+            $table->timestamps();
+            $table->unique(['series_id','product_id']);
+            $table->comment('商品系列-商品关联表');
+        });
+    }
+
+    public function down() : void
+    {
+        Schema::dropIfExists('product_series_products');
+    }
+};

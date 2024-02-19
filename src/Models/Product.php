@@ -43,36 +43,11 @@ class Product extends Model
         'sub_stock'        => SubStockTypeEnum::class,// 扣库存方式
         'freight_payer'    => FreightPayerEnum::class,// 运费承担方
         'is_multiple_spec' => BoolIntEnum::class,
-        'is_sku'           => BoolIntEnum::class,
-        'modified_time'    => 'datetime',
         'off_sale_time'    => 'datetime',
         'on_sale_time'     => 'datetime',
         'sold_out_time'    => 'datetime',
+        'modified_time'    => 'datetime',
     ];
-
-    /**
-     * 产品级查询
-     *
-     * @param Builder $query
-     *
-     * @return Builder
-     */
-    public function scopeProductable(Builder $query) : Builder
-    {
-        return $query->where('spu_id', 0);
-    }
-
-    /**
-     * 库存规格级查询
-     *
-     * @param Builder $query
-     *
-     * @return Builder
-     */
-    public function scopeSkuable(Builder $query) : Builder
-    {
-        return $query->where('is_sku', 1);
-    }
 
 
     /**
@@ -112,7 +87,7 @@ class Product extends Model
      */
     public function skus() : HasMany
     {
-        return $this->hasMany(static::class, 'spu_id', 'id');
+        return $this->hasMany(ProductSku::class, 'product_id', 'id');
     }
 
     protected function marketPrice() : Attribute

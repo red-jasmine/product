@@ -26,7 +26,7 @@ class ProductQuery
     public function query() : QueryBuilder
     {
         $query = $this->queryBuilder();
-        return $query->productable();
+        return $query;
     }
 
 
