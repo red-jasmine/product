@@ -25,20 +25,19 @@ use Spatie\LaravelData\Optional;
 #[MapOutputName(SnakeCaseMapper::class)]
 class ProductModifyDTO extends Data
 {
-    public array|null|Optional        $parameters;
-    public string|Optional            $title;
-    public ProductTypeEnum|Optional   $productType;
-    public ShippingTypeEnum|Optional  $shippingType;
-    public ProductStatusEnum|Optional $status;
-    public int|Optional               $stock;
-    public string|int|float|Optional  $price;
-    public string|Optional|null       $image;
-    public string|null|Optional       $barcode;
-    public string|null|Optional       $outerId;
-    public string|null|Optional       $keywords;
-    public int|Optional               $sort;
-    public BoolIntEnum|Optional       $isMultipleSpec;
-    public UserDTO                    $owner;
+    public array|null|Optional            $parameters;
+    public string|Optional                $title;
+    public ProductTypeEnum|Optional       $productType;
+    public ShippingTypeEnum|Optional      $shippingType;
+    public ProductStatusEnum|Optional     $status;
+    public int|Optional                   $stock;
+    public string|int|float|Optional      $price;
+    public string|Optional|null           $image;
+    public string|null|Optional           $barcode;
+    public string|null|Optional           $outerId;
+    public int|Optional                   $sort;
+    public BoolIntEnum|Optional           $isMultipleSpec;
+    public UserDTO                        $owner;
     public string|int|float|null|Optional $marketPrice;
     public string|int|float|null|Optional $costPrice;
     public int|Optional|null              $brandId;
@@ -48,7 +47,6 @@ class ProductModifyDTO extends Data
     public int|Optional|null              $min;
     public int|Optional|null              $max;
     public int|Optional                   $multiple;
-    public int|Optional                   $fakeSales;
     public int|Optional                   $deliveryTime;
     public int|Optional                   $vip;
     public int|Optional                   $points;
@@ -60,9 +58,9 @@ class ProductModifyDTO extends Data
     public SubStockTypeEnum|Optional      $subStock;
     public ProductInfoDTO|Optional        $info;
     /**
-     * @var DataCollection<ProductSkuDTO>|Optional
+     * @var DataCollection<ProductSkuDTO>|null
      */
-    public DataCollection|Optional $skus;
+    public DataCollection|null $skus;
 
     public static function prepareForPipeline(Collection $properties) : Collection
     {

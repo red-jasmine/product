@@ -5,6 +5,7 @@ namespace RedJasmine\Product\Pipelines\Products;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
+use RedJasmine\Product\DataTransferObjects\ProductModifyDTO;
 use RedJasmine\Product\DataTransferObjects\ProductSkuDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
@@ -97,7 +98,7 @@ class ProductFillPipeline
     protected function fillSkus(Product $product) : void
     {
         /**
-         * @var $productDTO ProductDTO
+         * @var $productDTO ProductDTO|ProductModifyDTO
          */
         $productDTO = $product->getDTO();
 
@@ -121,7 +122,7 @@ class ProductFillPipeline
 
             $data   = $productDTO->toArray();
             $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
-            $fields = [ 'status','image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
+            $fields = [ 'status', 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
             foreach ($fields as $field) {
                 $skuDTO->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
             }
@@ -133,7 +134,7 @@ class ProductFillPipeline
         // 如果是多规格
         if ($product->is_multiple_spec === BoolIntEnum::YES) {
 
-            $productDTO->skus->each(function ($skuDTO) use ($product,$allSku) {
+            $productDTO->skus?->each(function ($skuDTO) use ($product, $allSku) {
                 /**
                  * @var $skuDTO ProductSkuDTO
                  */
@@ -142,13 +143,14 @@ class ProductFillPipeline
                 $this->fillSku($sku, $skuDTO);
                 $product->skus[$skuDTO->properties] = $sku;
             });
-            $newSkus = collect($productDTO->skus)->pluck('properties')->values()->toArray();
-            $product->skus->pluck('properties')->each(function ($properties) use ($product, $newSkus) {
-                if (!in_array($properties, $newSkus, true)) {
-                    unset($product->skus[$properties]);
-                }
-            });
-
+            if ($productDTO->skus) {
+                $newSkus = collect($productDTO->skus)->pluck('properties')->values()->toArray();
+                $product->skus->pluck('properties')->each(function ($properties) use ($product, $newSkus) {
+                    if (!in_array($properties, $newSkus, true)) {
+                        unset($product->skus[$properties]);
+                    }
+                });
+            }
         }
     }
 
@@ -164,7 +166,7 @@ class ProductFillPipeline
         $sku->stock           = $productSkuDTO->stock;
         $sku->market_price    = $productSkuDTO->marketPrice;
         $sku->cost_price      = $productSkuDTO->costPrice;
-        $sku->status          = $productSkuDTO->status?? ProductStatusEnum::ON_SALE;
+        $sku->status          = $productSkuDTO->status ?? ProductStatusEnum::ON_SALE;
 
 
     }
