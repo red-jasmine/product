@@ -10,6 +10,10 @@ class ProductSeriesProduct extends Model
 {
     use HasDateTimeFormatter;
 
+    protected $fillable = [
+        'series_id', 'product_id', 'name'
+    ];
+
     public function series() : BelongsTo
     {
         return $this->belongsTo(ProductSeries::class, 'series_id', 'id');
