@@ -27,11 +27,11 @@ class Product extends Model
 
     use HasDateTimeFormatter;
 
-    use SoftDeletes;
-
     use HasOwner;
 
     use HasOperator;
+
+    use SoftDeletes;
 
     public $incrementing = false;
 

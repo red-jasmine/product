@@ -17,8 +17,8 @@ class ProductCategory extends Model
     use HasDateTimeFormatter;
 
     use HasOwner;
-    use HasOperator;
 
+    use HasOperator;
 
     use ModelTree;
 

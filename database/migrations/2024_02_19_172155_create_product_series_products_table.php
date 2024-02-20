@@ -11,8 +11,9 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('series_id')->comment('系列ID');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
+            $table->string('name')->comment('名称');
             $table->timestamps();
-            $table->unique(['series_id','product_id']);
+            $table->unique([ 'series_id', 'product_id' ]);
             $table->comment('商品系列-商品关联表');
         });
     }
