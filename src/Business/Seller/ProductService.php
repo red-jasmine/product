@@ -19,7 +19,7 @@ class ProductService extends \RedJasmine\Product\Services\Product\ProductService
     {
         $query = parent::query();
 
-        $query->owner($this->getOwner());
+        $query->onlyOwner($this->getOwner());
 
         return $query;
     }

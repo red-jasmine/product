@@ -82,7 +82,7 @@ class ProductValidator
     {
         $validators = self::$validators;
 
-        $configValidators = config('red-jasmine.product.validators');
+        $configValidators = config('red-jasmine.product.validators',[]);
 
         return array_merge($validators, $configValidators);
     }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\DataTransferObjects\ProductSkuDTO;
+use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
@@ -120,11 +121,10 @@ class ProductFillPipeline
 
             $data   = $productDTO->toArray();
             $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
-            $fields = [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
+            $fields = [ 'status','image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
             foreach ($fields as $field) {
                 $skuDTO->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
             }
-            $skuDTO->status = $product->status;
 
             $this->fillSku($sku, $skuDTO);
             $product->skus[$skuDTO->properties] = $sku;
@@ -164,7 +164,8 @@ class ProductFillPipeline
         $sku->stock           = $productSkuDTO->stock;
         $sku->market_price    = $productSkuDTO->marketPrice;
         $sku->cost_price      = $productSkuDTO->costPrice;
-        $sku->status          = $productSkuDTO->status;
+        $sku->status          = $productSkuDTO->status?? ProductStatusEnum::ON_SALE;
+
 
     }
 

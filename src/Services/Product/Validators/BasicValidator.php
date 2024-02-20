@@ -76,7 +76,6 @@ class BasicValidator extends AbstractProductValidator
             'delivery_time'      => [ 'attribute' => '发货时间', 'rules' => [ 'required', 'integer' ], ],
             'vip'                => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer', 'min:0' ], ],
             'points'             => [ 'attribute' => '积分', 'rules' => [ 'sometimes', 'integer' ], ],
-            'keywords'           => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
 
 
             'is_hot'     => [ 'attribute' => '热销', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
@@ -84,9 +83,9 @@ class BasicValidator extends AbstractProductValidator
             'is_best'    => [ 'attribute' => '精品', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
             'is_benefit' => [ 'attribute' => '特惠', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
 
-            'info.desc'        => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
-            'info.web_detail'  => [ 'attribute' => '电脑详情', 'rules' => [], ],
-            'info.wap_detail'  => [ 'attribute' => '手机详情', 'rules' => [], ],
+            'info.keywords'    => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
+            'info.description' => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
+            'info.detail'      => [ 'attribute' => '详情', 'rules' => [], ],
             'info.images'      => [ 'attribute' => '图片集', 'rules' => [], ],
             'info.videos'      => [ 'attribute' => '视频集', 'rules' => [], ],
             'info.weight'      => [ 'attribute' => '重量', 'rules' => [], ],
@@ -116,9 +115,6 @@ class BasicValidator extends AbstractProductValidator
             'skus.*.price'           => $fields['price'],
             'skus.*.market_price'    => $fields['market_price'],
             'skus.*.cost_price'      => $fields['cost_price'],
-            'skus.*.min'             => $fields['min'],
-            'skus.*.max'             => $fields['max'],
-            'skus.*.multiple'        => $fields['multiple'],
             'skus.*.image'           => $fields['image'],
             'skus.*.barcode'         => $fields['barcode'],
             'skus.*.outer_id'        => $fields['outer_id'],

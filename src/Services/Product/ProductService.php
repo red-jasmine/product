@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Actions\Products\ProductCreateAction;
+use RedJasmine\Product\Actions\Products\ProductModifyAction;
 use RedJasmine\Product\Actions\Products\ProductUpdateAction;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
-use RedJasmine\Product\Services\Product\Stock\ProductStockService;
-use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
@@ -24,6 +22,8 @@ use Throwable;
  * @method static Product create(ProductDTO $productDTO)
  * @see ProductUpdateAction::execute()
  * @method static Product update(int $id, ProductDTO $productDTO)
+ * @see ProductModifyAction::execute()
+ * @method static Product modify(int $id, ProductDTO $productDTO)
  */
 class ProductService extends Service
 {
@@ -32,26 +32,15 @@ class ProductService extends Service
      * 最大库存
      */
     public const MAX_QUANTITY = 9999999999;
-    protected static ?string  $actionsConfigKey = 'red-jasmine.product.actions';
-    public string             $model            = Product::class;
-    protected ?ProductBuilder $productBuilder   = null;
+
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions';
+
+    public string $model = Product::class;
+
 
     public function queries() : ProductQuery
     {
         return new ProductQuery($this);
-    }
-
-    public function productBuilder() : ProductBuilder
-    {
-        if ($this->productBuilder) {
-            return $this->productBuilder;
-        }
-
-        $this->productBuilder = new ProductBuilder();
-        $this->productBuilder
-            ->setOwner($this->getOwner())
-            ->setOperator($this->getOperator());
-        return $this->productBuilder;
     }
 
 
@@ -72,9 +61,6 @@ class ProductService extends Service
             case ProductStatusEnum::ON_SALE: // 在售
                 $product->on_sale_time = now();
                 break;
-            case ProductStatusEnum::OUT_OF_STOCK: // 缺货
-                $product->sold_out_time = now();
-                break;
             case ProductStatusEnum::SOLD_OUT: // 售停
                 $product->sold_out_time = now();
                 break;
@@ -94,23 +80,7 @@ class ProductService extends Service
         }
     }
 
-    /**
-     * 复用字段
-     *
-     * @param Product    $product
-     * @param ProductSku $sku
-     *
-     * @return void
-     */
-    public function copyProductAttributeToSku(Product $product, ProductSku $sku) : void
-    {
-        $sku->product_id = $product->id;
-        $sku->status     = $product->status;
-        $sku->deleted_at = null;
-    }
-
-
-    public function productCountFields(Product $product)
+    public function productCountFields(Product $product) : void
     {
         // 统计值
         $product->price        = $product->skus->min('price');

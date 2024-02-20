@@ -10,8 +10,6 @@ enum ProductStatusEnum: string
 
     case ON_SALE = 'on_sale'; // 在售
 
-    case OUT_OF_STOCK = 'out_of_stock'; // 缺货
-
     case SOLD_OUT = 'sold_out'; // 售停
 
     case OFF_SHELF = 'off_shelf'; // 下架
@@ -25,13 +23,11 @@ enum ProductStatusEnum: string
     public static function labels() : array
     {
         return [
-            self::ON_SALE->value      => '在售',
-            self::OUT_OF_STOCK->value => '缺货',
-            self::SOLD_OUT->value     => '停售',
-            self::OFF_SHELF->value    => '下架',
-            self::PRE_SALE->value     => '预售',
-            self::FORBID->value       => '禁售',
-            //self::DELETED->value      => '删除',
+            self::ON_SALE->value   => '在售',
+            self::SOLD_OUT->value  => '停售',
+            self::OFF_SHELF->value => '下架',
+            self::PRE_SALE->value  => '预售',
+            self::FORBID->value    => '禁售',
         ];
 
     }

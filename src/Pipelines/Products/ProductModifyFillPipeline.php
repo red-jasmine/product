@@ -44,12 +44,11 @@ class ProductModifyFillPipeline extends ProductFillPipeline
 
         $data = $productDTO->toArray();
         $info = $data['info'] ?? [];
-        unset($data['skus'], $data['info'], $data['parameters']);
+        unset($data['skus'], $data['info'], $data['parameters'],$data['owner']);
 
         foreach ($data as $key => $value) {
             $product->setAttribute($key, $value);
         }
-
         foreach ($info as $infoKey => $infoValue) {
             $product->info->setAttribute($infoKey, $infoValue);
         }

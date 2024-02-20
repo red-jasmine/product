@@ -20,9 +20,9 @@ class ProductResource extends JsonResource
 
         if ($this->relationLoaded('info')) {
             $info = [
-                'desc'        => $this->info->desc,
-                'web_detail'  => $this->info->web_detail,
-                'wap_detail'  => $this->info->wap_detail,
+                'description' => $this->info->description,
+                'keywords'    => $this->info->keywords,
+                'detail'      => $this->info->detail,
                 'images'      => $this->info->images,
                 'videos'      => $this->info->videos,
                 'weight'      => $this->info->weight,
@@ -40,7 +40,7 @@ class ProductResource extends JsonResource
         $skus = null;
 
         if ($this->relationLoaded('skus')) {
-            $skus = static::collection($this->skus);
+            $skus = ProductSkuResource::collection($this->skus);
         }
 
         $brand = null;
@@ -62,14 +62,13 @@ class ProductResource extends JsonResource
             'id'                 => $this->id,
             'title'              => $this->title,
             'owner_type'         => $this->owner_type,
-            'owner_id'          => $this->owner_id,
+            'owner_id'           => $this->owner_id,
             'product_type'       => $this->product_type,
             'shipping_type'      => $this->shipping_type,
             'image'              => $this->image,
             'barcode'            => $this->barcode,
             'outer_id'           => $this->outer_id,
             'is_multiple_spec'   => $this->is_multiple_spec,
-
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,
@@ -77,8 +76,6 @@ class ProductResource extends JsonResource
             'brand_id'           => $this->brand_id,
             'category_id'        => $this->category_id,
             'seller_category_id' => $this->seller_category_id,
-            'properties'         => $this->properties,
-            'properties_name'    => $this->properties_name,
             'freight_payer'      => $this->freight_payer,
             'postage_id'         => $this->postage_id,
             'min'                => $this->min,
@@ -88,7 +85,6 @@ class ProductResource extends JsonResource
             'stock'              => $this->stock,
             'lock_stock'         => $this->lock_stock,
             'sales'              => $this->sales,
-            'fake_sales'         => $this->fake_sales,
             'delivery_time'      => $this->delivery_time,
             'vip'                => $this->vip,
             'points'             => $this->points,
@@ -101,9 +97,9 @@ class ProductResource extends JsonResource
             'off_sale_time'      => $this->off_sale_time?->toDateTimeString(),
             'modified_time'      => $this->modified_time?->toDateTimeString(),
             'creator_type'       => $this->creator_type,
-            'creator_id'        => $this->creator_id,
+            'creator_id'         => $this->creator_id,
             'updater_type'       => $this->updater_type,
-            'updater_id'        => $this->updater_id,
+            'updater_id'         => $this->updater_id,
             'created_at'         => $this->created_at?->toDateTimeString(),
             'updated_at'         => $this->updated_at?->toDateTimeString(),
             'deleted_at'         => $this->deleted_at?->toDateTimeString(),

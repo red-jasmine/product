@@ -11,7 +11,8 @@ use Illuminate\Validation\Validator;
 abstract class AbstractRule implements ValidationRule, DataAwareRule, ValidatorAwareRule
 {
 
-    protected array     $data;
+    protected array $data;
+
     protected Validator $validator;
 
     public function setData(array $data)

@@ -22,9 +22,15 @@ class SellerCategoryRule extends AbstractRule
             return;
         }
 
+        if (isset($this->data['owner'])) {
+            $owner = UserDTO::from($this->data['owner']);
+        } else {
+            $owner = UserDTO::from([ 'type' => $this->data['owner_type'], 'id' => $this->data['owner_id'], ]);
+        }
+
         $service = new ProductSellerCategoryService;
         $service->disableRequest();
-        $service->setOwner(UserDTO::from([ 'type' => $this->data['owner_type'], 'id' => $this->data['owner_id'], ]));
+        $service->setOwner($owner);
         try {
             $sellerCategory = $service->isAllowUse($value);
         } catch (AbstractException|ModelNotFoundException $throwable) {

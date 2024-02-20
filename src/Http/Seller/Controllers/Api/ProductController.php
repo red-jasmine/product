@@ -6,6 +6,8 @@ namespace RedJasmine\Product\Http\Seller\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Business\Seller\ProductService;
+use RedJasmine\Product\DataTransferObjects\ProductDTO;
+use RedJasmine\Product\DataTransferObjects\ProductModifyDTO;
 use RedJasmine\Product\Http\Seller\Resources\ProductResource;
 use Throwable;
 
@@ -13,7 +15,9 @@ class ProductController extends Controller
 {
     public function __construct(public ProductService $service)
     {
-        $this->service->setOwner($this->getOwner())->setOperator($this->getUser());
+        $this->service
+            ->setOwner($this->getOwner())
+            ->setOperator($this->getUser());
     }
 
     public function index() : AnonymousResourceCollection
@@ -30,7 +34,10 @@ class ProductController extends Controller
      */
     public function store(Request $request) : ProductResource
     {
-        $result = $this->service->create($request->all());
+        $dto        = ProductDTO::from($request->all());
+        $dto->owner = $this->service->getOwner();
+
+        $result = $this->service->create($dto);
         return new ProductResource($result);
     }
 
@@ -50,9 +57,14 @@ class ProductController extends Controller
     public function update(Request $request, $id) : ProductResource
     {
         if ($request->isMethod('PATCH')) {
-            $result = $this->service->modify($id, $request->all());
+            $dto        = ProductModifyDTO::from($request->all());
+            $dto->owner = $this->service->getOwner();
+
+            $result = $this->service->modify($id, $dto);
         } else {
-            $result = $this->service->update($id, $request->all());
+            $dto        = ProductDTO::from($request->all());
+            $dto->owner = $this->service->getOwner();
+            $result     = $this->service->update($id, $dto);
         }
         return new ProductResource($result);
     }

@@ -14,7 +14,7 @@ use Spatie\LaravelData\Optional;
 #[MapOutputName(SnakeCaseMapper::class)]
 class ProductSkuDTO extends Data
 {
-    public ProductStatusEnum     $status;
+    public ?ProductStatusEnum    $status;
     public string                $properties;
     public ?string               $propertiesName;
     public int                   $stock;

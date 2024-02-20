@@ -20,9 +20,8 @@ class ProductResource extends JsonResource
 
         if ($this->relationLoaded('info')) {
             $info = [
-                'desc'        => $this->info->desc,
-                'web_detail'  => $this->info->web_detail,
-                'wap_detail'  => $this->info->wap_detail,
+                'description' => $this->info->description,
+                'detail'      => $this->info->detail,
                 'images'      => $this->info->images,
                 'videos'      => $this->info->videos,
                 'weight'      => $this->info->weight,
@@ -40,7 +39,7 @@ class ProductResource extends JsonResource
         $skus = null;
 
         if ($this->relationLoaded('skus')) {
-            $skus = static::collection($this->skus);
+            $skus = ProductSkuResource::collection($this->skus);
         }
 
         $brand = null;
@@ -59,24 +58,21 @@ class ProductResource extends JsonResource
 
 
         return [
-            'id'                 => $this->id,
-            'title'              => $this->title,
-            'owner_type'         => $this->owner_type,
-            'owner_id'          => $this->owner_id,
-            'product_type'       => $this->product_type,
-            'shipping_type'      => $this->shipping_type,
-            'image'              => $this->image,
-            'barcode'            => $this->barcode,
-            'is_multiple_spec'   => $this->is_multiple_spec,
-
+            'id'               => $this->id,
+            'title'            => $this->title,
+            'owner_type'       => $this->owner_type,
+            'owner_id'         => $this->owner_id,
+            'product_type'     => $this->product_type,
+            'shipping_type'    => $this->shipping_type,
+            'image'            => $this->image,
+            'barcode'          => $this->barcode,
+            'is_multiple_spec' => $this->is_multiple_spec,
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,
             'brand_id'           => $this->brand_id,
             'category_id'        => $this->category_id,
             'seller_category_id' => $this->seller_category_id,
-            'properties'         => $this->properties,
-            'properties_name'    => $this->properties_name,
             'freight_payer'      => $this->freight_payer,
             'postage_id'         => $this->postage_id,
             'min'                => $this->min,

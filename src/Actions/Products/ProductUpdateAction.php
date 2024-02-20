@@ -70,6 +70,7 @@ class ProductUpdateAction extends AbstractProductAction
             DB::beginTransaction();
             $pipelines->then(fn($product) => $this->update($product));
             DB::commit();
+            $product->skus = $product->skus->values();
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
@@ -79,7 +80,7 @@ class ProductUpdateAction extends AbstractProductAction
         }
         $pipelines->after();
         if ($product->isDirty()) {
-            ProductUpdatedEvent::dispatch();
+            ProductUpdatedEvent::dispatch($product);
         }
 
         return $product;
@@ -94,44 +95,15 @@ class ProductUpdateAction extends AbstractProductAction
      */
     public function update(Product $product) : Product
     {
-
         if ($product->isDirty() || $product->info->isDirty()) {
             $product->updater       = $this->service->getOperator();
             $product->modified_time = now();
         }
-
         $this->service->linkageTime($product);
-        $this->updateStock($product);
         $this->updateSkus($product);
         $product->save();
         $product->info->save();
         return $product;
-    }
-
-
-    /**
-     * @param Product $product
-     *
-     * @return void
-     * @throws Throwable
-     */
-    protected function updateStock(Product $product) : void
-    {
-
-        // 如果是改变了规格类型的情况下 那么就 重置库存
-        if ($product->isDirty('is_multiple_spec')) {
-            //  TODO 清空渠道库存
-            // 从 多规格改为 单规格
-            if ($product->is_multiple_spec === BoolIntEnum::NO) {
-                $product->lock_stock = 0;
-            }
-            // 从 单规格 改为 多规格
-            if ($product->is_multiple_spec === BoolIntEnum::YES) {
-                $product->stock      = 0; // 库存由所有规格进行合计
-                $product->lock_stock = 0;
-            }
-        }
-
     }
 
     /**
@@ -149,8 +121,6 @@ class ProductUpdateAction extends AbstractProductAction
         if ($product->isDirty('is_multiple_spec')) {
             $product->lock_stock = 0;
         }
-
-
         // 获取数据库中所有的SKU
         /**
          * @var Collection|array|Product[] $all
@@ -163,9 +133,9 @@ class ProductUpdateAction extends AbstractProductAction
 
         // 设置 正常的SKU
         $product->skus->values()->each(function (ProductSku $sku, $index) use ($product) {
-            $isNew   = !$sku->id;
-            $sku->id = $sku->id ?? $this->service->generateID();
-            $this->service->copyProductAttributeToSku($product, $sku);
+            $isNew           = !$sku->id;
+            $sku->id         = $sku->id ?? $this->service->generateID();
+            $sku->deleted_at = null;
             if ($isNew === false) {
                 try {
                     $this->productStockService->setStock($sku->id, $sku->stock, ProductStockChangeTypeEnum::SELLER);
@@ -184,8 +154,6 @@ class ProductUpdateAction extends AbstractProductAction
         $product->skus()->saveMany($product->skus);
         // 统计值
         $this->service->productCountFields($product);
-
-
         $all->each(function (ProductSku $sku, $properties) use ($product) {
             if ($this->isCloseSku($sku, $product)) {
                 $this->closeSku($sku);
@@ -202,7 +170,7 @@ class ProductUpdateAction extends AbstractProductAction
             return !in_array($sku->properties, $product->skus->pluck('properties')->toArray(), true);
         }
         // 如果是单规格
-        return  filled($sku->properties);
+        return filled($sku->properties);
     }
 
     protected function closeSku(ProductSku $sku) : void

@@ -229,7 +229,7 @@ class ProductTest extends ProductPropertyTest
         $data = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatusEnum::OUT_OF_STOCK,
+            'status'        => ProductStatusEnum::ON_SALE,
             'title'         => '基础商品-' . rand(1, 9999),
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -336,7 +336,7 @@ class ProductTest extends ProductPropertyTest
         $data = [
             'product_type'  => ProductTypeEnum::GOODS->value,
             'shipping_type' => ShippingTypeEnum::VIRTUAL->value,
-            'status'        => ProductStatusEnum::OUT_OF_STOCK,
+            'status'        => ProductStatusEnum::ON_SALE,
             'title'         => '基础商品-' . rand(1, 9999),
             'price'         => 56.44,
             'cost_price'    => 0,
@@ -396,7 +396,7 @@ class ProductTest extends ProductPropertyTest
         $data    = [
             'title'  => '修改价格',
             'price'  => '9988',
-            'status' => ProductStatusEnum::OUT_OF_STOCK
+            'status' => ProductStatusEnum::ON_SALE
 
         ];
         $product = $this->productService()->modify($product->id, $data);

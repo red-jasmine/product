@@ -66,8 +66,11 @@ class ProductSellerCategoryService
     public function tree() : array
     {
 
+
+
         $query = (new Model())->withQuery(function (Model $query) {
-            return $query->where('status', CategoryStatusEnum::ENABLE)->owner($this->getOwner());
+            return $query->where('status', CategoryStatusEnum::ENABLE)
+                         ->onlyOwner($this->getOwner());
         });
 
         return $query->toTree();
@@ -76,7 +79,7 @@ class ProductSellerCategoryService
     public function selectOptions()
     {
         return Model::selectOptions(function ($query) {
-            return $query->owner($this->getOwner());
+            return $query->onlyOwner($this->getOwner());
         });
     }
 

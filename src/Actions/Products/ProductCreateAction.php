@@ -40,12 +40,13 @@ class ProductCreateAction extends AbstractProductAction
      */
     public function execute(ProductDTO $productDTO) : Product
     {
-
+        $product = $this->initProduct();
+        $product->setDTO($productDTO);
+        $pipelines = $this->pipelines($product);
+        $pipelines->before();
         try {
             DB::beginTransaction();
-            $product = $this->initProduct();
-            $product->setDTO($productDTO);
-            $this->pipelines($product)->then(fn($product) => $this->save($product));
+            $pipelines->then(fn($product) => $this->save($product));
             DB::commit();
 
         } catch (AbstractException $exception) {
@@ -55,6 +56,7 @@ class ProductCreateAction extends AbstractProductAction
             DB::rollBack();
             throw  $throwable;
         }
+        $pipelines->after();
         ProductCreatedEvent::dispatch($product);
         return $product;
     }
@@ -76,31 +78,21 @@ class ProductCreateAction extends AbstractProductAction
     protected function save(Product $product) : Product
     {
         $this->service->linkageTime($product);
-        $product->id      = $this->generateID();
+        $product->id      = $this->service->generateID();
         $product->creator = $this->service->getOperator();
         // 保存所有 SKU
         $product->skus->each(function (ProductSku $sku) use ($product) {
-            $sku->id = $this->generateID();
-            $this->service->copyProductAttributeToSku($product, $sku);
-            $sku->creator = $this->service->getOperator();
+            $sku->id         = $this->service->generateID();
+            $sku->creator    = $this->service->getOperator();
+            $sku->deleted_at = null;
         });
         $product->skus()->saveMany($product->skus);
         // 统计值
-
         $this->service->productCountFields($product);
-
         $product->info()->save($product->info);
         $product->save();
         return $product;
     }
 
-    /**
-     * @return int
-     * @throws Exception
-     */
-    public function generateID() : int
-    {
-        return Snowflake::getInstance()->nextId();
-    }
 
 }

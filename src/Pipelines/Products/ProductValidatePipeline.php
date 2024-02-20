@@ -21,6 +21,7 @@ class ProductValidatePipeline
         $productDTO = $product->getDTO();
 
         $validatorService = new ProductValidator($productDTO);
+
         if ($productDTO instanceof ProductModifyDTO) {
             $value = $validatorService->validateOnly();
         } else {
