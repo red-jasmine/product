@@ -72,7 +72,7 @@ class ProductQuery
     public function includes() : array
     {
         return [
-            'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory'
+            'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory','series'
         ];
     }
 

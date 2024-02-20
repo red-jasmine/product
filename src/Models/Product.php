@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Product\FreightPayerEnum;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
@@ -89,6 +90,24 @@ class Product extends Model
     {
         return $this->hasMany(ProductSku::class, 'product_id', 'id');
     }
+
+
+    /**
+     * 系列
+     * @return HasOneThrough
+     */
+    public function series() : HasOneThrough
+    {
+        return $this->hasOneThrough(
+            ProductSeries::class,
+            ProductSeriesProduct::class,
+            'product_id',
+            'id',
+            'id',
+            'series_id'
+        )->with([ 'products' ]);
+    }
+
 
     protected function marketPrice() : Attribute
     {

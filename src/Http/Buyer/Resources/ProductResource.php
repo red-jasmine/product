@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
     {
         $info = null;
 
+
         if ($this->relationLoaded('info')) {
             $info = [
                 'description' => $this->info->description,
@@ -36,8 +37,13 @@ class ProductResource extends JsonResource
                 'extends'     => $this->info->extends,
             ];
         }
-        $skus = null;
 
+        $series = null;
+        if ($this->relationLoaded('series')) {
+            $series = new ProductSeriesResource($this->series);
+        }
+
+        $skus = null;
         if ($this->relationLoaded('skus')) {
             $skus = ProductSkuResource::collection($this->skus);
         }
@@ -58,15 +64,15 @@ class ProductResource extends JsonResource
 
 
         return [
-            'id'               => $this->id,
-            'title'            => $this->title,
-            'owner_type'       => $this->owner_type,
-            'owner_id'         => $this->owner_id,
-            'product_type'     => $this->product_type,
-            'shipping_type'    => $this->shipping_type,
-            'image'            => $this->image,
-            'barcode'          => $this->barcode,
-            'is_multiple_spec' => $this->is_multiple_spec,
+            'id'                 => $this->id,
+            'title'              => $this->title,
+            'owner_type'         => $this->owner_type,
+            'owner_id'           => $this->owner_id,
+            'product_type'       => $this->product_type,
+            'shipping_type'      => $this->shipping_type,
+            'image'              => $this->image,
+            'barcode'            => $this->barcode,
+            'is_multiple_spec'   => $this->is_multiple_spec,
             'status'             => $this->status,
             'price'              => $this->price,
             'market_price'       => $this->market_price,
@@ -91,6 +97,7 @@ class ProductResource extends JsonResource
             'is_benefit'         => $this->is_benefit,
             'info'               => $info,
             'skus'               => $skus,
+            $this->mergeWhen($this->relationLoaded('series'), [ 'series' => $series ]),
             $this->mergeWhen($this->relationLoaded('brand'), [ 'brand' => $brand ]),
             $this->mergeWhen($this->relationLoaded('category'), [ 'category' => $category ]),
             $this->mergeWhen($this->relationLoaded('sellerCategory'), [ 'seller_category' => $sellerCategory ]),
