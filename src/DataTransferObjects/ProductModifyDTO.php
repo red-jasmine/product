@@ -8,21 +8,14 @@ use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
+use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\Json\Json;
-use Spatie\LaravelData\Attributes\MapInputName;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Optional;
 
-/**
- *
- */
-#[MapInputName(SnakeCaseMapper::class)]
-#[MapOutputName(SnakeCaseMapper::class)]
+
 class ProductModifyDTO extends Data
 {
     public array|null|Optional            $parameters;

@@ -3,15 +3,11 @@
 namespace RedJasmine\Product\DataTransferObjects;
 
 use Illuminate\Support\Collection;
+use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\Helpers\Json\Json;
-use Spatie\LaravelData\Attributes\MapInputName;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-#[MapInputName(SnakeCaseMapper::class)]
-#[MapOutputName(SnakeCaseMapper::class)]
+
 class ProductInfoDTO extends Data
 {
 

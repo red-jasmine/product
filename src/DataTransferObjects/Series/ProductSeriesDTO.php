@@ -2,14 +2,10 @@
 
 namespace RedJasmine\Product\DataTransferObjects\Series;
 
-use Spatie\LaravelData\Attributes\MapInputName;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Data;
+use RedJasmine\Support\DataTransferObjects\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-#[MapInputName(SnakeCaseMapper::class)]
-#[MapOutputName(SnakeCaseMapper::class)]
+
 class ProductSeriesDTO extends Data
 {
 
