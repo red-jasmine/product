@@ -231,7 +231,7 @@ class PropertyService
             'pid'        => '属性ID',
             'name'       => '属性值',
             'extends'    => '扩展字段',
-            'group_name' => '分租名称',
+            'group_name' => '分组名称',
             'status'     => '状态',
             'sort'       => '排序值',
         ];

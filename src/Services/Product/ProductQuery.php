@@ -64,7 +64,7 @@ class ProductQuery
             AllowedFilter::exact('brand_id'),
             AllowedFilter::exact('category_id'),
             AllowedFilter::exact('seller_category_id'),
-            static::searchFilter([ 'title', 'keywords' ])
+            static::searchFilter([ 'title' ])
         ];
     }
 

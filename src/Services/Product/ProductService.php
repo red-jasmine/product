@@ -2,15 +2,15 @@
 
 namespace RedJasmine\Product\Services\Product;
 
+use Illuminate\Support\Facades\DB;
+use RedJasmine\Product\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Actions\Products\ProductCreateAction;
 use RedJasmine\Product\Actions\Products\ProductModifyAction;
 use RedJasmine\Product\Actions\Products\ProductUpdateAction;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Service;
@@ -82,7 +82,6 @@ class ProductService extends Service
 
     public function productCountFields(Product $product) : void
     {
-        // 统计值
         $product->price        = $product->skus->min('price');
         $product->cost_price   = $product->skus->min('cost_price');
         $product->market_price = $product->skus->min('market_price');

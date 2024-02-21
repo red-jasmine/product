@@ -9,7 +9,7 @@ return [
         'vid'          => '属性值ID',
         'name'         => '名称',
         'sort'         => '排序',
-        'group_name'   => '分租',
+        'group_name'   => '分组',
         'status'       => '状态',
         'extends'      => '扩展字段',
         'creator_type' => '创建者类型',
