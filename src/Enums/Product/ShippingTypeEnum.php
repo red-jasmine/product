@@ -15,7 +15,7 @@ enum ShippingTypeEnum: string
 
     case VIRTUAL = 'virtual'; // 虚拟
 
-    case CARD_KEY = 'card_key'; // 卡密
+    case CARD_KEY = 'cdk'; // 卡密
 
 
     public static function labels() : array
