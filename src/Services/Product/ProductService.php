@@ -19,11 +19,11 @@ use Throwable;
 
 /**
  * @see ProductCreateAction::execute()
- * @method static Product create(ProductDTO $productDTO)
+ * @method  Product create(ProductDTO $productDTO)
  * @see ProductUpdateAction::execute()
- * @method static Product update(int $id, ProductDTO $productDTO)
+ * @method  Product update(int $id, ProductDTO $productDTO)
  * @see ProductModifyAction::execute()
- * @method static Product modify(int $id, ProductDTO $productDTO)
+ * @method  Product modify(int $id, ProductDTO $productDTO)
  */
 class ProductService extends Service
 {
