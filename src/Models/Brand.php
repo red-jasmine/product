@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Traits\Models\ModelTree;
 
 
 class Brand extends Model
@@ -16,6 +17,16 @@ class Brand extends Model
     use SoftDeletes;
 
     use HasOperator;
+
+    use ModelTree;
+
+    // 父级ID字段名称，默认值为 parent_id
+    protected string $parentColumn = 'parent_id';
+    // 排序字段名称，默认值为 order
+    protected string $orderColumn = 'sort';
+
+    // 标题字段名称，默认值为 title
+    protected string $titleColumn = 'name';
 
 
     public $incrementing = false;
@@ -28,13 +39,13 @@ class Brand extends Model
 
     protected $fillable = [
         'id',
+        'parent_id',
         'name',
         'status',
         'extends',
         'logo',
-        'logo',
+        'sort',
     ];
-
 
 
 }

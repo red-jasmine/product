@@ -6,7 +6,9 @@ return [
     ],
     'fields'  => [
         'name'         => '名称',
-        'logo'         => '标志',
+        'parent_id'    => '父级',
+        'logo'         => 'Logo',
+        'sort'         => '排序',
         'status'       => '状态',
         'extends'      => '扩展字段',
         'creator_type' => '创建者类型',

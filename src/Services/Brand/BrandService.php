@@ -11,15 +11,14 @@ use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Foundation\Service\WithUserService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Rules\NotZeroExistsRule;
 use Spatie\QueryBuilder\AllowedFilter;
 
-class BrandService
+class BrandService extends Service
 {
-
-    use WithUserService;
-
 
     use HasQueryBuilder;
 
@@ -72,6 +71,18 @@ class BrandService
 
     }
 
+    /**
+     * to tree
+     * @return array
+     */
+    public function tree() : array
+    {
+        $query = (new Brand())->withQuery(function (Model $query) {
+            return $query->where('status', CategoryStatusEnum::ENABLE);
+        });
+        return $query->toTree();
+    }
+
     public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->query()->paginate();
@@ -96,7 +107,6 @@ class BrandService
         $validator->validate();
         $brand     = new Brand();
         $brand->id = $this->buildID();
-
         $brand->fill($validator->safe()->all());
         $brand->creator = $this->getOperator();
         $brand->save();
@@ -111,13 +121,14 @@ class BrandService
 
     protected function rules() : array
     {
-
+        $table = (new Brand())->getTable();
         return [
-            'name'    => [ 'required', 'max:100' ],
-            'logo'    => [ 'sometimes', 'max:255' ],
-            'sort'    => [ 'integer' ],
-            'status'  => [ new Enum(BrandStatusEnum::class) ],
-            'extends' => [ 'sometimes', 'array' ],
+            'name'      => [ 'required', 'max:100' ],
+            'parent_id' => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), ],
+            'logo'      => [ 'sometimes', 'max:255' ],
+            'sort'      => [ 'integer' ],
+            'status'    => [ new Enum(BrandStatusEnum::class) ],
+            'extends'   => [ 'sometimes', 'array' ],
         ];
 
     }
@@ -125,11 +136,12 @@ class BrandService
     protected function attributes() : array
     {
         return [
-            'name'    => '名称',
-            'logo'    => 'Logo',
-            'sort'    => '排序',
-            'status'  => '状态',
-            'extends' => '扩展字段',
+            'name'      => '名称',
+            'parent_id' => '父品牌',
+            'logo'      => 'Logo',
+            'sort'      => '排序',
+            'status'    => '状态',
+            'extends'   => '扩展字段',
         ];
 
     }
