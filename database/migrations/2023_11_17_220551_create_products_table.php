@@ -28,7 +28,6 @@ return new class extends Migration {
             // 状态相关
             $table->unsignedBigInteger('sort')->default(0)->comment('排序');
             $table->string('status')->comment('状态');
-
             // 类目信息
             $table->unsignedBigInteger('brand_id')->nullable()->comment('品牌');
             $table->unsignedBigInteger('category_id')->nullable()->comment('类目');
@@ -42,7 +41,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('multiple')->default(1)->comment('购买倍数');
             // 库存
             $table->unsignedTinyInteger('sub_stock')->default(0)->comment('减库存方式');
-            // 数据统计
+
             $table->decimal('price', 10, 2, true)->default(0)->comment('销售价');
             $table->decimal('market_price', 10, 2, true)->nullable()->comment('市场价');
             $table->decimal('cost_price', 10, 2, true)->nullable()->comment('成本价');
