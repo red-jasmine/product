@@ -10,6 +10,7 @@ use RedJasmine\Product\Models\ProductSeries;
 use RedJasmine\Product\Models\ProductSeriesProduct;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Service;
+use Throwable;
 
 class ProductSeriesService extends Service
 {
@@ -19,7 +20,7 @@ class ProductSeriesService extends Service
      *
      * @return ProductSeries
      * @throws AbstractException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function create(ProductSeriesDTO $productSeriesDTO) : ProductSeries
     {
@@ -43,7 +44,7 @@ class ProductSeriesService extends Service
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
@@ -56,7 +57,7 @@ class ProductSeriesService extends Service
      *
      * @return ProductSeries
      * @throws AbstractException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function update(int $id, ProductSeriesDTO $productSeriesDTO) : ProductSeries
     {
@@ -81,7 +82,7 @@ class ProductSeriesService extends Service
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
@@ -94,7 +95,7 @@ class ProductSeriesService extends Service
      *
      * @return bool
      * @throws AbstractException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function delete(int $id) : bool
     {
@@ -106,7 +107,7 @@ class ProductSeriesService extends Service
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }

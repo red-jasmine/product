@@ -81,7 +81,7 @@ class ProductCreateAction extends AbstractProductAction
         $product->id      = $this->service->generateID();
         $product->creator = $this->service->getOperator();
         // 保存所有 SKU
-        $product->skus->each(function (ProductSku $sku) use ($product) {
+        $product->skus->each(function (ProductSku $sku) {
             $sku->id         = $this->service->generateID();
             $sku->creator    = $this->service->getOperator();
             $sku->deleted_at = null;

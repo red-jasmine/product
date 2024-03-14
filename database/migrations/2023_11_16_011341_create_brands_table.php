@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父级ID');
             $table->string('name')->comment('名称');
+            // 英文名
             $table->string('logo')->nullable()->comment('标志');
             $table->bigInteger('sort')->default(0)->comment('排序');
             $table->unsignedTinyInteger('status')->default(1)->comment('状态');

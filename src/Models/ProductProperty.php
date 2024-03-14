@@ -5,7 +5,8 @@ namespace RedJasmine\Product\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
+
+use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
