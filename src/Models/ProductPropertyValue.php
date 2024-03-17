@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
+use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
@@ -29,14 +29,12 @@ class ProductPropertyValue extends Model
         'vid',
         'pid',
         'name',
-        'group_name',
+        'group_id',
         'status',
         'extends',
         'sort',
         'creator_type',
         'creator_id',
-
-
     ];
 
 

@@ -2,17 +2,17 @@
 
 namespace RedJasmine\Product\Services\Property\Data;
 
+use Illuminate\Validation\Rule;
 use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
 use RedJasmine\Product\Services\Property\Rules\PropertyTitleRule;
 use RedJasmine\Support\DataTransferObjects\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 
-class PropertyData extends Data
+class PropertyGroupData extends Data
 {
     public string             $name;
     public int                $sort    = 0;
-    public ?int               $groupId = null;
     public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
     public ?array             $extends = null;
 
@@ -20,12 +20,10 @@ class PropertyData extends Data
     {
 
         return [
-            'name'     => '属性名',
-            'extends'  => '扩展参数',
-            'sort'     => '排序',
-            'group_id' => '分组',
-            'sort'     => '排序值',
-
+            'name'    => '名称',
+            'extends' => '扩展参数',
+            'sort'    => '排序',
+            'status'  => '状态',
         ];
     }
 
@@ -34,10 +32,9 @@ class PropertyData extends Data
 
         return [
             'name'    => [ 'required', 'max:30', new PropertyTitleRule() ],
-            'extends' => [ 'sometimes', 'nullable', 'array' ],
+            'extends' => [ 'sometimes', 'array' ],
             'sort'    => [ 'integer' ],
-            'groupId' => [ 'sometimes', 'nullable', 'numeric', 'between:0,10' ],
-            'name'    => [ 'required', new PropertyTitleRule() ],
+            'status'  => [ 'required', Rule::enum(PropertyStatusEnum::class) ],
 
         ];
     }

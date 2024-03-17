@@ -2,24 +2,29 @@
 
 namespace RedJasmine\Product\Services\Property\Query;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PropertyQuery
 {
 
     use HasQueryBuilder;
 
+
+
+
     /**
-     * @return \Spatie\QueryBuilder\QueryBuilder
+     * @return QueryBuilder
      */
-    public function query()
+    public function query() : QueryBuilder
     {
         return $this->queryBuilder();
     }
 
-    protected string $model = ProductProperty::class;
 
     public function filters() : array
     {
@@ -31,12 +36,12 @@ class PropertyQuery
     }
 
 
-    public function find($id) : ProductProperty
+    public function find($id) : Model
     {
         return $this->query()->findOrFail($id);
     }
 
-    public function lists() : \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function lists() : LengthAwarePaginator
     {
         return $this->query()->paginate();
     }
