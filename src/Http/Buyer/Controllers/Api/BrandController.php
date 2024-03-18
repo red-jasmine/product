@@ -16,13 +16,13 @@ class BrandController extends Controller
 
     public function index(Request $request) : \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        $result = $this->service->lists();
+        $result = $this->service->query()->paginate();
         return BrandResource::collection($result);
     }
 
     public function show($id) : BrandResource
     {
-        $result = $this->service->find($id);
+        $result = $this->service->query()->find($id);
 
         return new BrandResource($result);
     }

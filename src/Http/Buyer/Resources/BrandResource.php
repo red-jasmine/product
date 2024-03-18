@@ -14,16 +14,18 @@ use RedJasmine\Support\Http\Resources\WithCollectionResource;
 class BrandResource extends JsonResource
 {
 
-   use WithCollectionResource;
+    use WithCollectionResource;
 
     public function toArray(Request $request) : array
     {
         return [
-            'id'      => $this->id,
-            'name'    => $this->name,
-            'logo'    => $this->logo,
-            'status'  => $this->status,
-            'extends' => $this->extends,
+            'id'           => $this->id,
+            'name'         => $this->name,
+            'english_name' => $this->english_name,
+            'is_show'      => $this->is_show,
+            'logo'         => $this->logo,
+            'status'       => $this->status,
+            'extends'      => $this->extends,
         ];
     }
 }

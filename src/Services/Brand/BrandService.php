@@ -9,21 +9,14 @@ use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
-use RedJasmine\Product\Services\Brand\Actions\BrandCreateAction;
-use RedJasmine\Product\Services\Brand\Actions\BrandDeleteAction;
-use RedJasmine\Product\Services\Brand\Actions\BrandQueryAction;
-use RedJasmine\Product\Services\Brand\Actions\BrandUpdateAction;
 use RedJasmine\Product\Services\Brand\Data\BrandData;
 use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
 use RedJasmine\Support\Foundation\Service\ResourceService;
-use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 
 /**
- * @method  BrandQueryAction query()
  * @method  Brand create(BrandData|array $data)
  * @method  Brand update(int $id, BrandData|array $data)
- * @method  bool delete(int $id)
  */
 class BrandService extends ResourceService
 {
@@ -34,11 +27,7 @@ class BrandService extends ResourceService
 
     protected static string $data = BrandData::class;
 
-    /**
-     * 操作管道配置前缀
-     * @var string|null
-     */
-    protected static ?string $actionPipelinesConfigPrefix = null;
+    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.pipelines.brands';
 
     /**
      * @param int $id

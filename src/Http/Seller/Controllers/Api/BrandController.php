@@ -17,13 +17,13 @@ class BrandController extends Controller
 
     public function index(Request $request)
     {
-        $result = $this->service->lists();
+        $result = $this->service->query()->paginate();
         return BrandResource::collection($result);
     }
 
     public function show($id)
     {
-        $result = $this->service->find($id);
+        $result = $this->service->query->find($id);
 
         return new BrandResource($result);
     }
