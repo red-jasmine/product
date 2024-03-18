@@ -54,7 +54,7 @@ class ProductSellerCategory extends Model
 
     public function parent() : BelongsTo
     {
-        return $this->belongsTo(static::class, 'parent_id', 'cid');
+        return $this->belongsTo(static::class, 'parent_id', 'id');
     }
 
     /**

@@ -9,6 +9,7 @@ use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
 use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
+use RedJasmine\Support\Rules\ParentIDValidationRule;
 
 
 class ProductSellerCategoryData extends Data
@@ -23,18 +24,6 @@ class ProductSellerCategoryData extends Data
     public string|null        $group_name = null;
     public string|null        $image      = null;
 
-
-    public static function prepareForPipeline(array $properties) : array
-    {
-
-        if (isset($properties['owner_id'], $properties['owner_type']) && !isset($properties['owner'])) {
-            $properties['owner'] = [
-                'id'   => $properties['owner_id'],
-                'type' => $properties['owner_type'],
-            ];
-        }
-        return $properties;
-    }
 
     public static function attributes() : array
     {
@@ -61,7 +50,8 @@ class ProductSellerCategoryData extends Data
         $table = (new Model())->getTable();
         return [
             'id'         => [],
-            'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), new CategoryParentRule($table) ],
+            'parent_id'  => [ 'required', 'integer',
+                              new NotZeroExistsRule($table, 'id'), new CategoryParentRule($table) ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'nullable', 'max:100' ],
             'image'      => [ 'sometimes', 'nullable', 'max:255' ],

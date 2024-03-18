@@ -17,9 +17,10 @@ class SellerCategoryController extends Controller
     {
         $service->withQuery(function ($query) {
             $query->onlyOwner($this->getOwner());
-        });
-        $service->setWithOwner(function () {
+        })->setWithOwner(function () {
             return $this->getOwner();
+        })->setWithOperator(function () {
+            return $this->getUser();
         });
     }
 
@@ -50,7 +51,6 @@ class SellerCategoryController extends Controller
      */
     public function show($id) : SellerCategoryResource
     {
-
         $result = $this->service->query->findOrFail($id);
         return new  SellerCategoryResource($result);
     }

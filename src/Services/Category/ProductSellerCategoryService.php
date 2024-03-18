@@ -27,7 +27,8 @@ class ProductSellerCategoryService extends ResourceService
     public static string $data = ProductSellerCategoryData::class;
 
 
-    // 获取公共条件
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions.seller-category';
+
 
 
     /**
@@ -38,7 +39,7 @@ class ProductSellerCategoryService extends ResourceService
      */
     public function isAllowUse(int $id) : Model
     {
-        $model = $this->find($id);
+        $model = $this->query->find($id);
         if ($model->isAllowUse()) {
             return $model;
         }
@@ -46,20 +47,7 @@ class ProductSellerCategoryService extends ResourceService
     }
 
 
-    /**
-     * to tree
-     * @return array
-     */
-    public function tree() : array
-    {
-
-        $query = (new Model())->withQuery(function (Model $query) {
-            return $query->where('status', CategoryStatusEnum::ENABLE)->onlyOwner($this->getOwner());
-        });
-        return $query->toTree();
-    }
-
-    public function selectOptions()
+    public function selectOptions() : array
     {
         return Model::selectOptions(function ($query) {
             return $query->onlyOwner($this->getOwner());
@@ -138,11 +126,17 @@ class ProductSellerCategoryService extends ResourceService
      */
     public function modify(int $id, array $attributes) : Model
     {
+
+        dd($this->getClient());
         $productCategory = Model::findOrFail($id);
         $validator       = $this->validator($attributes);
         $validator->addRules([ 'parent_id' => [ new ParentIDValidationRule($id) ] ]);
+
+
         $validator->setRules(Arr::only($validator->getRules(), array_keys($attributes)));
         $validator->validated();
+        dd($validator->safe()->all());
+
         $productCategory->fill($validator->safe()->all());
         $productCategory->updater = $this->getOperator();
         $productCategory->save();
