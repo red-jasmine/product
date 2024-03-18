@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
+use RedJasmine\Product\Services\Brand\Enums\BrandStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\ModelTree;
@@ -33,6 +33,7 @@ class Brand extends Model
 
     protected $casts = [
         'extends' => 'array',
+        'is_show' => 'boolean',
         'status'  => BrandStatusEnum::class
     ];
 
@@ -41,6 +42,8 @@ class Brand extends Model
         'id',
         'parent_id',
         'name',
+        'english_name',
+        'is_show',
         'status',
         'extends',
         'logo',

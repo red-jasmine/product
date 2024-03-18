@@ -12,7 +12,7 @@ use RedJasmine\Support\Foundation\Service\Actions;
  * @property ProductPropertyGroup $model
  * @property PropertyGroupData    $data
  */
-class PropertyGroupUpdateAction extends Actions\AbstractUpdateAction
+class PropertyGroupUpdateAction extends Actions\ResourceUpdateAction
 {
     public PropertyGroupService $service;
 

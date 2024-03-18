@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Product\Services\Brand;
 
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
@@ -10,42 +9,36 @@ use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
 use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
+use RedJasmine\Product\Services\Brand\Actions\BrandCreateAction;
+use RedJasmine\Product\Services\Brand\Actions\BrandDeleteAction;
+use RedJasmine\Product\Services\Brand\Actions\BrandQueryAction;
+use RedJasmine\Product\Services\Brand\Actions\BrandUpdateAction;
+use RedJasmine\Product\Services\Brand\Data\BrandData;
 use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Foundation\Service\Service;
-use RedJasmine\Support\Foundation\Service\WithUserService;
-use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
-use Spatie\QueryBuilder\AllowedFilter;
 
-class BrandService extends Service
+/**
+ * @method  BrandQueryAction query()
+ * @method  Brand create(BrandData|array $data)
+ * @method  Brand update(int $id, BrandData|array $data)
+ * @method  bool delete(int $id)
+ */
+class BrandService extends ResourceService
 {
 
     use HasQueryBuilder;
 
-    public function filters() : array
-    {
-        return [
+    protected static string $model = Brand::class;
 
-            AllowedFilter::exact('name'),
-            AllowedFilter::exact('status'),
-            static::searchFilter([ 'name' ]),
-        ];
-    }
-
+    protected static string $data = BrandData::class;
 
     /**
-     * @var string
+     * 操作管道配置前缀
+     * @var string|null
      */
-    protected string $model = Brand::class;
-
-
-    /**
-     * @return \Spatie\QueryBuilder\QueryBuilder
-     */
-    public function query()
-    {
-        return $this->queryBuilder();
-    }
+    protected static ?string $actionPipelinesConfigPrefix = null;
 
     /**
      * @param int $id
@@ -89,31 +82,6 @@ class BrandService extends Service
     }
 
 
-    /**
-     * 品牌
-     *
-     * @param array $data
-     *
-     * @return Brand
-     * @throws Exception
-     */
-    public function create(array $data) : Brand
-    {
-        $brand = Brand::where('name', $data['name'])->first();
-        if (filled($brand)) {
-            return $brand;
-        }
-        $validator = $this->validator($data);
-        $validator->validate();
-        $brand     = new Brand();
-        $brand->id = $this->buildID();
-        $brand->fill($validator->safe()->all());
-        $brand->creator = $this->getOperator();
-        $brand->save();
-        return $brand;
-
-    }
-
     public function validator(array $data) : \Illuminate\Validation\Validator
     {
         return Validator::make($data, $this->rules(), [], $this->attributes());
@@ -144,34 +112,6 @@ class BrandService extends Service
             'extends'   => '扩展字段',
         ];
 
-    }
-
-    /**
-     * @return int
-     * @throws Exception
-     */
-    protected function buildID() : int
-    {
-        return Snowflake::getInstance()->nextId();
-    }
-
-    /**
-     * 更新
-     *
-     * @param int   $id
-     * @param array $data
-     *
-     * @return Brand
-     */
-    public function update(int $id, array $data) : Brand
-    {
-        $brand     = Brand::findOrFail($id);
-        $validator = $this->validator($data);
-        $validator->validate();
-        $brand->fill($validator->safe()->all());
-        $brand->updater = $this->getOperator();
-        $brand->save();
-        return $brand;
     }
 
     /**

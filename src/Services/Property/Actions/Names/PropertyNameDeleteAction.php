@@ -13,7 +13,7 @@ use RedJasmine\Support\Foundation\Service\Actions;
  * @property ProductProperty $model
  * @property PropertyData    $data
  */
-class PropertyNameDeleteAction extends Actions\AbstractDeleteAction
+class PropertyNameDeleteAction extends Actions\ResourceDeleteAction
 {
     public PropertyNameService $service;
 

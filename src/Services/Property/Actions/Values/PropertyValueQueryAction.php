@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Property\Actions\Values;
 use RedJasmine\Support\Foundation\Service\Actions;
 use Spatie\QueryBuilder\AllowedFilter;
 
-class PropertyValueQueryAction extends Actions\AbstractQueryAction
+class PropertyValueQueryAction extends Actions\ResourceQueryAction
 {
 
     public function filters() : array

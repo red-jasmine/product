@@ -13,7 +13,7 @@ use RedJasmine\Support\Foundation\Service\Actions;
  * @property ProductProperty $model
  * @property PropertyData    $data
  */
-class PropertyNameCreateAction extends Actions\AbstractCreateAction
+class PropertyNameCreateAction extends Actions\ResourceCreateAction
 {
     public PropertyNameService $service;
 
