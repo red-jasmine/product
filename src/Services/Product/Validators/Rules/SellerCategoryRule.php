@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Product\Validators\Rules;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
+use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\User\UserObject;
 
@@ -23,9 +23,9 @@ class SellerCategoryRule extends AbstractRule
         }
 
         if (isset($this->data['owner'])) {
-            $owner = UserDTO::from($this->data['owner']);
+            $owner = UserData::from($this->data['owner']);
         } else {
-            $owner = UserDTO::from([ 'type' => $this->data['owner_type'], 'id' => $this->data['owner_id'], ]);
+            $owner = UserData::from([ 'type' => $this->data['owner_type'], 'id' => $this->data['owner_id'], ]);
         }
 
         $service = new ProductSellerCategoryService;

@@ -5,8 +5,7 @@ namespace RedJasmine\Product\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
-use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\ModelTree;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -42,13 +41,15 @@ class ProductSellerCategory extends Model
         'sort',
         'status',
         'is_leaf',
+        'is_show',
         'extends',
     ];
 
     protected $casts = [
         'extends' => 'array',
         'status'  => CategoryStatusEnum::class,
-        'is_leaf' => BoolIntEnum::class
+        'is_leaf' => 'boolean',
+        'is_show' => 'boolean',
     ];
 
     public function parent() : BelongsTo
@@ -65,7 +66,7 @@ class ProductSellerCategory extends Model
      */
     public function scopeLeaf(Builder $query) : Builder
     {
-        return $query->where('is_leaf', BoolIntEnum::YES);
+        return $query->where('is_leaf', true);
     }
 
 
@@ -74,11 +75,7 @@ class ProductSellerCategory extends Model
      */
     public function isAllowUse() : bool
     {
-        if ($this->is_leaf === BoolIntEnum::NO) {
-            return false;
-        }
-
-        return true;
+        return $this->is_leaf;
     }
 
 }

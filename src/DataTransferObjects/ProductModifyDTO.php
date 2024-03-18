@@ -9,7 +9,7 @@ use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Support\DataTransferObjects\Data;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
+use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\Json\Json;
 use Spatie\LaravelData\DataCollection;
@@ -30,7 +30,7 @@ class ProductModifyDTO extends Data
     public string|null|Optional           $outerId;
     public int|Optional                   $sort;
     public BoolIntEnum|Optional           $isMultipleSpec;
-    public UserDTO                        $owner;
+    public UserData                       $owner;
     public string|int|float|null|Optional $marketPrice;
     public string|int|float|null|Optional $costPrice;
     public int|Optional|null              $brandId;

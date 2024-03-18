@@ -9,7 +9,7 @@ use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Support\DataTransferObjects\Data;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
+use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\Json\Json;
 use Spatie\LaravelData\DataCollection;
@@ -17,9 +17,9 @@ use Spatie\LaravelData\DataCollection;
 
 class ProductDTO extends Data
 {
-    public ?array            $parameters = [];
-    public UserDTO           $owner;
-    public string            $title;
+    public ?array   $parameters = [];
+    public UserData $owner;
+    public string   $title;
     public ProductTypeEnum   $productType;
     public ShippingTypeEnum  $shippingType;
     public ProductStatusEnum $status;

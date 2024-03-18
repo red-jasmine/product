@@ -8,19 +8,26 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Http\Seller\Resources\SellerCategoryResource;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
+use RedJasmine\Support\DataTransferObjects\UserData;
 
 class SellerCategoryController extends Controller
 {
 
     public function __construct(protected ProductSellerCategoryService $service)
     {
-        $this->service->setOwner($this->getOwner())->setOperator($this->getUser());
+        $service->withQuery(function ($query) {
+            $query->onlyOwner($this->getOwner());
+        });
+        $service->setWithOwner(function () {
+            return $this->getOwner();
+        });
     }
 
 
     public function index() : AnonymousResourceCollection
     {
-        return SellerCategoryResource::collection($this->service->tree());
+
+        return SellerCategoryResource::collection($this->service->query->tree());
     }
 
 
@@ -43,12 +50,14 @@ class SellerCategoryController extends Controller
      */
     public function show($id) : SellerCategoryResource
     {
-        $result = $this->service->find($id);
+
+        $result = $this->service->query->findOrFail($id);
         return new  SellerCategoryResource($result);
     }
 
     public function update(Request $request, $id) : SellerCategoryResource
     {
+
 
         if ($request->isMethod('PATCH')) {
             $result = $this->service->modify($id, $request->all());

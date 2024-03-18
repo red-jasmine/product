@@ -2,45 +2,32 @@
 
 namespace RedJasmine\Product\Services\Category;
 
-use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\SellerCategoryException;
 use RedJasmine\Product\Models\ProductSellerCategory as Model;
+use RedJasmine\Product\Services\Category\Data\ProductSellerCategoryData;
+use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
 use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
-use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
-use RedJasmine\Support\Foundation\Service\WithUserService;
-use RedJasmine\Support\Helpers\ID\Snowflake;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use RedJasmine\Support\Rules\ParentIDValidationRule;
 
 /**
  * 商品类目服务
  */
-class ProductSellerCategoryService
+class ProductSellerCategoryService extends ResourceService
 {
-
-    use WithUserService;
-
-    use HasQueryBuilder;
-
-    /**
-     * @return \Spatie\QueryBuilder\QueryBuilder
-     */
-    public function query()
-    {
-        return $this->queryBuilder();
-    }
-
-    public string $model = Model::class;
+    // 如果资源服务设置了所属人 那么将对资源进行
 
 
-    public function find(int $id) : Model
-    {
-        return $this->query()->findOrFail($id);
-    }
+    public static string $model = Model::class;
+
+    public static string $data = ProductSellerCategoryData::class;
+
+
+    // 获取公共条件
 
 
     /**
@@ -66,13 +53,9 @@ class ProductSellerCategoryService
     public function tree() : array
     {
 
-
-
         $query = (new Model())->withQuery(function (Model $query) {
-            return $query->where('status', CategoryStatusEnum::ENABLE)
-                         ->onlyOwner($this->getOwner());
+            return $query->where('status', CategoryStatusEnum::ENABLE)->onlyOwner($this->getOwner());
         });
-
         return $query->toTree();
     }
 
@@ -83,24 +66,6 @@ class ProductSellerCategoryService
         });
     }
 
-    /**
-     * @param array $attributes
-     *
-     * @return Model
-     * @throws Exception
-     */
-    public function create(array $attributes) : Model
-    {
-        $productCategory     = new Model();
-        $productCategory->id = Snowflake::getInstance()->nextId();
-        $validator           = $this->validator($attributes);
-        $validator->validate();
-        $productCategory->fill($validator->safe()->all());
-        $productCategory->owner   = $this->getOwner();
-        $productCategory->creator = $this->getOperator();
-        $productCategory->save();
-        return $productCategory;
-    }
 
     public function validator(array $attributes) : \Illuminate\Validation\Validator
     {
