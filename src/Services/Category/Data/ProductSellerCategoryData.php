@@ -9,6 +9,7 @@ use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
 use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
+use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 
