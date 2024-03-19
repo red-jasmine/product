@@ -25,7 +25,7 @@ class BrandService extends ResourceService
 
     protected static string $model = Brand::class;
 
-    protected static string $data = BrandData::class;
+    protected static string $dataClass = BrandData::class;
 
     public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.pipelines.brands';
 

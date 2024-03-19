@@ -3,8 +3,10 @@
 namespace RedJasmine\Product\Services\Brand\Data;
 
 use Illuminate\Validation\Rules\Enum;
+use RedJasmine\Product\Models\Brand;
 use RedJasmine\Product\Services\Brand\Enums\BrandStatusEnum;
 use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Rules\NotZeroExistsRule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class BrandData extends Data
@@ -36,9 +38,10 @@ class BrandData extends Data
 
     public static function rules(ValidationContext $context) : array
     {
+        $table = (new Brand())->getTable();
         return [
             'name'         => [ 'required', 'max:100' ],
-            'parent_id'    => [ 'required', 'integer', ],
+            'parent_id' => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), ],
             'english_name' => [ 'sometimes', 'nullable', 'integer', ],
             'logo'         => [ 'sometimes', 'nullable', 'max:255' ],
             'sort'         => [ 'integer' ],

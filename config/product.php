@@ -4,7 +4,7 @@
 return [
     'actions' => [
         'seller-category' => [
-            'update'=>'test',
+
         ],
     ],
 

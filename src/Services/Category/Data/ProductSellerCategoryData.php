@@ -9,20 +9,26 @@ use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
 use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
-use RedJasmine\Support\Rules\ParentIDValidationRule;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 
 class ProductSellerCategoryData extends Data
 {
+    // TODO $owner 对于 数组  [owner_type=>type,owner_id=>id]  如何转换
+    public function __construct(
+        public UserData           $owner,
+        public string             $name,
+        public int                $parent_id = 0,
+        public CategoryStatusEnum $status = CategoryStatusEnum::ENABLE,
+        public int                $sort = 0,
+        public bool               $is_leaf = false,
+        public string|null        $group_name = null,
+        public string|null        $image = null,
+        public array|null         $extends = null,
 
-    public UserData           $owner;
-    public string             $name;
-    public CategoryStatusEnum $status     = CategoryStatusEnum::ENABLE;
-    public int                $parent_id  = 0;
-    public int                $sort       = 0;
-    public bool               $is_leaf    = false;
-    public string|null        $group_name = null;
-    public string|null        $image      = null;
+    )
+    {
+    }
 
 
     public static function attributes() : array
@@ -45,13 +51,13 @@ class ProductSellerCategoryData extends Data
     }
 
 
-    public static function rules() : array
+    public static function rules(ValidationContext $context) : array
     {
         $table = (new Model())->getTable();
         return [
             'id'         => [],
-            'parent_id'  => [ 'required', 'integer',
-                              new NotZeroExistsRule($table, 'id'), new CategoryParentRule($table) ],
+            'parent_id'  => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'),
+                              new CategoryParentRule($table), ],
             'name'       => [ 'required', 'max:100' ],
             'group_name' => [ 'sometimes', 'nullable', 'max:100' ],
             'image'      => [ 'sometimes', 'nullable', 'max:255' ],
