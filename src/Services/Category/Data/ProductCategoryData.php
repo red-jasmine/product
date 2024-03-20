@@ -10,18 +10,10 @@ use RedJasmine\Support\DataTransferObjects\UserData;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 
-class ProductSellerCategoryData extends Data
+class ProductCategoryData extends Data
 {
 
-    public static function morphs() : array
-    {
-        return [
-            'owner'
-        ];
-    }
-
     public function __construct(
-        public UserData           $owner,
         public string             $name,
         public int                $parent_id = 0,
         public CategoryStatusEnum $status = CategoryStatusEnum::ENABLE,
@@ -39,20 +31,21 @@ class ProductSellerCategoryData extends Data
     public static function attributes() : array
     {
         return [
-            'parent_id'  => __('red-jasmine/product::product-seller-category.fields.parent_id'),
-            'name'       => __('red-jasmine/product::product-seller-category.fields.name'),
-            'group_name' => __('red-jasmine/product::product-seller-category.fields.group_name'),
-            'sort'       => __('red-jasmine/product::product-seller-category.fields.sort'),
-            'is_leaf'    => __('red-jasmine/product::product-seller-category.fields.is_leaf'),
-            'is_show'    => __('red-jasmine/product::product-seller-category.fields.is_show'),
-            'status'     => __('red-jasmine/product::product-seller-category.fields.status'),
-            'extends'    => __('red-jasmine/product::product-seller-category.fields.extends'),
+            'parent_id'  => __('red-jasmine/product::product-category.fields.parent_id'),
+            'name'       => __('red-jasmine/product::product-category.fields.name'),
+            'group_name' => __('red-jasmine/product::product-category.fields.group_name'),
+            'sort'       => __('red-jasmine/product::product-category.fields.sort'),
+            'is_leaf'    => __('red-jasmine/product::product-category.fields.is_leaf'),
+            'is_show'    => __('red-jasmine/product::product-category.fields.is_show'),
+            'status'     => __('red-jasmine/product::product-category.fields.status'),
+            'extends'    => __('red-jasmine/product::product-category.fields.extends'),
         ];
     }
 
 
     public static function rules(ValidationContext $context) : array
     {
+
         return [
             'id'         => [],
             'parent_id'  => [ 'integer' ],

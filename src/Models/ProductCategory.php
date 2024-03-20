@@ -5,7 +5,8 @@ namespace RedJasmine\Product\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
+
+use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\ModelTree;
@@ -38,9 +39,9 @@ class ProductCategory extends Model
         'parent_id',
         'name',
         'group_name',
-
         'sort',
         'is_leaf',
+        'is_show',
         'status',
         'extends',
     ];
@@ -48,12 +49,13 @@ class ProductCategory extends Model
     protected $casts = [
         'extends' => 'array',
         'status'  => CategoryStatusEnum::class,
-        'is_leaf' => BoolIntEnum::class,
+        'is_leaf' => 'boolean',
+        'is_show' => 'boolean',
     ];
 
     public function parent() : BelongsTo
     {
-        return $this->belongsTo(static::class, 'parent_id', 'cid');
+        return $this->belongsTo(static::class, 'parent_id', 'id');
     }
 
     /**
@@ -65,7 +67,7 @@ class ProductCategory extends Model
      */
     public function scopeLeaf(Builder $query) : Builder
     {
-        return $query->where('is_leaf', BoolIntEnum::YES);
+        return $query->where('is_leaf', true);
     }
 
     /**

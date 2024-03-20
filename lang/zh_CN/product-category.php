@@ -11,6 +11,7 @@ return [
         'group_name'   => '分组',
         'sort'         => '排序',
         'is_leaf'      => '是否叶子类目',
+        'is_show'      => '是否显示',
         'status'       => '状态',
         'extends'      => '扩展字段',
         'creator_type' => '创建者类型',

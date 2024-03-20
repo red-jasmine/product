@@ -7,6 +7,7 @@ use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Actions\CategoryUpdateAction;
 use RedJasmine\Product\Services\Category\Data\ProductSellerCategoryData;
 use RedJasmine\Product\Services\Category\Validators\CategoryValidatorManage;
+use RedJasmine\Product\Services\Category\Validators\SellerCategoryValidatorManage;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 
 /**
@@ -19,7 +20,7 @@ class ProductSellerCategoryService extends ResourceService
 
     public static string $dataClass = ProductSellerCategoryData::class;
 
-    public static ?string $validatorManageClass = CategoryValidatorManage::class;
+    public static ?string $validatorManageClass = SellerCategoryValidatorManage::class;
 
 
     protected static ?string $actionsConfigKey = 'red-jasmine.product.actions.seller-category';
