@@ -41,7 +41,7 @@ class BrandData extends Data
         $table = (new Brand())->getTable();
         return [
             'name'         => [ 'required', 'max:100' ],
-            'parent_id' => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), ],
+            'parent_id'    => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), ],
             'english_name' => [ 'sometimes', 'nullable', 'integer', ],
             'logo'         => [ 'sometimes', 'nullable', 'max:255' ],
             'sort'         => [ 'integer' ],

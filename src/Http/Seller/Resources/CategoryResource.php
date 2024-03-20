@@ -24,6 +24,7 @@ class CategoryResource extends JsonResource
             'group_name' => $this->group_name,
             'sort'       => $this->sort,
             'is_leaf'    => $this->is_leaf,
+            'is_show'    => $this->is_show,
             'status'     => $this->status,
             'extends'    => $this->extends,
             'children'   => $this->children ? static::collection(collect($this->children)) : null,

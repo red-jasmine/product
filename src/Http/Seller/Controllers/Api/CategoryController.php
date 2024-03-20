@@ -16,14 +16,14 @@ class CategoryController extends Controller
 
     public function index() : AnonymousResourceCollection
     {
-        $tree = $this->service->tree();
+        $tree = $this->service->query->tree();
 
         return CategoryResource::collection($tree);
     }
 
     public function show($id) : CategoryResource
     {
-        return new CategoryResource($this->service->find($id));
+        return new CategoryResource($this->service->query()->findOrFail($id));
     }
 
 

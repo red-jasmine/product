@@ -11,19 +11,22 @@ class CategoryController extends Controller
 {
     public function __construct(protected ProductCategoryService $service)
     {
+        $this->service->withQuery(function ($query) {
+            $query->enable();
+        });
     }
 
 
     public function index() : AnonymousResourceCollection
     {
-        $tree = $this->service->tree();
+        $tree = $this->service->query->tree();
 
         return CategoryResource::collection($tree);
     }
 
     public function show($id) : CategoryResource
     {
-        return new CategoryResource($this->service->find($id));
+        return new CategoryResource($this->service->query()->findOrFail($id));
     }
 
 

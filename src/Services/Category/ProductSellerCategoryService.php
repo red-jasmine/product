@@ -26,6 +26,8 @@ class ProductSellerCategoryService extends ResourceService
     protected static ?string $actionsConfigKey = 'red-jasmine.product.actions.seller-category';
 
 
+    public static bool $autoModelWithOwner = true;
+
     protected static function actions() : array
     {
         return [

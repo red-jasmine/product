@@ -15,7 +15,7 @@ class BrandController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function index(Request $request) : \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $result = $this->service->query()->paginate();
         return BrandResource::collection($result);
@@ -23,8 +23,7 @@ class BrandController extends Controller
 
     public function show($id)
     {
-        $result = $this->service->query->find($id);
-
+        $result = $this->service->query()->findOrFail($id);
         return new BrandResource($result);
     }
 

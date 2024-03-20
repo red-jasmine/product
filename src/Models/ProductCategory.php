@@ -17,7 +17,6 @@ class ProductCategory extends Model
 {
     use HasDateTimeFormatter;
 
-    use HasOwner;
 
     use HasOperator;
 
@@ -56,6 +55,12 @@ class ProductCategory extends Model
     public function parent() : BelongsTo
     {
         return $this->belongsTo(static::class, 'parent_id', 'id');
+    }
+
+
+    public function scopeEnable(Builder $query) : Builder
+    {
+        return $query->where('status', 'enable');
     }
 
     /**
