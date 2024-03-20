@@ -4,16 +4,22 @@ namespace RedJasmine\Product\Services\Series;
 
 
 use Illuminate\Support\Facades\DB;
+use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\DataTransferObjects\Series\ProductSeriesDTO;
 use RedJasmine\Product\DataTransferObjects\Series\ProductSeriesProductDTO;
+use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductSeries;
 use RedJasmine\Product\Models\ProductSeriesProduct;
 use RedJasmine\Support\Exceptions\AbstractException;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Foundation\Service\Service;
 use Throwable;
 
-class ProductSeriesService extends Service
+class ProductSeriesService extends ResourceService
 {
+
+
+
 
     /**
      * @param ProductSeriesDTO $productSeriesDTO

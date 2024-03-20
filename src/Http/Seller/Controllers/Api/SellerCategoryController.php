@@ -15,7 +15,7 @@ class SellerCategoryController extends Controller
 
     public function __construct(protected ProductSellerCategoryService $service)
     {
-        $service->withQuery(function ($query) {
+        $this->service->withQuery(function ($query) {
             $query->onlyOwner($this->getOwner());
         })->setWithOwner(function () {
             return $this->getOwner();

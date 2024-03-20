@@ -13,6 +13,7 @@ use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Support\Exceptions\AbstractException;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use Throwable;
@@ -25,17 +26,21 @@ use Throwable;
  * @see ProductModifyAction::execute()
  * @method  Product modify(int $id, ProductDTO $productDTO)
  */
-class ProductService extends Service
+class ProductService extends ResourceService
 {
+
+    protected static string $model = Product::class;
+
+    protected static string $dataClass = ProductDTO::class;
+
+    protected static ?string $actionsConfigKey            = 'red-jasmine.product.services.product.actions';
+
+    public static ?string    $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
 
     /**
      * 最大库存
      */
     public const MAX_QUANTITY = 9999999999;
-
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions';
-
-    public string $model = Product::class;
 
 
     public function queries() : ProductQuery

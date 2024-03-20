@@ -11,21 +11,18 @@ class ProductController extends Controller
 {
     public function __construct(protected ProductService $service)
     {
-
-        $this->service->setOwner($this->getOwner())->setOperator($this->getUser());
     }
 
     public function index() : AnonymousResourceCollection
     {
 
-        $result = $this->service->queries()->lists();
+        $result = $this->service->query()->paginate();
         return ProductResource::collection($result);
     }
 
     public function show($id) : ProductResource
     {
-        $result = $this->service->queries()->find($id);
-
+        $result = $this->service->query()->findOrFail($id);
         return new ProductResource($result);
     }
 

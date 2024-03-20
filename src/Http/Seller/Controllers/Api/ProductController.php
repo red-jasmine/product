@@ -15,14 +15,18 @@ class ProductController extends Controller
 {
     public function __construct(public ProductService $service)
     {
-        $this->service
-            ->setOwner($this->getOwner())
-            ->setOperator($this->getUser());
+        $this->service->withQuery(function ($query) {
+            $query->onlyOwner($this->getOwner());
+        })->setWithOwner(function () {
+            return $this->getOwner();
+        })->setWithOperator(function () {
+            return $this->getUser();
+        });
     }
 
     public function index() : AnonymousResourceCollection
     {
-        $result = $this->service->queries()->lists();
+        $result = $this->service->query()->paginate();
         return ProductResource::collection($result);
     }
 
@@ -43,7 +47,7 @@ class ProductController extends Controller
 
     public function show($id) : ProductResource
     {
-        $result = $this->service->queries()->find($id);
+        $result = $this->service->query()->findOrFail($id);
         return new ProductResource($result);
     }
 
