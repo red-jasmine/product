@@ -23,8 +23,10 @@ class ProductSellerCategoryService extends ResourceService
     public static ?string $validatorManageClass = SellerCategoryValidatorManage::class;
 
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions.seller-category';
 
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.seller-category.actions';
+
+    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.seller-category.pipelines';
 
     public static bool $autoModelWithOwner = true;
 

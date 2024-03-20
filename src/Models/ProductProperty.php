@@ -4,6 +4,7 @@ namespace RedJasmine\Product\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
@@ -44,6 +45,10 @@ class ProductProperty extends Model
         return $query->where('status', PropertyStatusEnum::ENABLE);
     }
 
+    public function group() : BelongsTo
+    {
+        return $this->belongsTo(ProductPropertyGroup::class, 'group_id', 'id');
+    }
 
     public function values() : HasMany
     {

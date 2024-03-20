@@ -6,29 +6,32 @@ use App\Models\Patient;
 use RedJasmine\Product\Models\ProductPropertyGroup;
 use RedJasmine\Product\Services\Property\Actions\Groups;
 use RedJasmine\Product\Services\Property\Data\PropertyGroupData;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Foundation\Service\Service;
+use Spatie\QueryBuilder\AllowedFilter;
 
 /**
  * @method ProductPropertyGroup create(PropertyGroupData $data)
  * @method ProductPropertyGroup update(int $id, PropertyGroupData $data)
- * @method boolean delete(int $id)
  */
-class PropertyGroupService extends Service
+class PropertyGroupService extends ResourceService
 {
 
-    protected static ?string $model = ProductPropertyGroup::class;
+    protected static string $model = ProductPropertyGroup::class;
 
-    protected static ?string $data = PropertyGroupData::class;
+    protected static string $dataClass = PropertyGroupData::class;
 
-    /**
-     * 默认的操作
-     * @var array|string[]
-     */
-    protected static array $actions = [
-        'create' => Groups\PropertyGroupCreateAction::class,
-        'update' => Groups\PropertyGroupUpdateAction::class,
-        'delete' => Groups\PropertyGroupDeleteAction::class,
-    ];
 
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.property.group.actions';
+
+    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.property.group.pipelines';
+
+    public static function filters() : array
+    {
+        return [
+            'name',
+            AllowedFilter::exact('status'),
+        ];
+    }
 
 }

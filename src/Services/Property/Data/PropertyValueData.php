@@ -13,10 +13,10 @@ class PropertyValueData extends Data
 {
     public int                $pid;
     public string             $name;
-    public int                $sort    = 0;
-    public ?int               $groupId = null;
-    public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
-    public ?array             $extends = null;
+    public int                $sort     = 0;
+    public ?int               $group_id = null;
+    public PropertyStatusEnum $status   = PropertyStatusEnum::ENABLE;
+    public ?array             $extends  = null;
 
     public static function attributes(...$args) : array
     {
@@ -35,12 +35,12 @@ class PropertyValueData extends Data
     public static function rules(ValidationContext $context) : array
     {
         return [
-            'pid'     => [ 'required', 'integer', Rule::exists('product_properties', 'pid') ],
-            'name'    => [ 'required', 'max:30', new PropertyTitleRule() ],
-            'extends' => [ 'sometimes', 'array' ],
-            'sort'    => [ 'integer' ],
-            'groupId' => [ 'sometimes', 'numeric', 'between:0,10' ],
-            'name'    => [ 'required', new PropertyTitleRule() ],
+            'pid'      => [ 'required', 'integer', Rule::exists('product_properties', 'pid') ],
+            'name'     => [ 'required', 'max:30', new PropertyTitleRule() ],
+            'extends'  => [ 'sometimes', 'array' ],
+            'sort'     => [ 'integer' ],
+            'group_id' => [ 'sometimes', 'nullable', 'integer' ],
+            'name'     => [ 'required', new PropertyTitleRule() ],
 
         ];
     }

@@ -14,7 +14,7 @@ class ProductServiceProvider extends ServiceProvider
      */
     public function boot() : void
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'red-jasmine/product');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'red-jasmine.product');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'red-jasmine');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
@@ -75,7 +75,7 @@ class ProductServiceProvider extends ServiceProvider
         // Publishing the translation files.
         $this->publishes([
                              __DIR__ . '/../lang' => $this->app->langPath('vendor/red-jasmine/product'),
-                         ],'red-jasmine.product.lang');
+                         ], 'red-jasmine.product.lang');
 
         // Registering package commands.
         // $this->commands([]);

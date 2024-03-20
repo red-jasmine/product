@@ -1,17 +1,45 @@
 <?php
 
-
 return [
-    'actions' => [
-        'seller-category' => [
 
+    'services' => [
+        'product'         => [],
+        'property'        => [
+            'group' => [
+                'actions'   => [],
+                'pipelines' => [
+                ],
+            ],
+            'name'  => [
+                'actions'   => [],
+                'pipelines' => [
+                ],
+            ],
+            'value' => [
+                'actions'   => [],
+                'pipelines' => [
+                ],
+            ],
+        ],
+        'brand'           => [
+            'actions'   => [],
+            'pipelines' => [
+
+            ],
+        ],
+        'category'        => [
+            'actions'   => [],
+            'pipelines' => [
+
+            ],
+        ],
+        'seller-category' => [
+            'actions'   => [],
+            'pipelines' => [
+
+            ],
         ],
     ],
 
-    'pipelines' => [
-        'create' => [],
-        'update' => [],
-        'modify' => [],
-    ],
 
 ];

@@ -20,12 +20,10 @@ class ProductCategoryService extends ResourceService
 
     public static ?string $validatorManageClass = CategoryValidatorManage::class;
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.actions.category';
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.category.actions';
 
-    public static bool $autoModelWithOwner = false;
+    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.category.pipelines';
 
-
-    public static bool $modelWithOwner = false;
 
     public function find(int $id) : Model
     {

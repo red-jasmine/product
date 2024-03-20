@@ -11,10 +11,10 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 class PropertyData extends Data
 {
     public string             $name;
-    public int                $sort    = 0;
-    public ?int               $groupId = null;
-    public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
-    public ?array             $extends = null;
+    public int                $sort     = 0;
+    public ?int               $group_id = null;
+    public PropertyStatusEnum $status   = PropertyStatusEnum::ENABLE;
+    public ?array             $extends  = null;
 
     public static function attributes(...$args) : array
     {
@@ -33,11 +33,11 @@ class PropertyData extends Data
     {
 
         return [
-            'name'    => [ 'required', 'max:30', new PropertyTitleRule() ],
-            'extends' => [ 'sometimes', 'nullable', 'array' ],
-            'sort'    => [ 'integer' ],
-            'groupId' => [ 'sometimes', 'nullable', 'numeric', 'between:0,10' ],
-            'name'    => [ 'required', new PropertyTitleRule() ],
+            'name'     => [ 'required', 'max:30', new PropertyTitleRule() ],
+            'extends'  => [ 'sometimes', 'nullable', 'array' ],
+            'sort'     => [ 'integer' ],
+            'group_id' => [ 'sometimes', 'nullable', 'integer' ],
+            'name'     => [ 'required', new PropertyTitleRule() ],
 
         ];
     }

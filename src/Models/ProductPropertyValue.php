@@ -44,6 +44,12 @@ class ProductPropertyValue extends Model
     ];
 
 
+    public function group() : BelongsTo
+    {
+        return $this->belongsTo(ProductPropertyGroup::class, 'group_id', 'id');
+    }
+
+
     public function property() : BelongsTo
     {
         return $this->belongsTo(ProductProperty::class, 'pid', 'pid');
