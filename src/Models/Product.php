@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Product\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,13 +18,10 @@ use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
-use RedJasmine\Support\Traits\Models\WithDTO;
 
 
 class Product extends Model
 {
-    use WithDTO;
-
     use HasDateTimeFormatter;
 
     use HasOwner;
@@ -43,11 +39,15 @@ class Product extends Model
         'status'           => ProductStatusEnum::class,// 状态
         'sub_stock'        => SubStockTypeEnum::class,// 扣库存方式
         'freight_payer'    => FreightPayerEnum::class,// 运费承担方
-        'is_multiple_spec' => BoolIntEnum::class,
+        'is_multiple_spec' => 'boolean',
         'off_sale_time'    => 'datetime',
         'on_sale_time'     => 'datetime',
         'sold_out_time'    => 'datetime',
         'modified_time'    => 'datetime',
+        'is_hot'           => 'boolean',
+        'is_new'           => 'boolean',
+        'is_best'          => 'boolean',
+        'is_benefit'       => 'boolean',
     ];
 
 

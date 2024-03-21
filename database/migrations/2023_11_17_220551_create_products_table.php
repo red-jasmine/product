@@ -47,8 +47,11 @@ return new class extends Migration {
             $table->decimal('cost_price', 10, 2, true)->nullable()->comment('成本价');
             $table->unsignedBigInteger('stock')->default(0)->comment('库存');
             $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
+
+            //统计项
+            $table->unsignedBigInteger('views')->default(0)->comment('浏览量');
             $table->unsignedBigInteger('sales')->default(0)->comment('销量');
-             // 用户类
+            // 用户类
             $table->unsignedTinyInteger('vip')->default(0)->comment('VIP');
             $table->unsignedInteger('points')->default(0)->comment('积分');
             // 展现

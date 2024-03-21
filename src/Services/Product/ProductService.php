@@ -6,21 +6,20 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use RedJasmine\Product\Actions\Products\ProductCreateAction;
-use RedJasmine\Product\Actions\Products\ProductModifyAction;
-use RedJasmine\Product\Actions\Products\ProductUpdateAction;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
+use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
-use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use Throwable;
 
+use \RedJasmine\Product\Services\Product\Actions;
+
 /**
- * @see ProductCreateAction::execute()
- * @method  Product create(ProductDTO $productDTO)
+ * @see Actions\ProductCreateAction::execute()
+ * @method  Product create(ProductData|array $data)
  * @see ProductUpdateAction::execute()
  * @method  Product update(int $id, ProductDTO $productDTO)
  * @see ProductModifyAction::execute()
@@ -31,11 +30,17 @@ class ProductService extends ResourceService
 
     protected static string $model = Product::class;
 
-    protected static string $dataClass = ProductDTO::class;
+    protected static string $dataClass = ProductData::class;
+
+    public static bool $autoModelWithOwner = true;
 
     protected static ?string $actionsConfigKey            = 'red-jasmine.product.services.product.actions';
 
     public static ?string    $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
+
+    protected static array $actions = [
+        'create' => Actions\ProductCreateAction::class
+    ];
 
     /**
      * 最大库存

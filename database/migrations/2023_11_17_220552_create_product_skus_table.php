@@ -17,18 +17,19 @@ return new class extends Migration {
             $table->decimal('market_price', 10, 2, true)->nullable()->comment('市场价');
             $table->decimal('cost_price', 10, 2, true)->nullable()->comment('成本价');
             $table->unsignedBigInteger('sales')->default(0)->comment('销量');
+
             // 库存
             $table->unsignedBigInteger('stock')->default(0)->comment('库存');
-            $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
+            $table->unsignedBigInteger('virtual_stock')->default(0)->comment('虚拟库存');
             $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
+            $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
+            $table->unsignedBigInteger('safety_stock')->default(0)->comment('安全库存');
             // 信息
             $table->string('image')->nullable()->comment('主图');
             $table->string('barcode', 32)->nullable()->comment('条形码');
             $table->string('outer_id', 20)->nullable()->comment('商家编码');
             // 状态
             $table->string('status')->comment('状态');
-
-
             // 操作
             $table->timestamp('modified_time')->nullable()->comment('修改时间');
             $table->nullableMorphs('creator');

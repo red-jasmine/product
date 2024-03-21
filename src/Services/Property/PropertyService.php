@@ -2,20 +2,11 @@
 
 namespace RedJasmine\Product\Services\Property;
 
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Enums\Property\PropertyStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\ProductProperty;
 use RedJasmine\Product\Models\ProductPropertyValue;
-use RedJasmine\Product\Services\Property\Query\PropertyQuery;
-use RedJasmine\Product\Services\Property\Query\PropertyValueQuery;
 use RedJasmine\Support\Foundation\Service\Service;
-use RedJasmine\Support\Helpers\ID\Snowflake;
 
 
 class PropertyService extends Service
@@ -36,22 +27,6 @@ class PropertyService extends Service
         return app(PropertyNameService::class);
     }
 
-
-    /**
-     * @return PropertyQuery
-     */
-    public function propertyQuery() : PropertyQuery
-    {
-        return new PropertyQuery();
-    }
-
-    /**
-     * @return PropertyValueQuery
-     */
-    public function valueQuery() : PropertyValueQuery
-    {
-        return new PropertyValueQuery();
-    }
 
     /**
      * 查询所有
