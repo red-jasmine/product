@@ -35,13 +35,13 @@ class ProductInfoData extends Data
      */
     public ?DataCollection $saleProps = null;
 
-    public static function prepareForPipeline(Collection $properties) : Collection
+    public static function prepareForPipeline(array $properties) : array
     {
-        if ($properties->offsetExists('basic_props')) {
-            $properties->put('basic_props', Json::toArray($properties->get('basic_props', '')));
+        if (isset($properties['basic_props'])) {
+            $properties['basic_props'] = Json::toArray($properties['basic_props']);
         }
-        if ($properties->offsetExists('sale_props')) {
-            $properties->put('sale_props', Json::toArray($properties->get('sale_props', '')));
+        if (isset($properties['sale_props'])) {
+            $properties['sale_props'] = Json::toArray($properties['sale_props']);
         }
         return $properties;
     }

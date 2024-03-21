@@ -63,10 +63,11 @@ class ProductData extends Data
      */
     public ?DataCollection $skus = null;
 
-    public static function prepareForPipeline(Collection $properties) : Collection
+    public static function prepareForPipeline(array $properties) : array
     {
-        if ($properties->offsetExists('skus')) {
-            $properties->put('skus', Json::toArray($properties->get('skus', '')));
+
+        if (isset($properties['skus'])) {
+            $properties['skus'] = Json::toArray($properties['skus']);
         }
         return $properties;
     }

@@ -10,28 +10,25 @@ use RedJasmine\Product\Services\Product\Validators\Rules\SalePropsRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SkusRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
 
-class PropsValidator extends AbstractProductValidator
+class PropsValidator extends ValidatorCombiner
 {
 
     protected bool $hasSkuRules = false;
 
-    public function withValidator(Validator $validator) : void
+    public function setValidator(Validator $validator) : void
     {
         // 在调用之前
         $is_multiple_spec = $validator->getValue('is_multiple_spec');
-        if (BoolIntEnum::tryFrom($is_multiple_spec) === BoolIntEnum::YES) {
-
+        if ((bool)$is_multiple_spec === true) {
             $this->hasSkuRules = true;
         }
-
-        if (BoolIntEnum::tryFrom($is_multiple_spec) === BoolIntEnum::NO) {
+        if ((bool)$is_multiple_spec === false) {
             // 如果不是多规格 重置 销售属性
             $validator->setValue('info.sale_props', []);
             $validator->setValue('skus', null);
             $this->hasSkuRules = false;
             return;
         }
-
         // 如果传了SKU 不传 是否多规格 那么就必须验证
         if ($is_multiple_spec === null && filled($validator->getValue('skus'))) {
             $this->hasSkuRules = true;

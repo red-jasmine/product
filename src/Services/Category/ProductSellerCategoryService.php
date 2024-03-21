@@ -23,7 +23,6 @@ class ProductSellerCategoryService extends ResourceService
     public static ?string $validatorManageClass = SellerCategoryValidatorManage::class;
 
 
-
     protected static ?string $actionsConfigKey = 'red-jasmine.product.services.seller-category.actions';
 
     public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.seller-category.pipelines';
@@ -45,7 +44,7 @@ class ProductSellerCategoryService extends ResourceService
      */
     public function isAllowUse(int $id) : Model
     {
-        $model = $this->query->find($id);
+        $model = $this->query()->findOrFail($id);
         if ($model->isAllowUse()) {
             return $model;
         }

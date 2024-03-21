@@ -11,14 +11,14 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class BrandData extends Data
 {
-    public int             $parent_id    = 0;
-    public int             $sort         = 0;
+    public int             $parent_id   = 0;
+    public int             $sort        = 0;
     public string          $name;
-    public ?string         $english_name = null;
-    public ?string         $logo         = null;
-    public BrandStatusEnum $status       = BrandStatusEnum::ENABLE;
-    public ?array          $extends      = null;
-    public bool            $is_show      = true;
+    public ?string         $englishName = null;
+    public ?string         $logo        = null;
+    public BrandStatusEnum $status      = BrandStatusEnum::ENABLE;
+    public ?array          $extends     = null;
+    public bool            $is_show     = true;
 
 
     public static function attributes(...$args) : array

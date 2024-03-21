@@ -1,26 +1,25 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product\Validators\Rules;
+namespace RedJasmine\Product\Services\Category\Rules;
 
 use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Services\Category\ProductCategoryService;
 use RedJasmine\Support\Exceptions\AbstractException;
 
-class CategoryRule extends AbstractRule
+class CategoryAvailableRule implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
-        if(blank($value)){
+        if (blank($value)) {
             return;
         }
-        $service = app(ProductCategoryService::class);
         try {
-            $service->isAllowUse($value);
+            app(ProductCategoryService::class)->isAllowUse($value);
         } catch (AbstractException|ModelNotFoundException) {
             $fail('类目不可使用');
         }
+
     }
-
-
 }

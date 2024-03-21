@@ -9,32 +9,25 @@ use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Enums\Product\ProductTypeEnum;
 use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
+use RedJasmine\Product\Services\Brand\Rules\BrandAvailableRule;
+use RedJasmine\Product\Services\Category\Rules\CategoryAvailableRule;
+use RedJasmine\Product\Services\Category\Rules\SellerCategoryAvailableRule;
 use RedJasmine\Product\Services\Product\ProductService;
-use RedJasmine\Product\Services\Product\Validators\Rules\BrandRule;
-use RedJasmine\Product\Services\Product\Validators\Rules\CategoryRule;
+
 use RedJasmine\Product\Services\Product\Validators\Rules\PriceRule;
-use RedJasmine\Product\Services\Product\Validators\Rules\SellerCategoryRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 
-class BasicValidator extends AbstractProductValidator
+class BasicValidator extends ValidatorCombiner
 {
-    public function withValidator(Validator $validator) : void
+    public function setValidator(Validator $validator)
     {
-
         $validator->after(function (Validator $validator) {
             $data = $validator->getData();
-            if ((int)($data['is_multiple_spec'] ?? 0)) {
-                $validator->setValue('is_sku', 0);
-                $validator->setValue('spu_id', 0);
-
-            } else {
-                $validator->setValue('is_sku', 1);
-                $validator->setValue('spu_id', 0);
+            if ((boolean)(int)($data['is_multiple_spec'] ?? 0) === false) {
                 $validator->setValue('skus', []);
                 $validator->setValue('info.sale_props', []);
             }
-
         });
 
 
@@ -49,10 +42,13 @@ class BasicValidator extends AbstractProductValidator
 
     public function fields() : array
     {
-        $fields = [
-            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', new CategoryRule() ], ],
-            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', new BrandRule() ], ],
-            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', new SellerCategoryRule() ], ],
+        return [
+            'owner'              => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
+            'owner_type'         => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
+            'owner_id'           => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
+            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', new CategoryAvailableRule() ], ],
+            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', new BrandAvailableRule() ], ],
+            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', new SellerCategoryAvailableRule() ], ],
             'product_type'       => [ 'attribute' => '商品类型', 'rules' => [ new Enum(ProductTypeEnum::class) ], ],
             'shipping_type'      => [ 'attribute' => '发货方式', 'rules' => [ new Enum(ShippingTypeEnum::class) ], ],
             'title'              => [ 'attribute' => '标题', 'rules' => [ 'required', 'max:60', 'min:2' ], ],
@@ -76,32 +72,26 @@ class BasicValidator extends AbstractProductValidator
             'delivery_time'      => [ 'attribute' => '发货时间', 'rules' => [ 'required', 'integer' ], ],
             'vip'                => [ 'attribute' => 'VIP', 'rules' => [ 'sometimes', 'integer', 'min:0' ], ],
             'points'             => [ 'attribute' => '积分', 'rules' => [ 'sometimes', 'integer' ], ],
-
-
-            'is_hot'     => [ 'attribute' => '热销', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
-            'is_new'     => [ 'attribute' => '新品', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
-            'is_best'    => [ 'attribute' => '精品', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
-            'is_benefit' => [ 'attribute' => '特惠', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
-
-            'info.keywords'    => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
-            'info.description' => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
-            'info.detail'      => [ 'attribute' => '详情', 'rules' => [], ],
-            'info.images'      => [ 'attribute' => '图片集', 'rules' => [], ],
-            'info.videos'      => [ 'attribute' => '视频集', 'rules' => [], ],
-            'info.weight'      => [ 'attribute' => '重量', 'rules' => [], ],
-            'info.width'       => [ 'attribute' => '宽度', 'rules' => [], ],
-            'info.height'      => [ 'attribute' => '高度', 'rules' => [], ],
-            'info.length'      => [ 'attribute' => '长度', 'rules' => [], ],
-            'info.size'        => [ 'attribute' => '大小', 'rules' => [], ],
-            'info.extends'     => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
-            'info.tools'       => [ 'attribute' => '工具', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
-            'info.remarks'     => [ 'attribute' => '备注', 'rules' => [], ],
-            'info.basic_props' => [ 'attribute' => '基础属性', 'rules' => [ 'sometimes', ], ],
-            'info.sale_props'  => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', ], ],
+            'is_hot'             => [ 'attribute' => '热销', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
+            'is_new'             => [ 'attribute' => '新品', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
+            'is_best'            => [ 'attribute' => '精品', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
+            'is_benefit'         => [ 'attribute' => '特惠', 'rules' => [ 'sometimes', new Enum(BoolIntEnum::class) ], ],
+            'info.keywords'      => [ 'attribute' => '关键字', 'rules' => [ 'sometimes', 'max:100' ], ],
+            'info.description'   => [ 'attribute' => '描述', 'rules' => [ 'sometimes', 'max:500' ], ],
+            'info.detail'        => [ 'attribute' => '详情', 'rules' => [], ],
+            'info.images'        => [ 'attribute' => '图片集', 'rules' => [], ],
+            'info.videos'        => [ 'attribute' => '视频集', 'rules' => [], ],
+            'info.weight'        => [ 'attribute' => '重量', 'rules' => [], ],
+            'info.width'         => [ 'attribute' => '宽度', 'rules' => [], ],
+            'info.height'        => [ 'attribute' => '高度', 'rules' => [], ],
+            'info.length'        => [ 'attribute' => '长度', 'rules' => [], ],
+            'info.size'          => [ 'attribute' => '大小', 'rules' => [], ],
+            'info.extends'       => [ 'attribute' => '扩展', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
+            'info.tools'         => [ 'attribute' => '工具', 'rules' => [ 'sometimes', 'nullable', 'array' ], ],
+            'info.remarks'       => [ 'attribute' => '备注', 'rules' => [], ],
+            'info.basic_props'   => [ 'attribute' => '基础属性', 'rules' => [ 'sometimes', ], ],
+            'info.sale_props'    => [ 'attribute' => '销售属性', 'rules' => [ 'sometimes', ], ],
         ];
-
-
-        return $fields;
     }
 
 

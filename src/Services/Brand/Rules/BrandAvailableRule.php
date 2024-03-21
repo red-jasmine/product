@@ -1,28 +1,25 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product\Validators\Rules;
+namespace RedJasmine\Product\Services\Brand\Rules;
 
 use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Services\Brand\BrandService;
 use RedJasmine\Support\Exceptions\AbstractException;
 
-class BrandRule extends AbstractRule
+class BrandAvailableRule implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail) : void
     {
         if (blank($value)) {
             return;
         }
-        $service = app(BrandService::class);
-        $service->disableRequest();
+
         try {
-            $service->isAllowUse($value);
+            app(BrandService::class)->isAllowUse($value);
         } catch (AbstractException|ModelNotFoundException $exception) {
             $fail('品牌不可使用');
         }
-
     }
-
-
 }

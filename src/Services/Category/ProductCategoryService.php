@@ -38,7 +38,7 @@ class ProductCategoryService extends ResourceService
      */
     public function isAllowUse(int $id) : Model
     {
-        $model = $this->find($id);
+        $model = $this->query(false)->findOrFail($id);
         if ($model->isAllowUse()) {
             return $model;
         }

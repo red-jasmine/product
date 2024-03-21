@@ -43,12 +43,11 @@ class BrandService extends ResourceService
      * @param int $id
      *
      * @return Brand|null
-     * @throws  BrandException
      * @throws  ModelNotFoundException
      */
     public function isAllowUse(int $id) : ?Brand
     {
-        return $this->query->findOrFail($id);
+        return $this->query()->findOrFail($id);
 
     }
 
