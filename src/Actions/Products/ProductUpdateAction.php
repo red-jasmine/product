@@ -123,11 +123,11 @@ class ProductUpdateAction extends AbstractProductAction
         }
         // 获取数据库中所有的SKU
         /**
-         * @var Collection|array|Product[] $all
+         * @var Collection|array|ProductSku[] $all
          */
         $all = $product->skus()->withTrashed()->get()->keyBy('properties');
 
-        if ($product->is_multiple_spec === BoolIntEnum::NO) {
+        if ($product->is_multiple_spec === false) {
             $product->info->sale_props = null;
         }
 
@@ -166,7 +166,7 @@ class ProductUpdateAction extends AbstractProductAction
         if ($sku->status === ProductStatusEnum::DELETED) {
             return false;
         }
-        if ($product->is_multiple_spec === BoolIntEnum::YES) {
+        if ($product->is_multiple_spec === true) {
             return !in_array($sku->properties, $product->skus->pluck('properties')->toArray(), true);
         }
         // 如果是单规格

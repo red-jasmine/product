@@ -47,7 +47,7 @@ class BrandService extends ResourceService
      */
     public function isAllowUse(int $id) : ?Brand
     {
-        return $this->query()->findOrFail($id);
+        return $this->query(false)->findOrFail($id);
 
     }
 

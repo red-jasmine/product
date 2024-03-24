@@ -112,7 +112,7 @@ class ProductFillPipeline
          */
         $allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
 
-        if ($product->is_multiple_spec === BoolIntEnum::NO) {
+        if ($product->is_multiple_spec === false) {
             // TODO 如果是单规格商品
 
             $skuDTO                 = new ProductSkuDTO();
@@ -132,7 +132,7 @@ class ProductFillPipeline
         }
 
         // 如果是多规格
-        if ($product->is_multiple_spec === BoolIntEnum::YES) {
+        if ($product->is_multiple_spec === true) {
 
             $productDTO->skus?->each(function ($skuDTO) use ($product, $allSku) {
                 /**

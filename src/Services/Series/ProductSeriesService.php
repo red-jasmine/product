@@ -36,7 +36,7 @@ class ProductSeriesService extends ResourceService
             $productSeries->name    = $productSeriesDTO->name;
             $productSeries->owner   = $this->getOwner();
             $productSeries->creator = $this->getOperator();
-            $productSeries->remarks = $productSeriesDTO->remaks;
+            $productSeries->remarks = $productSeriesDTO->remarks;
             $productSeries->save();
             $productSeriesDTO->products->each(function (ProductSeriesProductDTO $productSeriesProductDTO) use ($productSeries) {
                 $values = [

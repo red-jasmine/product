@@ -19,14 +19,15 @@ use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Product\Services\Product\Validators\ValidatorAwareValidatorCombiner;
 use RedJasmine\Product\Services\Product\Validators\ValidatorCombinerInterface;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceCreateAction;
+use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
 
 /**
  * @property ProductService $service
  * @property Product        $model
  * @property ProductData    $data
  */
-class ProductCreateAction extends ResourceCreateAction
+class ProductUpdateAction extends ResourceUpdateAction
 {
 
     public function __construct(protected PropertyFormatter $propertyFormatter)
@@ -77,16 +78,25 @@ class ProductCreateAction extends ResourceCreateAction
         if ($this->key) {
             $query       = $this->service::getModel()::query();
             $this->model = $this->service->callQueryCallbacks($query)->findOrFail($this->key);
+
         } else {
             $product = app($this->getModel());
             $product->setRelation('info', new ProductInfo());
             $product->setRelation('skus', collect([]));
             $this->model = $product;
+
         }
+    }
+
+    protected function init($data) : Data
+    {
+        return $this->conversionData($data);
+
     }
 
     protected function validate() : array
     {
+
         $validator  = $this->initValidator();
         $this->data = $this->conversionData($validator->safe()->all());
         return $this->data->toArray();
@@ -95,8 +105,10 @@ class ProductCreateAction extends ResourceCreateAction
 
     protected function generateId(Model $model) : void
     {
+
         if ($model->exists === false) {
             $model->{$model->getKeyName()} = $this->service::buildID();
+
         }
     }
 
@@ -236,19 +248,82 @@ class ProductCreateAction extends ResourceCreateAction
     {
         $product = $this->model;
         $this->service->linkageTime($product);
-        $this->generateId($product);
 
-        $product->skus->each(function (ProductSku $sku) {
-            $this->generateId($sku);
-            $sku->creator    = $this->service->getOperator();
-            $sku->deleted_at = null;
-        });
+        if ($product->isDirty() || $product->info->isDirty()) {
+            $product->updater       = $this->service->getOperator();
+            $product->modified_time = now();
+        }
+        $this->service->linkageTime($product);
+        $this->updateSkus($product);
         // 统计规格的值
         $this->service->productCountFields($product);
-        $product->skus()->saveMany($product->skus);
-        $product->info()->save($product->info);
-        $this->model->push();
+        $product->save();
+        $product->info->save();
         return $product;
+    }
+
+    /**
+     * @param Product $product
+     *
+     * @return void
+     * @throws Throwable
+     */
+    protected function updateSkus(Product $product) : void
+    {
+
+        // 如果是改变了规格类型的情况下 那么就 重置库存
+        if ($product->isDirty('is_multiple_spec')) {
+            $product->lock_stock = 0;
+        }
+        // 获取数据库中所有的SKU
+        /**
+         * @var Collection|array|ProductSku[] $all
+         */
+        $all = $product->skus()->withTrashed()->get()->keyBy('properties');
+
+        if ($product->is_multiple_spec === false) {
+            $product->info->sale_props = null;
+        }
+
+        // 设置 正常的SKU
+        $product->skus->each(function (ProductSku $sku, $index) use ($product) {
+            $this->generateId($sku);
+            $sku->deleted_at = null;
+            if ($sku->exists === false) {
+                $sku->creator = $this->service->getOperator();
+            }
+            if ($sku->isDirty()) {
+                $product->modified_time = now();
+                $sku->updater           = $this->service->getOperator();
+            }
+        });
+
+        $product->skus()->saveMany($product->skus);
+
+        $all->each(function (ProductSku $sku, $properties) use ($product) {
+            if ($this->isCloseSku($sku, $product)) {
+                $this->closeSku($sku);
+            }
+        });
+    }
+
+    protected function isCloseSku(ProductSku $sku, Product $product) : bool
+    {
+        if ($sku->status === ProductStatusEnum::DELETED) {
+            return false;
+        }
+        if ($product->is_multiple_spec === true) {
+            return !in_array($sku->properties, $product->skus->pluck('properties')->toArray(), true);
+        }
+        // 如果是单规格
+        return filled($sku->properties);
+    }
+
+    protected function closeSku(ProductSku $sku) : void
+    {
+        $sku->status     = ProductStatusEnum::DELETED;
+        $sku->deleted_at = $sku->deleted_at ?? now();
+        $sku->save();
     }
 
 

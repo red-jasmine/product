@@ -34,12 +34,13 @@ class ProductService extends ResourceService
 
     public static bool $autoModelWithOwner = true;
 
-    protected static ?string $actionsConfigKey            = 'red-jasmine.product.services.product.actions';
+    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.product.actions';
 
-    public static ?string    $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
+    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
 
     protected static array $actions = [
-        'create' => Actions\ProductCreateAction::class
+        'create' => Actions\ProductCreateAction::class,
+        'update' => Actions\ProductUpdateAction::class,
     ];
 
     /**

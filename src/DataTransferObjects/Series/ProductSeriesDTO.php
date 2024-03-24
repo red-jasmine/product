@@ -11,7 +11,7 @@ class ProductSeriesDTO extends Data
 
     public string $name;
 
-    public ?string $remaks = null;
+    public ?string $remarks = null;
 
     /**
      * @var DataCollection<ProductSeriesProductDTO>

@@ -18,13 +18,13 @@ class ProductModifyFillPipeline extends ProductFillPipeline
         // 如果 现在变化
         if ($product->isDirty('is_multiple_spec')) {
             // 变成多规格的
-            if ($product->is_multiple_spec === BoolIntEnum::YES) {
+            if ($product->is_multiple_spec === true) {
 
                 return true;
             } else {
                 return false;
             }
-        } else if ($product->is_multiple_spec === BoolIntEnum::YES && filled($productDTO->toArray()['skus'] ?? null)) {
+        } else if ($product->is_multiple_spec === true && filled($productDTO->toArray()['skus'] ?? null)) {
             return true;
         }
 
