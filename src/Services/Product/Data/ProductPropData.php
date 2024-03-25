@@ -2,14 +2,15 @@
 
 namespace RedJasmine\Product\Services\Product\Data;
 
+use Illuminate\Support\Collection;
 use RedJasmine\Support\DataTransferObjects\Data;
-use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Optional;
 
 class ProductPropData extends Data
 {
 
-    public int             $pid;
+    public int $pid;
+
     public string|Optional $name;
     /**
      * 属性值
@@ -19,14 +20,14 @@ class ProductPropData extends Data
 
     /**
      * 可选项
-     * @var DataCollection<ProductPropValueData>|null
+     * @var Collection<ProductPropValueData>|null
      */
-    public ?DataCollection $values = null;
+    public ?Collection $values = null;
     /**
      * 可选项
-     * @var DataCollection<ProductPropValueData>|null
+     * @var Collection<ProductPropValueData>|null
      */
-    public ?DataCollection $options = null;
+    public ?Collection $options = null;
 
 
 }

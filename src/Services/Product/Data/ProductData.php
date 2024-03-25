@@ -10,9 +10,7 @@ use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
 use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
 use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\DataTransferObjects\UserData;
-use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Helpers\Json\Json;
-use Spatie\LaravelData\DataCollection;
 
 
 class ProductData extends Data
@@ -59,15 +57,21 @@ class ProductData extends Data
     public ?ProductInfoData $info = null;
 
     /**
-     * @var DataCollection<ProductSkuData>|null
+     * @var Collection<ProductSkuData>|null
      */
-    public ?DataCollection $skus = null;
+    public ?Collection $skus = null;
 
     public static function prepareForPipeline(array $properties) : array
     {
 
         if (isset($properties['skus'])) {
             $properties['skus'] = Json::toArray($properties['skus']);
+        }
+        if (isset($properties['info']['basic_props'])) {
+            $properties['info']['basic_props'] = Json::toArray($properties['info']['basic_props']);
+        }
+        if (isset($properties['info']['sale_props'])) {
+            $properties['info']['sale_props'] = Json::toArray($properties['info']['sale_props']);
         }
         return $properties;
     }

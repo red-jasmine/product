@@ -15,6 +15,7 @@ class PropsCheckRule extends AbstractRule
         $basicPid  = collect($basicProps)->pluck('pid')->values();
         $salePid   = collect($saleProps)->pluck('pid')->values();
         $intersect = $salePid->intersect($basicPid);
+
         if ($intersect->count()) {
             foreach ($intersect as $pid) {
                 $fail('info.basic_props.' . $pid, '基础属性和销售属性不能有重复');

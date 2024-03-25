@@ -20,8 +20,9 @@ use RedJasmine\Support\Rules\NotZeroExistsRule;
 
 class BasicValidator extends ValidatorCombiner
 {
-    public function setValidator(Validator $validator)
+    public function setValidator(Validator $validator) : void
     {
+
         $validator->after(function (Validator $validator) {
             $data = $validator->getData();
             if ((boolean)(int)($data['is_multiple_spec'] ?? 0) === false) {
@@ -46,9 +47,9 @@ class BasicValidator extends ValidatorCombiner
             'owner'              => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
             'owner_type'         => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
             'owner_id'           => [ 'attribute' => '卖家', 'rules' => [ 'sometimes', ] ],
-            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', new CategoryAvailableRule() ], ],
-            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', new BrandAvailableRule() ], ],
-            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', new SellerCategoryAvailableRule() ], ],
+            'category_id'        => [ 'attribute' => '类目', 'rules' => [ 'sometimes', 'nullable', new CategoryAvailableRule() ], ],
+            'brand_id'           => [ 'attribute' => '品牌', 'rules' => [ 'sometimes', 'nullable', new BrandAvailableRule() ], ],
+            'seller_category_id' => [ 'attribute' => '卖家分类', 'rules' => [ 'sometimes', 'nullable', new SellerCategoryAvailableRule() ], ],
             'product_type'       => [ 'attribute' => '商品类型', 'rules' => [ new Enum(ProductTypeEnum::class) ], ],
             'shipping_type'      => [ 'attribute' => '发货方式', 'rules' => [ new Enum(ShippingTypeEnum::class) ], ],
             'title'              => [ 'attribute' => '标题', 'rules' => [ 'required', 'max:60', 'min:2' ], ],

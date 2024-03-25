@@ -18,7 +18,7 @@ class PropsValidator extends ValidatorCombiner
     public function setValidator(Validator $validator) : void
     {
         // 在调用之前
-        $is_multiple_spec = $validator->getValue('is_multiple_spec');
+        $is_multiple_spec = $validator->getData()['is_multiple_spec'] ?? 0;
         if ((bool)$is_multiple_spec === true) {
             $this->hasSkuRules = true;
         }
@@ -33,6 +33,7 @@ class PropsValidator extends ValidatorCombiner
         if ($is_multiple_spec === null && filled($validator->getValue('skus'))) {
             $this->hasSkuRules = true;
         }
+
 
     }
 

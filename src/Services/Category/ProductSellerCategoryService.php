@@ -29,12 +29,6 @@ class ProductSellerCategoryService extends ResourceService
 
     public static bool $autoModelWithOwner = true;
 
-    protected static function actions() : array
-    {
-        return [
-            'update' => CategoryUpdateAction::class
-        ];
-    }
 
     /**
      * @param int $id
@@ -44,7 +38,9 @@ class ProductSellerCategoryService extends ResourceService
      */
     public function isAllowUse(int $id) : Model
     {
+
         $model = $this->query()->findOrFail($id);
+
         if ($model->isAllowUse()) {
             return $model;
         }

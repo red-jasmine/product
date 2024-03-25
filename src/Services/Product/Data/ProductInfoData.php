@@ -11,6 +11,7 @@ use Spatie\LaravelData\DataCollection;
 class ProductInfoData extends Data
 {
 
+
     public ?string $description = null;
     public ?string $keywords    = null;
     public ?string $detail      = null;
@@ -27,22 +28,24 @@ class ProductInfoData extends Data
 
 
     /**
-     * @var DataCollection<ProductPropData>|null
+     * @var Collection<int,ProductPropData>|null
      */
-    public ?DataCollection $basicProps = null;
+    public ?Collection $basicProps = null;
     /**
-     * @var DataCollection<ProductPropData>|null
+     * @var Collection<int,ProductPropData>|null
      */
-    public ?DataCollection $saleProps = null;
+    public ?Collection $saleProps = null;
 
     public static function prepareForPipeline(array $properties) : array
     {
+
         if (isset($properties['basic_props'])) {
             $properties['basic_props'] = Json::toArray($properties['basic_props']);
         }
         if (isset($properties['sale_props'])) {
             $properties['sale_props'] = Json::toArray($properties['sale_props']);
         }
+
         return $properties;
     }
 

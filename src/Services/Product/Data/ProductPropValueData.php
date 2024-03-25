@@ -11,7 +11,7 @@ class ProductPropValueData extends Data
     public string|Optional $name;
     /**
      * 属性值
-     * @var int|array
+     * @var int|array|string
      */
-    public int|array $vid;
+    public int|array|string $vid;
 }

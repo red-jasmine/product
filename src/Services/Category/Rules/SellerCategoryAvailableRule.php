@@ -33,7 +33,7 @@ class SellerCategoryAvailableRule implements ValidationRule, DataAwareRule
         try {
             app(ProductSellerCategoryService::class)->withQuery(function ($query) use ($owner) {
                 $query->onlyOwner($owner);
-            })->isAllowUse($value);
+            })->isAllowUse((int)$value);
         } catch (AbstractException|ModelNotFoundException $throwable) {
             $fail('当前分类不允许使用');
         }

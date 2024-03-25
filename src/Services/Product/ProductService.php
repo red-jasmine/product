@@ -38,8 +38,11 @@ class ProductService extends ResourceService
 
     public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
 
-    protected static array $actions = [
-        'create' => Actions\ProductCreateAction::class,
+
+    protected static array $globalActions = [
+        'create' => [
+            'class' => Actions\ProductCreateAction::class,
+        ],
         'update' => Actions\ProductUpdateAction::class,
     ];
 
@@ -93,6 +96,7 @@ class ProductService extends ResourceService
 
     public function productCountFields(Product $product) : void
     {
+
         $product->price        = $product->skus->min('price');
         $product->cost_price   = $product->skus->min('cost_price');
         $product->market_price = $product->skus->min('market_price');
