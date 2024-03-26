@@ -110,6 +110,8 @@ class BasicValidator extends ValidatorCombiner
             'skus.*.barcode'         => $fields['barcode'],
             'skus.*.outer_id'        => $fields['outer_id'],
             'skus.*.stock'           => $fields['stock'],
+            'skus.*.virtual_stock'   => $fields['stock'],
+            'skus.*.safety_stock'    => $fields['stock'],
         ];
     }
 

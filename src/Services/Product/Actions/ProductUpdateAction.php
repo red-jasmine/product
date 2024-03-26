@@ -11,6 +11,7 @@ use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
+use RedJasmine\Product\Services\Product\Data\ProductPropData;
 use RedJasmine\Product\Services\Product\Data\ProductSkuData;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Product\Validators\ActionAwareValidatorCombiner;
@@ -63,7 +64,7 @@ class ProductUpdateAction extends ResourceUpdateAction
 
     protected function fill(array $data) : ?Model
     {
-        app(ProductFill::class)->fill($this->model, $this->data);
+        app(ProductFill::class)->fill($this->model, $this->data, $data);
         return $this->model;
     }
 

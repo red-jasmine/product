@@ -5,10 +5,11 @@ namespace RedJasmine\Product\Http\Seller\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use RedJasmine\Product\Business\Seller\ProductService;
+
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\DataTransferObjects\ProductModifyDTO;
 use RedJasmine\Product\Http\Seller\Resources\ProductResource;
+use RedJasmine\Product\Services\Product\ProductService;
 use Throwable;
 
 class ProductController extends Controller
@@ -38,10 +39,8 @@ class ProductController extends Controller
      */
     public function store(Request $request) : ProductResource
     {
-        $dto        = ProductDTO::from($request->all());
-        $dto->owner = $this->service->getOwner();
 
-        $result = $this->service->create($dto);
+        $result = $this->service->create($request->all());
         return new ProductResource($result);
     }
 

@@ -9,6 +9,7 @@ use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
+use RedJasmine\Product\Services\Product\Data\ProductPropData;
 use RedJasmine\Product\Services\Product\Data\ProductSkuData;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
 
@@ -21,12 +22,17 @@ class ProductFill
     /**
      * @param Product     $product
      * @param ProductData $productData
+     * @param array       $data
      *
      * @return Product
      * @throws ProductPropertyException
      */
-    public function fill(Product $product, ProductData $productData) : Product
+    public function fill(Product $product, ProductData $productData, array $data = []) : Product
     {
+
+        $productData->skus             = collect(ProductSkuData::collect($data['skus'] ?? []));
+        $productData->info->basicProps = collect(ProductPropData::collect($data['info']['basic_props'] ?? []));
+        $productData->info->saleProps  = collect(ProductPropData::collect($data['info']['sale_props'] ?? []));
         $this->fillProduct($product, $productData);
         $this->fillSkus($product, $productData);
         return $product;

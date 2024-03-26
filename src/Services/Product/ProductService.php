@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\DataTransferObjects\ProductDTO;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Services\Product\Builder\ProductBuilder;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
+use Spatie\QueryBuilder\AllowedFilter;
 use Throwable;
 
 use \RedJasmine\Product\Services\Product\Actions;
@@ -39,12 +39,38 @@ class ProductService extends ResourceService
     public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
 
 
-    protected static array $globalActions = [
-        'create' => [
-            'class' => Actions\ProductCreateAction::class,
-        ],
-        'update' => Actions\ProductUpdateAction::class,
-    ];
+    //
+
+    protected function actions() : array
+    {
+        return [
+            'create' => Actions\ProductCreateAction::class,
+            'update' => Actions\ProductUpdateAction::class,
+            'query'  => [
+                'class'    => Actions\ProductQueryAction::class,
+                'filters'  => [
+                    AllowedFilter::exact('id'),
+                    AllowedFilter::exact('owner_type'),
+                    AllowedFilter::exact('owner_id'),
+                    AllowedFilter::exact('product_type'),
+                    AllowedFilter::exact('shipping_type'),
+                    AllowedFilter::partial('title'),
+                    AllowedFilter::exact('outer_id'),
+                    AllowedFilter::exact('is_multiple_spec'),
+                    AllowedFilter::exact('status'),
+                    AllowedFilter::exact('brand_id'),
+                    AllowedFilter::exact('category_id'),
+                    AllowedFilter::exact('seller_category_id'),
+                ],
+                'includes' => [
+                    'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory', 'series'
+                ],
+                'fields'   => [],
+                'sorts'    => [],
+            ],
+        ];
+
+    }
 
     /**
      * 最大库存
@@ -113,7 +139,7 @@ class ProductService extends ResourceService
     /**
      * @return Builder|Product
      */
-    public function query() : Builder
+    public function querys() : Builder
     {
         return Product::query();
     }

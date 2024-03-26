@@ -54,7 +54,7 @@ class ProductCreateAction extends ResourceCreateAction
 
     protected function fill(array $data) : ?Model
     {
-        app(ProductFill::class)->fill($this->model, $this->data);
+        app(ProductFill::class)->fill($this->model, $this->data, $data);
         return $this->model;
     }
 
@@ -73,9 +73,16 @@ class ProductCreateAction extends ResourceCreateAction
         // 统计规格的值
         $product->skus()->saveMany($product->skus);
         $this->service->productCountFields($product);
+
         $product->info()->save($product->info);
         $this->model->push();
         return $product;
+    }
+
+
+    protected function after($handleResult) : mixed
+    {
+        return $handleResult;
     }
 
 
