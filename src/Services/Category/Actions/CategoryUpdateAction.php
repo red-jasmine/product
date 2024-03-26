@@ -9,7 +9,7 @@ use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
 class CategoryUpdateAction extends ResourceUpdateAction
 {
 
-    protected function pipes() : array
+    public function pipes() : array
     {
         return [
             CategoryUpdatePipelines::class

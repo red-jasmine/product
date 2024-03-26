@@ -16,6 +16,7 @@ use RedJasmine\Product\Services\Product\ProductService;
 
 use RedJasmine\Product\Services\Product\Validators\Rules\PriceRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Support\Foundation\Service\Actions\ValidatorCombiner;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 
 class BasicValidator extends ValidatorCombiner

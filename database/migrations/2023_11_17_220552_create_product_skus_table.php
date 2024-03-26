@@ -20,7 +20,6 @@ return new class extends Migration {
 
             // 库存
             $table->unsignedBigInteger('stock')->default(0)->comment('库存');
-            $table->unsignedBigInteger('virtual_stock')->default(0)->comment('虚拟库存');
             $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
             $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
             $table->unsignedBigInteger('safety_stock')->default(0)->comment('安全库存');

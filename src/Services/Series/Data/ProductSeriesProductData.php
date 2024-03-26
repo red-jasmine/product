@@ -1,11 +1,11 @@
 <?php
 
-namespace RedJasmine\Product\DataTransferObjects\Series;
+namespace RedJasmine\Product\Services\Series\Data;
 
 use RedJasmine\Support\DataTransferObjects\Data;
 
 
-class ProductSeriesProductDTO extends Data
+class ProductSeriesProductData extends Data
 {
 
     public int $productId;

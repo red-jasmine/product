@@ -2,12 +2,11 @@
 
 namespace RedJasmine\Product\Services\Product;
 
-use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use RedJasmine\Product\DataTransferObjects\ProductDTO;
+use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
+use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
@@ -15,20 +14,16 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 use Spatie\QueryBuilder\AllowedFilter;
 use Throwable;
 
-use \RedJasmine\Product\Services\Product\Actions;
-
 /**
  * @see Actions\ProductCreateAction::execute()
  * @method  Product create(ProductData|array $data)
- * @see ProductUpdateAction::execute()
- * @method  Product update(int $id, ProductDTO $productDTO)
- * @see ProductModifyAction::execute()
- * @method  Product modify(int $id, ProductDTO $productDTO)
+ * @see Actions\ProductUpdateAction::execute()
+ * @method  Product update(int $id, ProductData $data)
  */
 class ProductService extends ResourceService
 {
 
-    protected static string $model = Product::class;
+    protected static string $modelClass = Product::class;
 
     protected static string $dataClass = ProductData::class;
 
@@ -76,12 +71,6 @@ class ProductService extends ResourceService
      * 最大库存
      */
     public const MAX_QUANTITY = 9999999999;
-
-
-    public function queries() : ProductQuery
-    {
-        return new ProductQuery($this);
-    }
 
 
     /**

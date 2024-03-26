@@ -17,7 +17,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class PropertyGroupService extends ResourceService
 {
 
-    protected static string $model = ProductPropertyGroup::class;
+    protected static string $modelClass = ProductPropertyGroup::class;
 
     protected static string $dataClass = PropertyGroupData::class;
 

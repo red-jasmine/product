@@ -3,14 +3,15 @@
 namespace RedJasmine\Product\Services\Category\Validators;
 
 use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Models\ProductCategory as Model;
+use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
 use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
-use RedJasmine\Support\Foundation\ValidatorManage;
+use RedJasmine\Support\Foundation\Service\Actions\ValidatorCombiner;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 
-class CategoryValidatorManage extends ValidatorManage
+class SellerCategoryValidatorCombiner extends ValidatorCombiner
 {
+
 
     public function attributes() : array
     {

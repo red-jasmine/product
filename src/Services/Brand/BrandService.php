@@ -22,11 +22,12 @@ use Spatie\QueryBuilder\AllowedFilter;
 class BrandService extends ResourceService
 {
 
-    protected static string $model = Brand::class;
+    protected static string $modelClass = Brand::class;
 
     protected static string $dataClass = BrandData::class;
 
-    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.pipelines.brands';
+
+    protected static ?string $actionsConfigKey = '';
 
     public static function filters() : array
     {

@@ -162,7 +162,6 @@ class ProductFill
         $sku->price           = $productSkuData->price;
         $sku->stock           = $productSkuData->stock;
         $sku->safety_stock    = $productSkuData->safetyStock;
-        $sku->virtual_stock   = $productSkuData->virtualStock;
         $sku->market_price    = $productSkuData->marketPrice;
         $sku->cost_price      = $productSkuData->costPrice;
         $sku->status          = $productSkuData->status ?? ProductStatusEnum::ON_SALE;

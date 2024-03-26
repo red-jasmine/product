@@ -46,7 +46,9 @@ return new class extends Migration {
             $table->decimal('market_price', 10, 2, true)->nullable()->comment('市场价');
             $table->decimal('cost_price', 10, 2, true)->nullable()->comment('成本价');
             $table->unsignedBigInteger('stock')->default(0)->comment('库存');
+            $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
             $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
+            $table->unsignedBigInteger('safety_stock')->default(0)->comment('安全库存');
 
             //统计项
             $table->unsignedBigInteger('views')->default(0)->comment('浏览量');

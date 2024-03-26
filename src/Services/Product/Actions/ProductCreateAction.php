@@ -40,11 +40,11 @@ class ProductCreateAction extends ResourceCreateAction
     protected function resolveModel() : void
     {
         if ($this->key) {
-            $query       = $this->service::getModel()::query();
+            $query       = $this->service::getModelClass()::query();
             $this->model = $this->service->callQueryCallbacks($query)->findOrFail($this->key);
         } else {
             // TODO 转换 关联关系获取
-            $product = app($this->getModel());
+            $product = app($this->getModelClass());
             $product->setRelation('info', new ProductInfo());
             $product->setRelation('skus', collect([]));
             $this->model = $product;

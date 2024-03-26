@@ -6,7 +6,6 @@ use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\CategoryException;
 use RedJasmine\Product\Models\ProductCategory as Model;
 use RedJasmine\Product\Services\Category\Data\ProductCategoryData;
-use RedJasmine\Product\Services\Category\Validators\CategoryValidatorManage;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 
 /**
@@ -14,11 +13,9 @@ use RedJasmine\Support\Foundation\Service\ResourceService;
  */
 class ProductCategoryService extends ResourceService
 {
-    public static string $model = Model::class;
+    protected static string $modelClass = Model::class;
 
-    public static string $dataClass = ProductCategoryData::class;
-
-    public static ?string $validatorManageClass = CategoryValidatorManage::class;
+    protected static string $dataClass = ProductCategoryData::class;
 
     protected static ?string $actionsConfigKey = 'red-jasmine.product.services.category.actions';
 

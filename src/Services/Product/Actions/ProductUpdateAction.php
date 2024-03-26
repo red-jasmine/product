@@ -49,11 +49,11 @@ class ProductUpdateAction extends ResourceUpdateAction
     protected function resolveModel() : void
     {
         if ($this->key) {
-            $query       = $this->service::getModel()::query();
+            $query       = $this->service::getModelClass()::query();
             $this->model = $this->service->callQueryCallbacks($query)->findOrFail($this->key);
 
         } else {
-            $product = app($this->getModel());
+            $product = app($this->getModelClass());
             $product->setRelation('info', new ProductInfo());
             $product->setRelation('skus', collect([]));
             $this->model = $product;

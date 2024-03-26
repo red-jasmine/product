@@ -17,7 +17,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class PropertyValueService extends ResourceService
 {
 
-    protected static string $model = ProductPropertyValue::class;
+    protected static string $modelClass = ProductPropertyValue::class;
 
     protected static string $dataClass = PropertyValueData::class;
 
