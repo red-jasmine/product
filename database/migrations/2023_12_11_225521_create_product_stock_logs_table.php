@@ -11,10 +11,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->primary()->comment('ID');
             $table->morphs('owner');
 
-            $table->string('change_type', 20)->comment('更变类型');
+            $table->string('change_type', 32)->comment('更变类型');
             $table->string('change_detail')->nullable()->comment('变更明细');
 
-            $table->unsignedBigInteger('product_id')->comment('SPU ID');
+            $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->comment('SKU ID');
 
             $table->unsignedBigInteger('before_stock')->comment('变更前');
@@ -26,8 +26,6 @@ return new class extends Migration {
             $table->unsignedTinyInteger('is_lock')->default(0)->comment('是否操作锁定');
 
             $table->nullableMorphs('creator');
-
-
             $table->timestamps();
             $table->comment('商品-库存-记录');
         });

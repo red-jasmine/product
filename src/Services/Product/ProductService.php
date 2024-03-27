@@ -28,17 +28,9 @@ class ProductService extends ResourceService
     protected static string $dataClass = ProductData::class;
 
     public static bool $autoModelWithOwner = true;
-
-
     // 服务配置
     protected static ?string $serviceConfigKey = 'red-jasmine.product.services.product';
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.product.actions';
-
-    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.product.pipelines';
-
-
-    //
 
     protected function actions() : array
     {
@@ -69,6 +61,7 @@ class ProductService extends ResourceService
                 'fields'   => [],
                 'sorts'    => [],
             ],
+            'delete' => Actions\ProductDeleteAction::class,
         ];
 
     }
@@ -129,54 +122,6 @@ class ProductService extends ResourceService
     public function find(int $id) : Product
     {
         return $this->query()->findOrFail($id);
-    }
-
-    /**
-     * @return Builder|Product
-     */
-    public function querys() : Builder
-    {
-        return Product::query();
-    }
-
-    /**
-     * @return int
-     * @throws \Exception
-     */
-    public function generateID() : int
-    {
-        return Snowflake::getInstance()->nextId();
-    }
-
-    /**
-     * 删除
-     *
-     * @param int $id
-     *
-     * @return true
-     * @throws AbstractException
-     * @throws Throwable
-     */
-    public function delete(int $id) : true
-    {
-        try {
-            DB::beginTransaction();
-            $product = $this->find($id);
-            $product->info->delete();
-            $product->skus()->delete();
-            $product->delete();
-            DB::commit();
-        } catch (AbstractException $exception) {
-            DB::rollBack();
-            throw  $exception;
-        } catch (ModelNotFoundException $modelNotFoundException) {
-            DB::rollBack();
-            throw  $modelNotFoundException;
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-            throw  $throwable;
-        }
-        return true;
     }
 
     /**

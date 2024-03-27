@@ -16,6 +16,19 @@ $ composer require red-jasmine/product
 
 ## Usage
 
+## 服务
+- 商品
+- 品牌
+- 类目
+  - 系统类目
+  - 买家分类
+- 属性
+  - 属性组
+  - 属性名
+  - 属性值
+- 库存
+  - 渠道库存
+
 ## 商品状态
 
 ```php

@@ -27,6 +27,7 @@ class ProductCreateAction extends ResourceCreateAction
 
     public function __construct(protected PropertyFormatter $propertyFormatter)
     {
+        parent::__construct();
     }
 
     protected ?bool $hasDatabaseTransactions = true;

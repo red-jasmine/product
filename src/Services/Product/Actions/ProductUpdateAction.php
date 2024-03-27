@@ -4,15 +4,11 @@ namespace RedJasmine\Product\Services\Product\Actions;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Validation\Validator;
 use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
-use RedJasmine\Product\Services\Product\Data\ProductPropData;
-use RedJasmine\Product\Services\Product\Data\ProductSkuData;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Product\Validators\ActionAwareValidatorCombiner;
 use RedJasmine\Product\Services\Product\Validators\BasicValidator;
@@ -20,7 +16,6 @@ use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Product\Services\Product\Validators\ValidatorAwareValidatorCombiner;
 use RedJasmine\Product\Services\Product\Validators\ValidatorCombinerInterface;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
-use RedJasmine\Support\DataTransferObjects\Data;
 use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
 use Throwable;
 
@@ -34,6 +29,7 @@ class ProductUpdateAction extends ResourceUpdateAction
 
     public function __construct(protected PropertyFormatter $propertyFormatter)
     {
+        parent::__construct();
     }
 
 
