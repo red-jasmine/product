@@ -18,7 +18,7 @@ use Throwable;
  * @see Actions\ProductCreateAction::execute()
  * @method  Product create(ProductData|array $data)
  * @see Actions\ProductUpdateAction::execute()
- * @method  Product update(int $id, ProductData $data)
+ * @method  Product update(int $id, ProductData|array $data)
  */
 class ProductService extends ResourceService
 {
@@ -28,6 +28,10 @@ class ProductService extends ResourceService
     protected static string $dataClass = ProductData::class;
 
     public static bool $autoModelWithOwner = true;
+
+
+    // 服务配置
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.product';
 
     protected static ?string $actionsConfigKey = 'red-jasmine.product.services.product.actions';
 
@@ -39,7 +43,9 @@ class ProductService extends ResourceService
     protected function actions() : array
     {
         return [
-            'create' => Actions\ProductCreateAction::class,
+            'create' => [
+                'class' => Actions\ProductCreateAction::class,
+            ],
             'update' => Actions\ProductUpdateAction::class,
             'query'  => [
                 'class'    => Actions\ProductQueryAction::class,

@@ -16,9 +16,8 @@ class ProductController extends Controller
 
     public function index() : AnonymousResourceCollection
     {
-        // TODO 需要设置实例为
-        $this->service->query->setIncludes(null);
-        $result = $this->service->query(true)->paginate();
+        $query  = $this->service->query(true);
+        $result = $query->paginate();
         return ProductResource::collection($result);
     }
 

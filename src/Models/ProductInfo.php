@@ -16,6 +16,8 @@ class ProductInfo extends Model
     use SoftDeletes;
 
 
+
+
     protected $casts = [
         'basic_props' => 'array',
         'sale_props'  => 'array',
