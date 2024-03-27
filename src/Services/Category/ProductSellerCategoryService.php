@@ -19,7 +19,7 @@ class ProductSellerCategoryService extends ResourceService
 
     public static string $dataClass = ProductSellerCategoryData::class;
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.seller-category.actions';
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.seller-category';
 
 
 

@@ -21,9 +21,7 @@ class PropertyValueService extends ResourceService
 
     protected static string $dataClass = PropertyValueData::class;
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.property.value.actions';
-
-    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.property.value.pipelines';
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.property.value';
 
     public static function filters() : array
     {

@@ -17,9 +17,9 @@ class ProductCategoryService extends ResourceService
 
     protected static string $dataClass = ProductCategoryData::class;
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.category.actions';
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.category';
 
-    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.category.pipelines';
+
 
 
     public function find(int $id) : Model

@@ -19,8 +19,7 @@ class BrandService extends ResourceService
 
     protected static string $dataClass = BrandData::class;
 
-
-    protected static ?string $actionsConfigKey = '';
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.brand';
 
     public static function filters() : array
     {

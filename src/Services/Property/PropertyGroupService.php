@@ -22,9 +22,7 @@ class PropertyGroupService extends ResourceService
     protected static string $dataClass = PropertyGroupData::class;
 
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.product.services.property.group.actions';
-
-    public static ?string $actionPipelinesConfigPrefix = 'red-jasmine.product.services.property.group.pipelines';
+    protected static ?string $serviceConfigKey = 'red-jasmine.product.services.property.group';
 
     public static function filters() : array
     {
