@@ -52,6 +52,7 @@ class ProductCreateAction extends CreateAction
 
     protected function fill(array $data) : ?Model
     {
+
         app(ProductFill::class)->fill($this->model, $this->data, $data);
         return $this->model;
     }
@@ -62,16 +63,23 @@ class ProductCreateAction extends CreateAction
         $this->service->linkageTime($product);
         $this->generateId($product);
 
-        $product->skus->each(function (ProductSku $sku) {
+        $product->skus->each(function (ProductSku $sku) use ($product) {
             $this->generateId($sku);
             $sku->creator    = $this->service->getOperator();
             $sku->deleted_at = null;
+            if (blank($sku->properties)) {
+                $sku->id = $product->id;
+                if ($product->is_multiple_spec === true) {
+                    $sku->deleted_at = now();
+                }
+            }
         });
-
+        if ($product->is_multiple_spec === false) {
+            $product->info->sale_props = null;
+        }
         // 统计规格的值
-        $product->skus()->saveMany($product->skus);
+        $product->skus()->saveMany($product->skus->values());
         $this->service->productCountFields($product);
-
         $product->info()->save($product->info);
         $this->model->push();
         return $product;

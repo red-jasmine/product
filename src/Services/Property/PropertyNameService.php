@@ -28,6 +28,7 @@ class PropertyNameService extends ResourceService
         return [
             'name',
             'group_id',
+            'pid',
             AllowedFilter::exact('status'),
         ];
     }

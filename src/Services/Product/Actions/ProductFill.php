@@ -15,6 +15,7 @@ use RedJasmine\Product\Services\Property\PropertyFormatter;
 
 class ProductFill
 {
+    // TODO 提取公共存储
     public function __construct(protected PropertyFormatter $propertyFormatter)
     {
     }
@@ -29,7 +30,6 @@ class ProductFill
      */
     public function fill(Product $product, ProductData $productData, array $data = []) : Product
     {
-
         $productData->skus             = collect(ProductSkuData::collect($data['skus'] ?? []));
         $productData->info->basicProps = collect(ProductPropData::collect($data['info']['basic_props'] ?? []));
         $productData->info->saleProps  = collect(ProductPropData::collect($data['info']['sale_props'] ?? []));
@@ -109,23 +109,6 @@ class ProductFill
              */
             $allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
         }
-        // 添加一个默认规格 规格ID 和商品ID 一样
-        if ($product->is_multiple_spec === false) {
-            $skuData                 = new ProductSkuData();
-            $skuData->properties     = '';
-            $skuData->propertiesName = null;
-            $sku                     = $allSku[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
-
-            $data   = $productData->toArray();
-            $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
-            $fields = [ 'status', 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
-            foreach ($fields as $field) {
-                $skuData->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
-            }
-
-            $this->fillSku($sku, $skuData);
-            $product->skus[$skuData->properties] = $sku;
-        }
 
         // 如果是多规格
         if ($product->is_multiple_spec === true) {
@@ -148,6 +131,30 @@ class ProductFill
                 });
             }
         }
+
+
+        $skuData                 = new ProductSkuData();
+        $skuData->properties     = '';
+        $skuData->propertiesName = null;
+        /**
+         * @var ProductSku $basicSKU
+         */
+        $basicSKU             = $allSku[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
+        $basicSKU->status     = ProductStatusEnum::SOLD_OUT;
+        $basicSKU->deleted_at = now();
+        // 添加一个默认规格 规格ID 和商品ID 一样
+        if ($product->is_multiple_spec === false) {
+            $data   = $productData->toArray();
+            $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
+            $fields = [ 'status', 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
+            foreach ($fields as $field) {
+                $skuData->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
+            }
+            $this->fillSku($basicSKU, $skuData);
+            $basicSKU->deleted_at = null;
+        }
+
+        $product->skus[$skuData->properties] = $basicSKU;
     }
 
     protected function fillSku(ProductSku $sku, ProductSkuData $productSkuData) : void

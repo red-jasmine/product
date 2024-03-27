@@ -8,7 +8,7 @@ use RedJasmine\Product\Services\Product\Validators\Rules\PropsCheckRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\PropsRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SalePropsRule;
 use RedJasmine\Product\Services\Product\Validators\Rules\SkusRule;
-use RedJasmine\Support\Enums\BoolIntEnum;
+
 use RedJasmine\Support\Foundation\Service\Actions\ValidatorCombiner;
 
 class PropsValidator extends ValidatorCombiner
@@ -20,6 +20,7 @@ class PropsValidator extends ValidatorCombiner
     {
         // 在调用之前
         $is_multiple_spec = $validator->getData()['is_multiple_spec'] ?? 0;
+
         if ((bool)$is_multiple_spec === true) {
             $this->hasSkuRules = true;
         }

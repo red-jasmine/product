@@ -82,8 +82,11 @@ class ProductUpdateAction extends UpdateAction
         }
         $this->service->linkageTime($product);
         $this->updateSkus($product);
+        if ($product->is_multiple_spec === false) {
+            $product->info->sale_props = null;
+        }
         // 统计规格的值
-        $product->skus()->saveMany($product->skus);
+        $product->skus()->saveMany($product->skus->values());
         $this->service->productCountFields($product);
         $product->save();
         $product->info->save();
@@ -109,15 +112,17 @@ class ProductUpdateAction extends UpdateAction
          */
         $all = $product->skus()->withTrashed()->get()->keyBy('properties');
 
-        if ($product->is_multiple_spec === false) {
-            $product->info->sale_props = null;
-        }
 
         // 设置 正常的SKU
 
         $product->skus->each(function (ProductSku $sku, $index) use ($product) {
             $this->generateId($sku);
-            $sku->deleted_at = null;
+            if (blank($sku->properties)) {
+                $sku->id = $product->id;
+                if ($product->is_multiple_spec === true) {
+                    $sku->deleted_at = now();
+                }
+            }
             if ($sku->exists === false) {
                 $sku->creator = $this->service->getOperator();
             }
