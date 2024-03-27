@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Services\Product\Actions;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductSku;
@@ -109,8 +109,7 @@ class ProductFill
              */
             $allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
         }
-
-
+        // 添加一个默认规格 规格ID 和商品ID 一样
         if ($product->is_multiple_spec === false) {
             $skuData                 = new ProductSkuData();
             $skuData->properties     = '';

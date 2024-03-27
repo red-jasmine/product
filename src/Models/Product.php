@@ -9,12 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Enums\Product\ProductTypeEnum;
-use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
-use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
-use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\SubStockTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
@@ -139,6 +138,11 @@ class Product extends Model
             get: fn($value, array $attributes) => $value,
             set: fn($value) => trim($value) === '' ? null : $value,
         );
+    }
+
+    public static function incrementStock(int $id, int $stock)
+    {
+        return static::where('id', $id)->increment('stock', $stock);
     }
 
 }

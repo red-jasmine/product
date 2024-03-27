@@ -9,9 +9,8 @@ return new class extends Migration {
     {
         Schema::create('product_channel_stocks', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary()->comment('ID');
-            $table->morphs('owner');
             $table->morphs('channel');
-            $table->unsignedBigInteger('product_id')->comment('SPU ID');
+            $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->comment('SKU ID');
             $table->unsignedBigInteger('channel_total_stock')->default(0)->comment('渠道总库存');
             $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');

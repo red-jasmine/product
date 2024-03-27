@@ -1,23 +1,23 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product\Stock;
+namespace RedJasmine\Product\Services\Product;
 
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use RedJasmine\Product\Enums\Stock\ProductStockChangeTypeEnum;
-use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\Product;
+use RedJasmine\Product\Services\Product\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\ProductChannelStock;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
-use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Product\Services\Product\Data\StockChannelData;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use Throwable;
 
-class ProductStockService extends Service
+class ProductStockService
 {
     /**
      * 渠道渠道库存
@@ -46,16 +46,14 @@ class ProductStockService extends Service
     public function setStock(int $skuID, int $stock, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = null) : ?ProductStockLog
     {
 
-
         if (bccomp($stock, 0, 0) < 0) {
             throw new ProductStockException('库存 数量必须大于等于 0');
         }
-
         try {
             DB::beginTransaction();
-            $sku = $this->getSKU($skuID);
-
+            $sku         = $this->getSKU($skuID);
             $beforeStock = $sku->stock;
+            // 如果没有改变库存 那么不进行操作
             if (bccomp($sku->stock, $stock, 0) === 0) {
                 DB::commit();
                 return null;
@@ -75,7 +73,7 @@ class ProductStockService extends Service
             $sku->stock = bcadd($sku->stock, $quantity, 0);
             $sku->save();
             // 添加更变日志
-            $productStockLog = $this->log($sku, $changeTypeEnum, $beforeStock, $quantity, $sku->stock, null, false, $changeDetail);
+            $productStockLog = $this->log($sku, $changeTypeEnum, $quantity, null, false, $changeDetail);
             DB::commit();
 
         } catch (AbstractException $exception) {
@@ -109,12 +107,12 @@ class ProductStockService extends Service
     /**
      * 获取渠道库存
      *
-     * @param int                   $skuID
-     * @param StockChannelInterface $channel
+     * @param int              $skuID
+     * @param StockChannelData $channel
      *
      * @return ProductChannelStock
      */
-    public function getChannelStock(int $skuID, StockChannelInterface $channel) : ProductChannelStock
+    public function getChannelStock(int $skuID, StockChannelData $channel) : ProductChannelStock
     {
         return ProductChannelStock::lockForUpdate()
                                   ->channel($channel)
@@ -135,13 +133,13 @@ class ProductStockService extends Service
     {
         // 核心操作 $quantity 都为 正整数
         if (bccomp($quantity, 0, 0) <= 0) {
-            throw new ProductStockException('增加库存 数量必须大于 0');
+            throw new ProductStockException('操作库存 数量必须大于 0');
         }
         return $quantity;
     }
 
     /**
-     * @param int                        $skuID
+     * @param ProductSku                 $sku
      * @param int                        $quantity
      * @param ProductStockChangeTypeEnum $changeTypeEnum
      * @param string                     $changeDetail
@@ -151,18 +149,16 @@ class ProductStockService extends Service
      * @throws ProductStockException
      * @throws Throwable
      */
-    public function add(int $skuID, int $quantity, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = '') : ?ProductStockLog
+    public function add(ProductSku $sku, int $quantity, ProductStockChangeTypeEnum $changeTypeEnum, string $changeDetail = '') : ?ProductStockLog
     {
         $quantity = $this->validateQuantity($quantity);
+
         try {
             DB::beginTransaction();
-            $sku         = $this->getSKU($skuID);
-            $beforeStock = $sku->stock;
-            // 更新库存
-            $sku->stock = bcadd($sku->stock, $quantity, 0);
-            $sku->save();
+            ProductSku::where('id', $sku->id)->increment('stock', $quantity);
+            Product::where('id', $sku->product_id)->increment('stock', $quantity);
             // 添加更变日志
-            $productStockLog = $this->log($sku, $changeTypeEnum, $beforeStock, $quantity, $sku->stock, null, false, $changeDetail);
+            $productStockLog = $this->log($sku, $changeTypeEnum, $quantity, null, false, $changeDetail);
             DB::commit();
             return $productStockLog;
         } catch (AbstractException $exception) {
@@ -190,61 +186,18 @@ class ProductStockService extends Service
      * @throws ProductStockException
      * @throws Throwable
      */
-    public function sub(int $skuID, int $quantity, ProductStockChangeTypeEnum $changeTypeEnum, ?StockChannelInterface $channel = null, bool $lock = false, string $changeDetail = '') : ?ProductStockLog
+    public function sub(ProductSku $sku, int $quantity, ProductStockChangeTypeEnum $changeTypeEnum, ?StockChannelInterface $channel = null, bool $lock = false, string $changeDetail = '') : ?ProductStockLog
     {
         $quantity = $this->validateQuantity($quantity);
         try {
             DB::beginTransaction();
-            $sku = $this->getSKU($skuID);
-
-            $beforeStock = $sku->stock;
-
-            // 可售库存
-            // 1、渠道扣减: 可售库存 = 辑渠可售库存
-            //    前提条件  规格可售库存 必须大于等级 渠道渠道可售库存
-            // 2、普通扣减: 可售库存 = 规格可售库存 - 总渠道可售库存
-            if ($channel instanceof StockChannelInterface) {
-                // 渠道扣减
-                $channelStock  = $this->getChannelStock($skuID, $channel);
-                $saleableStock = $channelStock->channel_stock;
-                if (bccomp($sku->stock, $channelStock->channel_stock, 0) < 0) {
-                    throw new ProductStockException('实际库存小于渠道库存');
-                }
-            } else {
-                // 普通扣减
-                $saleableStock = bcsub($sku->stock, $sku->channel_stock, 0);
-            }
-            // 可售库存 - 数量  必须 > 0
-            if (bccomp(bcsub($saleableStock, $quantity, 0), 0, 0) < 0) {
-                if (bccomp($sku->channel_stock, 0) > 0) {
-                    throw new ProductStockException('库存不足,渠道库存占用');
-                }
+            $rows = ProductSku::where('id', $sku->id)->where('stock', '>=', $quantity)->decrement('stock', $quantity);
+            if ($rows <= 0) {
                 throw new ProductStockException('库存不足');
             }
-            // 物理库存 = 原库存 - 数量
-            $sku->stock = bcsub($sku->stock, $quantity, 0);
-
-            if ($lock) {
-                // 如果是锁定操作
-                // 锁定库存 = 原锁定库存 + 数量
-                $sku->lock_stock = bcadd($sku->lock_stock, $quantity, 0);
-            }
-
-            // 渠道库存操作
-            if ($channel instanceof StockChannelInterface) {
-                // 总渠道库存 = 原渠道库存 - 数量
-                $sku->channel_stock = bcsub($sku->channel_stock, $quantity, 0);
-                // 渠道可售库存 = 原渠道可售库存 - 数量
-                $channelStock->channel_stock = bcsub($channelStock->channel_stock, $quantity, 0);
-                if ($lock) {
-                    // 渠道锁定库存 = 原渠道锁定库存 + 数量
-                    $channelStock->channel_lock_stock = bcadd($channelStock->channel_lock_stock, $quantity, 0);
-                }
-                $channelStock->save();
-            }
-            $sku->save();
+            Product::where('id', $sku->product_id)->decrement('stock', $quantity);
             // 添加更变日志
-            $productStockLog = $this->log($sku, $changeTypeEnum, $beforeStock, -$quantity, $sku->stock, $channel, $lock, $changeDetail);
+            $productStockLog = $this->log($sku, $changeTypeEnum, $quantity, null, false, $changeDetail);
             DB::commit();
             return $productStockLog;
         } catch (AbstractException $exception) {
@@ -405,42 +358,26 @@ class ProductStockService extends Service
 
     }
 
-    /**
-     * 记录变更
-     *
-     * @param ProductSku                 $sku
-     * @param ProductStockChangeTypeEnum $changeTypeEnum
-     * @param int                        $beforeStock
-     * @param int                        $changeStock
-     * @param int                        $resultStock
-     * @param StockChannelInterface|null $channel
-     * @param bool                       $lock
-     * @param string|null                $changeDetail
-     *
-     * @return ProductStockLog|null
-     * @throws Exception
-     */
-    public function log(ProductSku $sku, ProductStockChangeTypeEnum $changeTypeEnum, int $beforeStock, int $changeStock, int $resultStock, ?StockChannelInterface $channel = null, bool $lock = false, string $changeDetail = null) : ?ProductStockLog
+
+    public function log(ProductSku $sku, ProductStockChangeTypeEnum $changeTypeEnum, int $stock, ?StockChannelData $channel = null, bool $lock = false, string $changeDetail = null) : ?ProductStockLog
     {
-        if (bccomp($beforeStock, $resultStock, 0) === 0) {
+        if (bccomp($stock, 0, 0) === 0) {
             return null;
         }
 
-        $productStockLog        = new ProductStockLog();
-        $productStockLog->id    = Snowflake::getInstance()->nextId();
-        $productStockLog->owner = $sku->product->owner;
+        $productStockLog     = new ProductStockLog();
+        $productStockLog->id = Snowflake::getInstance()->nextId();
+
         // TODO
         //$productStockLog->creator       = $this->getOperator();
         $productStockLog->sku_id        = $sku->id;
         $productStockLog->product_id    = $sku->product_id;
+        $productStockLog->stock         = $stock;
         $productStockLog->change_type   = $changeTypeEnum;
         $productStockLog->change_detail = Str::limit((string)$changeDetail, 200, '');
-        $productStockLog->before_stock  = $beforeStock;
-        $productStockLog->change_stock  = $changeStock;
-        $productStockLog->result_stock  = $resultStock;
         if ($channel) {
-            $productStockLog->channel_type = $channel->channelType();
-            $productStockLog->channel_id   = $channel->channelID();
+            $productStockLog->channel_type = $channel->type;
+            $productStockLog->channel_id   = $channel->id;
         }
         $productStockLog->is_lock = (int)$lock;
         $productStockLog->save();

@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Brand\Data;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Product\Services\Brand\Enums\BrandStatusEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 

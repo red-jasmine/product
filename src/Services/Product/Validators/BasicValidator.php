@@ -4,11 +4,11 @@ namespace RedJasmine\Product\Services\Product\Validators;
 
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
-use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Enums\Product\ProductTypeEnum;
-use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
-use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Services\Brand\Rules\BrandAvailableRule;
 use RedJasmine\Product\Services\Category\Rules\CategoryAvailableRule;
 use RedJasmine\Product\Services\Category\Rules\SellerCategoryAvailableRule;

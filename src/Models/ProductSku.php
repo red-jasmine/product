@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
@@ -29,5 +29,11 @@ class ProductSku extends Model
     public function product() : BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+
+    public static function incrementStock(int $id, int $stock)
+    {
+        return static::where('id', $id)->increment('stock', $stock);
     }
 }

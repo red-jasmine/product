@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Product\Data;
 
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
 
 class ProductPropValueData extends Data

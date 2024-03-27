@@ -3,8 +3,8 @@
 namespace RedJasmine\Product\Services\Series\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Support\DataTransferObjects\Data;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\Data\Data;
+use RedJasmine\Support\Data\UserData;
 
 
 class ProductSeriesData extends Data

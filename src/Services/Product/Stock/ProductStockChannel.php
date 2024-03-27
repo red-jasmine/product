@@ -14,7 +14,7 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 class ProductStockChannel
 {
 
-    use ServiceExtends;
+
 
     public function __construct(protected ProductStockService $stockService)
     {

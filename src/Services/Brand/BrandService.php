@@ -3,16 +3,9 @@
 namespace RedJasmine\Product\Services\Brand;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Enums\Brand\BrandStatusEnum;
-use RedJasmine\Product\Exceptions\BrandException;
 use RedJasmine\Product\Models\Brand;
 use RedJasmine\Product\Services\Brand\Data\BrandData;
-use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
 use RedJasmine\Support\Foundation\Service\ResourceService;
-use RedJasmine\Support\Rules\NotZeroExistsRule;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Events;
+namespace RedJasmine\Product\Services\Product\Events;
 
 class ProductUpdatedEvent extends AbstractProductEvent
 {

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\Data\UserData;
 use RedJasmine\Support\Exceptions\AbstractException;
 
 class SellerCategoryAvailableRule implements ValidationRule, DataAwareRule

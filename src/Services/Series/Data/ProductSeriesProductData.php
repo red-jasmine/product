@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Series\Data;
 
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 
 
 class ProductSeriesProductData extends Data

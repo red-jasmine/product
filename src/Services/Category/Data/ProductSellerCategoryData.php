@@ -5,8 +5,8 @@ namespace RedJasmine\Product\Services\Category\Data;
 use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\Data\Data;
+use RedJasmine\Support\Data\UserData;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 

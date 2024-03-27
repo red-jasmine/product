@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Support\Exceptions\AbstractException;
@@ -64,6 +64,11 @@ class ProductService extends ResourceService
             'delete' => Actions\ProductDeleteAction::class,
         ];
 
+    }
+
+    public function stock() : ProductStockService
+    {
+        return app(ProductStockService::class);
     }
 
     /**

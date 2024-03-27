@@ -5,7 +5,7 @@ namespace RedJasmine\Product\Services\Property\Data;
 use Illuminate\Validation\Rule;
 use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
 use RedJasmine\Product\Services\Property\Rules\PropertyTitleRule;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 

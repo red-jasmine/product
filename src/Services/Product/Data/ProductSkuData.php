@@ -2,8 +2,8 @@
 
 namespace RedJasmine\Product\Services\Product\Data;
 
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
 
 class ProductSkuData extends Data

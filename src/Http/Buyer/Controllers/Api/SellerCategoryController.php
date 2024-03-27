@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Http\Buyer\Resources\SellerCategoryResource;
 use RedJasmine\Product\Services\Category\ProductSellerCategoryService;
-use RedJasmine\Support\DataTransferObjects\UserData;
-use RedJasmine\Support\Helpers\User\UserObject;
+use RedJasmine\Support\Data\UserData;
 
 class SellerCategoryController extends Controller
 {

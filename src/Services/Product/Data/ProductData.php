@@ -3,13 +3,13 @@
 namespace RedJasmine\Product\Services\Product\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Product\Enums\Product\FreightPayerEnum;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
-use RedJasmine\Product\Enums\Product\ProductTypeEnum;
-use RedJasmine\Product\Enums\Product\ShippingTypeEnum;
-use RedJasmine\Product\Enums\Product\SubStockTypeEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Services\Product\Enums\SubStockTypeEnum;
+use RedJasmine\Support\Data\Data;
+use RedJasmine\Support\Data\UserData;
 use RedJasmine\Support\Helpers\Json\Json;
 
 

@@ -7,6 +7,7 @@ use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
+use RedJasmine\Product\Services\Product\Events\ProductCreatedEvent;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Product\Validators\BasicValidator;
 use RedJasmine\Product\Services\Product\Validators\PropsValidator;
@@ -79,6 +80,7 @@ class ProductCreateAction extends CreateAction
 
     protected function after($handleResult) : mixed
     {
+        ProductCreatedEvent::dispatch($handleResult);
         return $handleResult;
     }
 

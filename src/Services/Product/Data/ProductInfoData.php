@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Product\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Helpers\Json\Json;
 use Spatie\LaravelData\DataCollection;
 
