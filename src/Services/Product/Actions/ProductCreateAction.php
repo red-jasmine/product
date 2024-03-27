@@ -2,27 +2,23 @@
 
 namespace RedJasmine\Product\Services\Product\Actions;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use RedJasmine\Product\Enums\Product\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
-use RedJasmine\Product\Services\Product\Data\ProductSkuData;
 use RedJasmine\Product\Services\Product\ProductService;
 use RedJasmine\Product\Services\Product\Validators\BasicValidator;
 use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceCreateAction;
+use RedJasmine\Support\Foundation\Service\Actions\CreateAction;
 
 /**
  * @property ProductService $service
  * @property Product        $model
  * @property ProductData    $data
  */
-class ProductCreateAction extends ResourceCreateAction
+class ProductCreateAction extends CreateAction
 {
 
     public function __construct(protected PropertyFormatter $propertyFormatter)

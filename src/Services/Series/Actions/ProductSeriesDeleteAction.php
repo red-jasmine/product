@@ -4,13 +4,13 @@ namespace RedJasmine\Product\Services\Series\Actions;
 
 use RedJasmine\Product\Models\ProductSeries;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesData;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceDeleteAction;
+use RedJasmine\Support\Foundation\Service\Actions\DeleteAction;
 
 /**
  * @property ProductSeries     $model
  * @property ProductSeriesData $data
  */
-class ProductSeriesDeleteAction extends ResourceDeleteAction
+class ProductSeriesDeleteAction extends DeleteAction
 {
 
     protected ?bool $hasDatabaseTransactions = true;

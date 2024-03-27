@@ -2,10 +2,10 @@
 
 namespace RedJasmine\Product\Services\Product\Actions;
 
-use RedJasmine\Support\Foundation\Service\Actions\ResourceQueryAction;
+use RedJasmine\Support\Foundation\Service\Actions\QueryAction;
 use Spatie\QueryBuilder\AllowedFilter;
 
-class ProductQueryAction extends ResourceQueryAction
+class ProductQueryAction extends QueryAction
 {
 
 

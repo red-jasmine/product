@@ -3,12 +3,12 @@
 namespace RedJasmine\Product\Services\Product\Actions;
 
 use RedJasmine\Product\Models\Product;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceDeleteAction;
+use RedJasmine\Support\Foundation\Service\Actions\DeleteAction;
 
 /**
  * @property Product $model
  */
-class ProductDeleteAction extends ResourceDeleteAction
+class ProductDeleteAction extends DeleteAction
 {
 
     protected ?bool $hasDatabaseTransactions = true;

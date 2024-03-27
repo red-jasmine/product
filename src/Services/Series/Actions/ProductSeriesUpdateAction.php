@@ -7,14 +7,14 @@ use RedJasmine\Product\Models\ProductSeries;
 use RedJasmine\Product\Models\ProductSeriesProduct;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesData;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesProductData;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceCreateAction;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
+use RedJasmine\Support\Foundation\Service\Actions\CreateAction;
+use RedJasmine\Support\Foundation\Service\Actions\UpdateAction;
 
 /**
  * @property ProductSeries     $model
  * @property ProductSeriesData $data
  */
-class ProductSeriesUpdateAction extends ResourceUpdateAction
+class ProductSeriesUpdateAction extends UpdateAction
 {
 
     protected ?bool $hasDatabaseTransactions = true;

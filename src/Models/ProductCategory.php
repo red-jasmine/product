@@ -38,6 +38,7 @@ class ProductCategory extends Model
         'parent_id',
         'name',
         'group_name',
+        'image',
         'sort',
         'is_leaf',
         'is_show',

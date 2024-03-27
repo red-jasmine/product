@@ -7,13 +7,13 @@ use RedJasmine\Product\Models\ProductSeries;
 use RedJasmine\Product\Models\ProductSeriesProduct;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesData;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesProductData;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceCreateAction;
+use RedJasmine\Support\Foundation\Service\Actions\CreateAction;
 
 /**
  * @property ProductSeries     $model
  * @property ProductSeriesData $data
  */
-class ProductSeriesCreateAction extends ResourceCreateAction
+class ProductSeriesCreateAction extends CreateAction
 {
 
     protected ?bool $hasDatabaseTransactions = true;

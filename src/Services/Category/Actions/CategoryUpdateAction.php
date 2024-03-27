@@ -4,9 +4,9 @@ namespace RedJasmine\Product\Services\Category\Actions;
 
 
 use RedJasmine\Product\Services\Category\Pipelines\CategoryUpdatePipelines;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
+use RedJasmine\Support\Foundation\Service\Actions\UpdateAction;
 
-class CategoryUpdateAction extends ResourceUpdateAction
+class CategoryUpdateAction extends UpdateAction
 {
 
     public function pipes() : array

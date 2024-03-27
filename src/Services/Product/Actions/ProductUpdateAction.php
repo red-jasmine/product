@@ -16,7 +16,7 @@ use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Product\Services\Product\Validators\ValidatorAwareValidatorCombiner;
 use RedJasmine\Product\Services\Product\Validators\ValidatorCombinerInterface;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
-use RedJasmine\Support\Foundation\Service\Actions\ResourceUpdateAction;
+use RedJasmine\Support\Foundation\Service\Actions\UpdateAction;
 use Throwable;
 
 /**
@@ -24,7 +24,7 @@ use Throwable;
  * @property Product        $model
  * @property ProductData    $data
  */
-class ProductUpdateAction extends ResourceUpdateAction
+class ProductUpdateAction extends UpdateAction
 {
 
     public function __construct(protected PropertyFormatter $propertyFormatter)
