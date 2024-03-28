@@ -113,15 +113,7 @@ class ProductService extends ResourceService
         }
     }
 
-    public function productCountFields(Product $product) : void
-    {
 
-        $product->price        = $product->skus->min('price');
-        $product->cost_price   = $product->skus->min('cost_price');
-        $product->market_price = $product->skus->min('market_price');
-        $product->stock        = $product->skus->sum('stock');
-        $product->sales        = $product->skus->sum('sales');
-    }
 
 
     public function find(int $id) : Product

@@ -28,7 +28,7 @@ class ProductStockLog extends Model
 
     public function sku() : BelongsTo
     {
-        return $this->belongsTo(Product::class, 'sku_id', 'id');
+        return $this->belongsTo(ProductSku::class, 'sku_id', 'id');
     }
 
 }

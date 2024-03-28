@@ -2,8 +2,11 @@
 
 namespace RedJasmine\Product\Services\Product\Actions;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use RedJasmine\Product\Models\ProductInfo;
 use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Models\Product;
@@ -11,14 +14,170 @@ use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Product\Services\Product\Data\ProductPropData;
 use RedJasmine\Product\Services\Product\Data\ProductSkuData;
+use RedJasmine\Product\Services\Product\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Services\Product\ProductService;
+use RedJasmine\Product\Services\Product\Validators\BasicValidator;
+use RedJasmine\Product\Services\Product\Validators\PropsValidator;
 use RedJasmine\Product\Services\Property\PropertyFormatter;
+use RedJasmine\Support\Foundation\Service\Actions\ResourceAction;
+use Throwable;
 
-class ProductFill
+/**
+ * @property ProductService $service
+ */
+abstract class AbstractProductStoreAction extends ResourceAction
 {
-    // TODO 提取公共存储
-    public function __construct(protected PropertyFormatter $propertyFormatter)
+
+    public function __construct(public PropertyFormatter $propertyFormatter)
     {
+        parent::__construct();
     }
+
+    protected ?bool $hasDatabaseTransactions = true;
+
+    protected static array $globalValidatorCombiners = [
+        BasicValidator::class,
+        PropsValidator::class
+    ];
+
+    protected function resolveModel() : void
+    {
+        if ($this->key) {
+            $query       = $this->service::getModelClass()::query();
+            $this->model = $this->service->callQueryCallbacks($query)->findOrFail($this->key);
+        } else {
+            // TODO 转换 关联关系获取
+            $product = app($this->getModelClass());
+            $product->setRelation('info', new ProductInfo());
+            $product->setRelation('skus', collect([]));
+            $this->model = $product;
+        }
+    }
+
+    /**
+     * @return Model
+     * @throws Throwable
+     */
+    public function handle() : Model
+    {
+        $product = $this->model;
+        return $this->storeProduct($product);
+    }
+
+
+    protected function fill(array $data) : ?Model
+    {
+        $this->handleFill($this->model, $this->data, $data);
+        return $this->model;
+    }
+
+
+    /**
+     * @param Product $product
+     *
+     * @return Product
+     * @throws Exception|Throwable
+     */
+    protected function storeProduct(Product $product) : Product
+    {
+        // 生成ID
+        $this->generateId($product);
+        // 如果是已存在的 同时修改了
+        if ($product->exists === true) {
+            if ($product->isDirty() || $product->info->isDirty()) {
+                $product->updater       = $this->service->getOperator();
+                $product->modified_time = now();
+            }
+        }
+        if ($product->is_multiple_spec === false) {
+            $product->info->sale_props = null;
+        }
+        $this->service->linkageTime($product);
+
+
+        // 操作 SKUS
+
+        //  TODO 如果是改变了规格类型的情况下 那么就 重置库存
+        // 数据库中的所有数据
+        $all = $product->allSku;
+        // 正常的SKU
+
+        $product->skus->each(function (ProductSku $sku, $index) use ($product) {
+            $this->generateId($sku);
+            $sku->deleted_at = null;
+            // 如果是还没有创建的
+            if ($sku->exists === false) {
+                $sku->creator = $this->service->getOperator();
+            } else if ($sku->exists === true && $sku->isDirty()) {
+                $product->modified_time = now();
+                $sku->updater           = $this->service->getOperator();
+            }
+            if (blank($sku->properties)) {
+                $sku->id = $product->id;
+                if ($product->is_multiple_spec === true) {
+                    $sku->deleted_at = now();
+                }
+            }
+
+            $product->allSku[$sku->properties] = $sku;
+
+        });
+        // 数据库中的SKU
+        $product->allSku->each(function (ProductSku $sku, $properties) use ($product) {
+            //$sku = $product->skus[$properties] ?? $sku;
+            // 对于不需要的SKU 进行关闭 和 清空库存
+            if ($this->isCloseSku($sku, $product)) {
+                $this->closeSku($sku);
+            }
+        });
+
+        // 统计规格的值
+        $this->productCountFields($product);
+        // 持久化操作 创建商品
+        $allSku = $product->allSku;
+        $product->skus()->saveMany($product->allSku->values());
+        unset($product->allSku);
+        $product->info()->save($product->info);
+        $product->push();
+        // 最后操作库存 TODO
+
+        $allSku->each(function (ProductSku $sku, $properties) {
+            // TODO ?
+            // 这里其实是么有改变库存的 已存储的 $stock 和当前的一样 不操作
+            $this->service->stock()->setStock($sku,$sku->stock);
+        });
+        return $product;
+
+    }
+
+    public function productCountFields(Product $product) : void
+    {
+        $product->price        = $product->skus->where('deleted_at', null)->min('price');
+        $product->cost_price   = $product->skus->where('deleted_at', null)->min('cost_price');
+        $product->market_price = $product->skus->where('deleted_at', null)->min('market_price');
+        //$product->sales        = $product->skus->where('deleted_at', null)->sum('sales');
+    }
+
+    protected function isCloseSku(ProductSku $sku, Product $product) : bool
+    {
+        if ($sku->status === ProductStatusEnum::DELETED) {
+            return false;
+        }
+        if ($product->is_multiple_spec === true) {
+            return !in_array($sku->properties, $product->skus->pluck('properties')->toArray(), true);
+        }
+        // 如果是单规格
+        return filled($sku->properties);
+    }
+
+    protected function closeSku(ProductSku $sku) : void
+    {
+        // TODO 如果存在占用库存 那么就不能进行 删除
+        $sku->status     = ProductStatusEnum::DELETED;
+        $sku->deleted_at = $sku->deleted_at ?? now();
+        $sku->save();
+    }
+
 
     /**
      * @param Product     $product
@@ -28,7 +187,7 @@ class ProductFill
      * @return Product
      * @throws ProductPropertyException
      */
-    public function fill(Product $product, ProductData $productData, array $data = []) : Product
+    public function handleFill(Product $product, ProductData $productData, array $data = []) : Product
     {
         $productData->skus             = collect(ProductSkuData::collect($data['skus'] ?? []));
         $productData->info->basicProps = collect(ProductPropData::collect($data['info']['basic_props'] ?? []));
@@ -101,14 +260,15 @@ class ProductFill
         // 当前的所有 SKU
         $product->setRelation('skus', $product->skus->keyBy('properties'));
 
+        $product->allSku = collect([]);
         // 获取数据库中所有的SKU
-        $allSku = [];
         if ($product->exists === true) {
             /**
              * @var Collection|array|Product[] $all
              */
-            $allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
+            $product->allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
         }
+        $allSku = $product->allSku;
 
         // 如果是多规格
         if ($product->is_multiple_spec === true) {
@@ -140,9 +300,10 @@ class ProductFill
          * @var ProductSku $basicSKU
          */
         $basicSKU             = $allSku[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
-        $basicSKU->status     = ProductStatusEnum::SOLD_OUT;
+        $basicSKU->status     = ProductStatusEnum::DELETED;
         $basicSKU->deleted_at = now();
         // 添加一个默认规格 规格ID 和商品ID 一样
+        // 如果 不是多规格
         if ($product->is_multiple_spec === false) {
             $data   = $productData->toArray();
             $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
@@ -151,9 +312,9 @@ class ProductFill
                 $skuData->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
             }
             $this->fillSku($basicSKU, $skuData);
+            $basicSKU->status     = ProductStatusEnum::ON_SALE;
             $basicSKU->deleted_at = null;
         }
-
         $product->skus[$skuData->properties] = $basicSKU;
     }
 

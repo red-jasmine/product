@@ -14,9 +14,9 @@ return new class extends Migration {
             $table->string('change_type', 32)->comment('更变类型');
             $table->string('change_detail')->nullable()->comment('变更明细');
             $table->bigInteger('stock')->comment('库存');
-            $table->nullableMorphs('channel');
-            $table->unsignedTinyInteger('is_lock')->default(0)->comment('是否操作锁定');
+            $table->bigInteger('lock_stock')->default(0)->comment('锁定库存');
 
+            $table->nullableMorphs('channel');
             $table->nullableMorphs('creator');
             $table->timestamps();
             $table->comment('商品-库存-记录');

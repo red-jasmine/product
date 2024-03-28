@@ -12,10 +12,11 @@ return new class extends Migration {
             $table->morphs('channel');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->comment('SKU ID');
-            $table->unsignedBigInteger('channel_total_stock')->default(0)->comment('渠道总库存');
-            $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
-            $table->unsignedBigInteger('channel_lock_stock')->default(0)->comment('渠道锁定库存');
-
+            $table->bigInteger('total_stock')->default(0)->comment('渠道总库存');
+            $table->bigInteger('stock')->default(0)->comment('渠道可用库存');
+            $table->bigInteger('lock_stock')->default(0)->comment('渠道锁定库存');
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('updater');
             $table->timestamps();
             $table->comment('渠道库存');
         });

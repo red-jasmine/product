@@ -19,10 +19,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('sales')->default(0)->comment('销量');
 
             // 库存
-            $table->unsignedBigInteger('stock')->default(0)->comment('库存');
-            $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
-            $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
-            $table->unsignedBigInteger('safety_stock')->default(0)->comment('安全库存');
+            $table->bigInteger('stock')->default(0)->comment('库存');
+            $table->bigInteger('channel_stock')->default(0)->comment('渠道库存');
+            $table->bigInteger('lock_stock')->default(0)->comment('锁定库存');
+            $table->bigInteger('safety_stock')->default(0)->comment('安全库存');
             // 信息
             $table->string('image')->nullable()->comment('主图');
             $table->string('barcode', 32)->nullable()->comment('条形码');

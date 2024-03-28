@@ -19,71 +19,18 @@ use RedJasmine\Support\Foundation\Service\Actions\CreateAction;
  * @property Product        $model
  * @property ProductData    $data
  */
-class ProductCreateAction extends CreateAction
+class ProductCreateAction extends AbstractProductStoreAction
 {
 
-    public function __construct(protected PropertyFormatter $propertyFormatter)
+
+    public function execute($data) : Model
     {
-        parent::__construct();
-    }
-
-    protected ?bool $hasDatabaseTransactions = true;
-
-    protected static array $globalValidatorCombiners = [
-        BasicValidator::class,
-        PropsValidator::class
-    ];
-
-
-    protected function resolveModel() : void
-    {
-        if ($this->key) {
-            $query       = $this->service::getModelClass()::query();
-            $this->model = $this->service->callQueryCallbacks($query)->findOrFail($this->key);
-        } else {
-            // TODO 转换 关联关系获取
-            $product = app($this->getModelClass());
-            $product->setRelation('info', new ProductInfo());
-            $product->setRelation('skus', collect([]));
-            $this->model = $product;
-        }
+        $this->data = $data;
+        return $this->store();
     }
 
 
-    protected function fill(array $data) : ?Model
-    {
 
-        app(ProductFill::class)->fill($this->model, $this->data, $data);
-        return $this->model;
-    }
-
-    public function handle() : Model
-    {
-        $product = $this->model;
-        $this->service->linkageTime($product);
-        $this->generateId($product);
-
-        $product->skus->each(function (ProductSku $sku) use ($product) {
-            $this->generateId($sku);
-            $sku->creator    = $this->service->getOperator();
-            $sku->deleted_at = null;
-            if (blank($sku->properties)) {
-                $sku->id = $product->id;
-                if ($product->is_multiple_spec === true) {
-                    $sku->deleted_at = now();
-                }
-            }
-        });
-        if ($product->is_multiple_spec === false) {
-            $product->info->sale_props = null;
-        }
-        // 统计规格的值
-        $product->skus()->saveMany($product->skus->values());
-        $this->service->productCountFields($product);
-        $product->info()->save($product->info);
-        $this->model->push();
-        return $product;
-    }
 
 
     protected function after($handleResult) : mixed

@@ -140,9 +140,6 @@ class Product extends Model
         );
     }
 
-    public static function incrementStock(int $id, int $stock)
-    {
-        return static::where('id', $id)->increment('stock', $stock);
-    }
+
 
 }
