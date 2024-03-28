@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product\Enums;
+namespace RedJasmine\Product\Services\Stock\Enums;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
@@ -9,7 +9,7 @@ enum ProductStockChangeTypeEnum: string
 
     use EnumsHelper;
 
-    case INIT = 'init';// 卖家编辑
+    case INIT = 'init';// 初始化
 
     case SELLER = 'seller';// 卖家编辑
 
@@ -19,7 +19,7 @@ enum ProductStockChangeTypeEnum: string
     public static function labels() : array
     {
         return [
-            self::INIT->value   => '创建',
+            self::INIT->value   => '初始化',
             self::SELLER->value => '编辑',
             self::SALE->value   => '销售',
         ];

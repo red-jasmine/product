@@ -85,13 +85,18 @@ abstract class AbstractProductStoreAction extends ResourceAction
         // 如果是已存在的 同时修改了
         $product->creator = $product->creator ?? $this->service->getOperator();
         if ($product->exists === true) {
+            // 使用外部变量 TODO
+            $skusAll = $product->skusAll;
+            unset($product->skusAll);
+            // 防止判断出错
             if ($product->isDirty() || $product->info->isDirty()) {
                 $product->updater       = $this->service->getOperator();
                 $product->modified_time = now();
             }
+            $product->skusAll = $skusAll;
         }
         if ($product->is_multiple_spec === false) {
-            $product->info->sale_props = null;
+            $product->info->sale_props = [];
         }
         $this->service->linkageTime($product);
         $product->skus->each(function (ProductSku $sku, $index) use ($product) {
@@ -99,7 +104,7 @@ abstract class AbstractProductStoreAction extends ResourceAction
             $sku->product_id = $product->id;
             $sku->deleted_at = null;
             // 如果是还没有创建的
-            $sku->creator = $sku->creator??$this->service->getOperator();
+            $sku->creator = $sku->creator ?? $this->service->getOperator();
             if ($sku->exists === true && $sku->isDirty()) {
                 $sku->modified_time = now();
                 $sku->updater       = $this->service->getOperator();
@@ -126,19 +131,14 @@ abstract class AbstractProductStoreAction extends ResourceAction
         // 修改库存
 
         $product->skusAll->each(function (ProductSku $sku, $properties) use ($product) {
-            // 设置库存
-            // SKU 有新创建的 有修改的
-
             if ($sku->exists === false) {
                 // 新建的SKU
                 $onlyLog = ($product->exists === false);
-                $this->service->stock()->initStock($sku, $sku->stock, $onlyLog);
+                $this->service->stock()->init([ 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ], $onlyLog);
             } else {
                 // 老的SKU
-
-                $this->service->stock()->setStock($sku, $sku->stock);
-                unset($sku->stock);
-                //$sku->stock = $sku->getOriginal('stock');
+                $this->service->stock()->reset([ 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ]);
+                unset($sku->stock); // 不对 stock 进行更新
             }
         });
         // 持久化操作

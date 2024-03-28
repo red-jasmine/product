@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
-use RedJasmine\Product\Services\Product\Stock\ProductStockService;
+
+use RedJasmine\Product\Services\Stock\StockService;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -65,9 +66,9 @@ class ProductService extends ResourceService
 
     }
 
-    public function stock() : ProductStockService
+    public function stock() : StockService
     {
-        return app(ProductStockService::class);
+        return app(StockService::class);
     }
 
     /**
