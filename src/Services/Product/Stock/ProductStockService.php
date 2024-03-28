@@ -1,20 +1,17 @@
 <?php
 
-namespace RedJasmine\Product\Services\Product;
+namespace RedJasmine\Product\Services\Product\Stock;
 
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Services\Product\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Exceptions\ProductStockException;
+use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductChannelStock;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Product\Data\StockChannelData;
-use RedJasmine\Product\Services\Product\Stock\StockChannelInterface;
+use RedJasmine\Product\Services\Product\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Support\Exceptions\AbstractException;
-use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 use Throwable;
 
@@ -26,7 +23,47 @@ class ProductStockService
      */
     public function channel() : ProductStockChannel
     {
+        // TODO 需要加上 渠道库存
         return new ProductStockChannel($this);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param ProductSku $sku
+     * @param int        $stock
+     * @param bool       $onlyLog
+     *
+     * @return ProductStockLog|null
+     * @throws AbstractException
+     * @throws ProductStockException
+     * @throws Throwable
+     */
+    public function initStock(ProductSku $sku, int $stock, bool $onlyLog = false) : ?ProductStockLog
+    {
+        // 设置库存采用悲观锁
+        if (bccomp($stock, 0, 0) < 0) {
+            throw new ProductStockException('库存 数量必须大于等于 0');
+        }
+        if ($sku->exists === true) {
+            throw new ProductStockException('库存 数量必须大于等于 0');
+        }
+        try {
+            DB::beginTransaction();
+            if ($onlyLog === false) {
+                $stockUpdate = DB::raw("stock + $stock");
+                Product::where('id', $sku->product_id)->update([ 'stock' => $stockUpdate ]);
+            }
+            $productStockLog = $this->log($sku, $stock, 0, ProductStockChangeTypeEnum::INIT);
+            DB::commit();
+        } catch (AbstractException $exception) {
+            DB::rollBack();
+            throw  $exception;
+        } catch (Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
+        return $productStockLog;
     }
 
 
@@ -66,11 +103,8 @@ class ProductStockService
                 throw new ProductStockException('渠道库存占用:' . $sku->channel_stock, 0, [ 'channel_stock' => $sku->channel_stock ]);
             }
             $stockUpdate = DB::raw("stock + $quantity");
-            // if (bccomp($quantity, 0, 0) > 0) {
-            //     $stockUpdate = DB::raw("stock + $quantity");
-            // }
-            ProductSku::where('id', $sku->id)->update([ 'stock' => $stockUpdate ]);
-            Product::where('id', $sku->product_id)->update([ 'stock' => $stockUpdate ]);
+            ProductSku::withTrashed()->where('id', $sku->id)->update([ 'stock' => $stockUpdate ]);
+            Product::withTrashed()->where('id', $sku->product_id)->update([ 'stock' => $stockUpdate ]);
             // 添加更变日志
             $productStockLog = $this->log($sku, $quantity, 0, $changeTypeEnum, null, $changeDetail);
             DB::commit();
@@ -245,7 +279,7 @@ class ProductStockService
      * @param ProductSku                 $sku
      * @param int                        $quantity
      * @param ProductStockChangeTypeEnum $changeTypeEnum
-     * @param StockChannelInterface|null $channel
+     * @param StockChannelData|null      $channel
      * @param string                     $changeDetail
      *
      * @return ProductStockLog|null

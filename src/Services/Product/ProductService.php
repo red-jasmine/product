@@ -2,15 +2,14 @@
 
 namespace RedJasmine\Product\Services\Product;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
+use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Services\Product\Stock\ProductStockService;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
-use RedJasmine\Support\Helpers\ID\Snowflake;
 use Spatie\QueryBuilder\AllowedFilter;
 use Throwable;
 
@@ -112,8 +111,6 @@ class ProductService extends ResourceService
 
         }
     }
-
-
 
 
     public function find(int $id) : Product

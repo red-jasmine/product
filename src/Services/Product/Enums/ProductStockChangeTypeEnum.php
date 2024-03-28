@@ -9,8 +9,9 @@ enum ProductStockChangeTypeEnum: string
 
     use EnumsHelper;
 
-    case SELLER = 'seller';// 卖家编辑
+    case INIT = 'init';// 卖家编辑
 
+    case SELLER = 'seller';// 卖家编辑
 
     case SALE = 'sale'; // 销售
 
@@ -18,8 +19,9 @@ enum ProductStockChangeTypeEnum: string
     public static function labels() : array
     {
         return [
-            self::SELLER->value => '卖家编辑',
-            self::SALE->value   => '商品销售',
+            self::INIT->value   => '创建',
+            self::SELLER->value => '编辑',
+            self::SALE->value   => '销售',
         ];
 
     }

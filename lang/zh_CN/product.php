@@ -33,6 +33,7 @@ return [
         'sub_stock'          => '减库存方式',
         'stock'              => '库存',
         'lock_stock'         => '预扣库存',
+        'safety_stock'       => '安全库存',
         'sales'              => '销量',
         'fake_sales'         => '虚假销量',
         'delivery_time'      => '发货时间:小时',

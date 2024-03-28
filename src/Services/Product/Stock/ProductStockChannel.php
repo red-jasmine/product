@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Models\ProductChannelStock;
-use RedJasmine\Product\Services\Product\ProductService;
+use RedJasmine\Product\Services\Product\Data\StockChannelData;
+use RedJasmine\Product\Services\Product\ProductStockService;
 use RedJasmine\Product\Services\Product\ServiceExtends;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 class ProductStockChannel
 {
-
 
 
     public function __construct(protected ProductStockService $stockService)
@@ -26,15 +26,15 @@ class ProductStockChannel
     /**
      * 创建渠道库存
      *
-     * @param int                   $skuID
-     * @param int                   $quantity
-     * @param StockChannelInterface $channel
+     * @param int              $skuID
+     * @param int              $quantity
+     * @param StockChannelData $channel
      *
      * @return ProductChannelStock|null
      * @throws AbstractException
      * @throws ProductStockException
      */
-    public function create(int $skuID, int $quantity, StockChannelInterface $channel) : ?ProductChannelStock
+    public function create(int $skuID, int $quantity, StockChannelData $channel) : ?ProductChannelStock
     {
         $quantity = $this->stockService->validateQuantity($quantity);
 
@@ -87,15 +87,15 @@ class ProductStockChannel
     /**
      * 追加渠道库存
      *
-     * @param int                   $skuID
-     * @param int                   $quantity
-     * @param StockChannelInterface $channel
+     * @param int              $skuID
+     * @param int              $quantity
+     * @param StockChannelData $channel
      *
      * @return ProductChannelStock
      * @throws AbstractException
      * @throws ProductStockException
      */
-    public function add(int $skuID, int $quantity, StockChannelInterface $channel) : ProductChannelStock
+    public function add(int $skuID, int $quantity, StockChannelData $channel) : ProductChannelStock
     {
         $quantity = $this->stockService->validateQuantity($quantity);
         try {
@@ -135,15 +135,15 @@ class ProductStockChannel
     /**
      * 减少渠道库存
      *
-     * @param int                   $skuID
-     * @param int                   $quantity
-     * @param StockChannelInterface $channel
+     * @param int              $skuID
+     * @param int              $quantity
+     * @param StockChannelData $channel
      *
      * @return ProductChannelStock
      * @throws AbstractException
      * @throws ProductStockException
      */
-    public function sub(int $skuID, int $quantity, StockChannelInterface $channel) : ProductChannelStock
+    public function sub(int $skuID, int $quantity, StockChannelData $channel) : ProductChannelStock
     {
         $quantity = $this->stockService->validateQuantity($quantity);
         try {
@@ -153,14 +153,14 @@ class ProductStockChannel
             // 验证渠道渠道库存
             $productChannelStock = $this->stockService->getChannelStock($skuID, $channel);
             // 判断渠道库存 的 渠道可售库存 必须大于等级 数量
-            if (bccomp($productChannelStock->channel_stock, $quantity, 0) < 0) {
+            if (bccomp($productChannelStock->total_stock, $quantity, 0) < 0) {
                 throw new ProductStockException('渠道可用库存不足');
             }
             // 操作 总渠道库存
             // 渠道库存 = 渠道库存 - 数量
             // 渠道可用库存 = 渠道可用库存 - 数量
-            $productChannelStock->channel_total_stock = bcsub($productChannelStock->channel_total_stock, $quantity, 0);
-            $productChannelStock->channel_stock       = bcsub($productChannelStock->channel_stock, $quantity, 0);
+            $productChannelStock->total_stock = bcsub($productChannelStock->total_stock, $quantity, 0);
+            $productChannelStock->stock       = bcsub($productChannelStock->stock, $quantity, 0);
             $productChannelStock->save();
             //  总渠道库存 =  总渠道库存 - 数量
             $sku->channel_stock = bcsub($sku->channel_stock, $quantity, 0);

@@ -83,6 +83,7 @@ abstract class AbstractProductStoreAction extends ResourceAction
         // 生成ID
         $this->generateId($product);
         // 如果是已存在的 同时修改了
+        $product->creator = $product->creator ?? $this->service->getOperator();
         if ($product->exists === true) {
             if ($product->isDirty() || $product->info->isDirty()) {
                 $product->updater       = $this->service->getOperator();
@@ -93,24 +94,15 @@ abstract class AbstractProductStoreAction extends ResourceAction
             $product->info->sale_props = null;
         }
         $this->service->linkageTime($product);
-
-
-        // 操作 SKUS
-
-        //  TODO 如果是改变了规格类型的情况下 那么就 重置库存
-        // 数据库中的所有数据
-        $all = $product->allSku;
-        // 正常的SKU
-
         $product->skus->each(function (ProductSku $sku, $index) use ($product) {
             $this->generateId($sku);
+            $sku->product_id = $product->id;
             $sku->deleted_at = null;
             // 如果是还没有创建的
-            if ($sku->exists === false) {
-                $sku->creator = $this->service->getOperator();
-            } else if ($sku->exists === true && $sku->isDirty()) {
-                $product->modified_time = now();
-                $sku->updater           = $this->service->getOperator();
+            $sku->creator = $sku->creator??$this->service->getOperator();
+            if ($sku->exists === true && $sku->isDirty()) {
+                $sku->modified_time = now();
+                $sku->updater       = $this->service->getOperator();
             }
             if (blank($sku->properties)) {
                 $sku->id = $product->id;
@@ -118,12 +110,10 @@ abstract class AbstractProductStoreAction extends ResourceAction
                     $sku->deleted_at = now();
                 }
             }
-
-            $product->allSku[$sku->properties] = $sku;
-
+            $product->skusAll[$sku->properties] = $sku;
         });
         // 数据库中的SKU
-        $product->allSku->each(function (ProductSku $sku, $properties) use ($product) {
+        $product->skusAll->each(function (ProductSku $sku, $properties) use ($product) {
             //$sku = $product->skus[$properties] ?? $sku;
             // 对于不需要的SKU 进行关闭 和 清空库存
             if ($this->isCloseSku($sku, $product)) {
@@ -131,21 +121,31 @@ abstract class AbstractProductStoreAction extends ResourceAction
             }
         });
 
-        // 统计规格的值
+        // 合并产品部分参数
         $this->productCountFields($product);
-        // 持久化操作 创建商品
-        $allSku = $product->allSku;
-        $product->skus()->saveMany($product->allSku->values());
-        unset($product->allSku);
+        // 修改库存
+
+        $product->skusAll->each(function (ProductSku $sku, $properties) use ($product) {
+            // 设置库存
+            // SKU 有新创建的 有修改的
+
+            if ($sku->exists === false) {
+                // 新建的SKU
+                $onlyLog = ($product->exists === false);
+                $this->service->stock()->initStock($sku, $sku->stock, $onlyLog);
+            } else {
+                // 老的SKU
+
+                $this->service->stock()->setStock($sku, $sku->stock);
+                unset($sku->stock);
+                //$sku->stock = $sku->getOriginal('stock');
+            }
+        });
+        // 持久化操作
+        $product->skus()->saveMany($product->skusAll->values());
+        unset($product->skusAll);
         $product->info()->save($product->info);
         $product->push();
-        // 最后操作库存 TODO
-
-        $allSku->each(function (ProductSku $sku, $properties) {
-            // TODO ?
-            // 这里其实是么有改变库存的 已存储的 $stock 和当前的一样 不操作
-            $this->service->stock()->setStock($sku,$sku->stock);
-        });
         return $product;
 
     }
@@ -155,7 +155,10 @@ abstract class AbstractProductStoreAction extends ResourceAction
         $product->price        = $product->skus->where('deleted_at', null)->min('price');
         $product->cost_price   = $product->skus->where('deleted_at', null)->min('cost_price');
         $product->market_price = $product->skus->where('deleted_at', null)->min('market_price');
-        //$product->sales        = $product->skus->where('deleted_at', null)->sum('sales');
+        $product->safety_stock = $product->skus->where('deleted_at', null)->max('safety_stock');
+        if ($product->exists === false) {
+            $product->stock = $product->skusAll->sum('stock');
+        }
     }
 
     protected function isCloseSku(ProductSku $sku, Product $product) : bool
@@ -173,9 +176,10 @@ abstract class AbstractProductStoreAction extends ResourceAction
     protected function closeSku(ProductSku $sku) : void
     {
         // TODO 如果存在占用库存 那么就不能进行 删除
+        $sku->stock      = 0; // 如果删除了 那么需要设置库存为0
         $sku->status     = ProductStatusEnum::DELETED;
         $sku->deleted_at = $sku->deleted_at ?? now();
-        $sku->save();
+
     }
 
 
@@ -260,25 +264,25 @@ abstract class AbstractProductStoreAction extends ResourceAction
         // 当前的所有 SKU
         $product->setRelation('skus', $product->skus->keyBy('properties'));
 
-        $product->allSku = collect([]);
-        // 获取数据库中所有的SKU
+
+        // 获取数据库中所有的SKU 临时使用的
+        $product->skusAll = collect([]);
         if ($product->exists === true) {
             /**
              * @var Collection|array|Product[] $all
              */
-            $product->allSku = $product->skus()->withTrashed()->get()->keyBy('properties');
+            $product->skusAll = $product->skus()->withTrashed()->get()->keyBy('properties');
         }
-        $allSku = $product->allSku;
 
         // 如果是多规格
         if ($product->is_multiple_spec === true) {
 
-            $productData->skus?->each(function ($skuData) use ($product, $allSku) {
+            $productData->skus?->each(function ($skuData) use ($product) {
                 /**
                  * @var $skuData ProductSkuData
                  */
                 $skuData->properties = $this->propertyFormatter->formatString($skuData->properties);
-                $sku                 = $allSku[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
+                $sku                 = $product->skusAll[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
                 $this->fillSku($sku, $skuData);
                 $product->skus[$skuData->properties] = $sku;
             });
@@ -299,18 +303,19 @@ abstract class AbstractProductStoreAction extends ResourceAction
         /**
          * @var ProductSku $basicSKU
          */
-        $basicSKU             = $allSku[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
+        $basicSKU             = $product->skusAll[$skuData->properties] ?? $product->skus[$skuData->properties] ?? new ProductSku();
         $basicSKU->status     = ProductStatusEnum::DELETED;
+        $basicSKU->stock      = 0;
         $basicSKU->deleted_at = now();
         // 添加一个默认规格 规格ID 和商品ID 一样
-        // 如果 不是多规格
+        // 如果 是单规格
         if ($product->is_multiple_spec === false) {
-            $data   = $productData->toArray();
-            $data   = Arr::only($data, [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price' ]);
-            $fields = [ 'status', 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', 'sales' ];
-            foreach ($fields as $field) {
-                $skuData->{$field} = $data[$field] ?? ($sku->{$field} ?? $product->{$field});
-            }
+            $data                   = $productData->toArray();
+            $fields                 = [ 'image', 'barcode', 'outer_id', 'stock', 'price', 'market_price', 'cost_price', ];
+            $data                   = Arr::only($data, $fields);
+            $data['properties']     = '';
+            $data['propertiesName'] = null;
+            $skuData                = ProductSkuData::from($data);
             $this->fillSku($basicSKU, $skuData);
             $basicSKU->status     = ProductStatusEnum::ON_SALE;
             $basicSKU->deleted_at = null;
