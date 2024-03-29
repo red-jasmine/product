@@ -1,8 +1,8 @@
 # Product
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![Total Downloads][ico-downloads]][link-downloads]
-[![Build Status][ico-travis]][link-travis]
+[Latest Version on Packagist][link-packagist]
+[Total Downloads][link-downloads]
+[Build Status][link-travis]
 
 This is where your description should go. Take a look at [contributing.md](contributing.md) to see a to do list.
 
@@ -10,47 +10,32 @@ This is where your description should go. Take a look at [contributing.md](contr
 
 Via Composer
 
-``` bash
+```bash
 $ composer require red-jasmine/product
 ```
 
 ## Usage
 
 ## 服务
-- 商品
-- 品牌
-- 类目
-  - 系统类目
-  - 买家分类
-- 属性
-  - 属性组
-  - 属性名
-  - 属性值
-- 库存
-  - 渠道库存
 
-## 商品状态
+- [x] 商品
+- [x] 品牌
+- [x] 类目
+  - [x] 系统类目
+  - [x] 买家分类
+  - [x] 运营类目
+- [x] 属性
+  - [x] 属性组
+  - [x] 属性名
+  - [x] 属性值
+- [x] 库存
+- [x] 库存
+- [x] 渠道库存
+- [x] 商品系列
+- [ ] 服务
+- [ ] 标签
+- [ ] 评价
 
-```php
-    case ON_SALE = 'on_sale'; // 在售
-
-    case OUT_OF_STOCK = 'out_of_stock'; // 缺货
-
-    case SOLD_OUT = 'sale_out'; // 售罄
-
-    case IN_STOCK = 'in_stock'; // 仓库中
-
-    case OFF_SHELF = 'off_shelf'; // 下架
-
-    case PRE_SALE = 'pre_sale'; // 预售
-
-    case FORCED_OFF_SHELF = 'forced_off_shelf'; // 强制下架
-    
-    case DELETED = 'deleted'; // 删除
-```
-> 商品的状态只能为 
-> 在售、缺货、售停、仓库中、预售 
-> 规格状态：在售、售停、缺货、
 
 ## Change log
 
@@ -58,7 +43,7 @@ Please see the [changelog](changelog.md) for more information on what has change
 
 ## Testing
 
-``` bash
+```bash
 $ composer test
 ```
 
@@ -80,21 +65,12 @@ If you discover any security related issues, please email liushoukun66@gmail.com
 MIT. Please see the [license file](license.md) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/red-jasmine/product.svg?style=flat-square
-
 [ico-downloads]: https://img.shields.io/packagist/dt/red-jasmine/product.svg?style=flat-square
-
 [ico-travis]: https://img.shields.io/travis/red-jasmine/product/master.svg?style=flat-square
-
 [ico-styleci]: https://styleci.io/repos/12345678/shield
-
 [link-packagist]: https://packagist.org/packages/red-jasmine/product
-
 [link-downloads]: https://packagist.org/packages/red-jasmine/product
-
 [link-travis]: https://travis-ci.org/red-jasmine/product
-
 [link-styleci]: https://styleci.io/repos/12345678
-
 [link-author]: https://github.com/red-jasmine
-
 [link-contributors]: ../../contributors

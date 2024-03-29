@@ -27,6 +27,7 @@ class BrandService extends ResourceService
         return [
             'name',
             'english_name',
+            AllowedFilter::exact('initial'),
             AllowedFilter::exact('status'),
             AllowedFilter::exact('is_show'),
         ];

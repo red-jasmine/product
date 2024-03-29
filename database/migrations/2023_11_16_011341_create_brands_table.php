@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父级ID');
             $table->string('name')->comment('名称');
             $table->string('english_name')->nullable()->comment('英文名称');
+            $table->string('initial',10)->nullable()->comment('首字母');
             $table->string('logo')->nullable()->comment('标志');
             $table->bigInteger('sort')->default(0)->comment('排序');
             $table->unsignedTinyInteger('is_show')->default(1)->comment('是否展示');

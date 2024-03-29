@@ -43,6 +43,7 @@ class Brand extends Model
         'parent_id',
         'name',
         'english_name',
+        'initial',
         'is_show',
         'status',
         'extends',

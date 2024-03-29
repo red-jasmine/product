@@ -16,6 +16,7 @@ class BrandData extends Data
     public string          $name;
     public ?string         $englishName = null;
     public ?string         $logo        = null;
+    public ?string         $initial     = null;
     public BrandStatusEnum $status      = BrandStatusEnum::ENABLE;
     public ?array          $extends     = null;
     public bool            $is_show     = true;
@@ -26,6 +27,7 @@ class BrandData extends Data
         return [
             'name'         => '名称',
             'english_name' => '英文名称',
+            'initial'      => '首字母',
             'parent_id'    => '父品牌',
             'logo'         => 'Logo',
             'sort'         => '排序',
@@ -42,7 +44,8 @@ class BrandData extends Data
         return [
             'name'         => [ 'required', 'max:100' ],
             'parent_id'    => [ 'required', 'integer', new NotZeroExistsRule($table, 'id'), ],
-            'english_name' => [ 'sometimes', 'nullable', 'integer', ],
+            'english_name' => [ 'sometimes', 'nullable', 'string', ],
+            'initial'      => [ 'sometimes', 'nullable', 'string', ],
             'logo'         => [ 'sometimes', 'nullable', 'max:255' ],
             'sort'         => [ 'integer' ],
             'is_show'      => [ 'boolean' ],
