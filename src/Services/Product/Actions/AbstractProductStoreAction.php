@@ -134,7 +134,7 @@ abstract class AbstractProductStoreAction extends ResourceAction
             if ($sku->exists === false) {
                 // 新建的SKU
                 $onlyLog = ($product->exists === false);
-                $this->service->stock()->init([ 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ], $onlyLog);
+                $this->service->stock()->init([ 'change_type' => 'init', 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ], $onlyLog);
             } else {
                 // 老的SKU
                 $this->service->stock()->reset([ 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ]);

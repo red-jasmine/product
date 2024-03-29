@@ -8,6 +8,7 @@ use RedJasmine\Product\Models\Product;
 use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Stock\Data\StockActionData;
+use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
 use RedJasmine\Product\Services\Stock\StockService;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Actions\ResourceAction;
@@ -45,7 +46,7 @@ abstract class AbstractStockAction extends ResourceAction
      * @throws ProductStockException
      * @throws Throwable
      */
-    protected function initStock(StockActionData $data, bool $onlyLog = false)
+    protected function initStock(StockActionData $data, bool $onlyLog = false) : ?ProductStockLog
     {
         // 设置库存采用悲观锁
         $stock = $this->validateQuantity($data->stock);
@@ -57,6 +58,7 @@ abstract class AbstractStockAction extends ResourceAction
                 Product::where('id', $data->productId)->update([ 'stock' => $stockUpdate ]);
             }
             $productStockLog = $this->service->log(
+                ProductStockTypeEnum::INIT,
                 $data->productId,
                 $data->skuId,
                 $stock,
@@ -112,6 +114,7 @@ abstract class AbstractStockAction extends ResourceAction
             // 添加更变日志
             // 添加更变日志
             $productStockLog = $this->service->log(
+                ProductStockTypeEnum::RESET,
                 $data->productId,
                 $data->skuId,
                 $quantity,
@@ -119,6 +122,7 @@ abstract class AbstractStockAction extends ResourceAction
                 $data->changeType,
                 $data->changeDetail,
                 $data->channel,
+                ['stock'=>$stock]
             );
 
             DB::commit();
@@ -153,6 +157,7 @@ abstract class AbstractStockAction extends ResourceAction
             Product::where('id', $data->productId)->update($update);
             // 添加更变日志
             $productStockLog = $this->service->log(
+                ProductStockTypeEnum::ADD,
                 $data->productId,
                 $data->skuId,
                 +$quantity,
@@ -200,6 +205,7 @@ abstract class AbstractStockAction extends ResourceAction
             Product::where('id', $data->productId)->update($update);
             // 添加更变日志
             $productStockLog = $this->service->log(
+                $data->isLock === true ? ProductStockTypeEnum::LOCK : ProductStockTypeEnum::SUB,
                 $data->productId,
                 $data->skuId,
                 -$quantity,
@@ -254,7 +260,6 @@ abstract class AbstractStockAction extends ResourceAction
             $update['stock']      = DB::raw("stock + $quantity");
             $update['lock_stock'] = DB::raw("lock_stock - $quantity");
 
-
             $rows = ProductSku::where('id', $data->skuId)->where('lock_stock', '>=', $quantity)->update($update);
             if ($rows <= 0) {
                 throw new ProductStockException('锁定库存不足');
@@ -262,6 +267,7 @@ abstract class AbstractStockAction extends ResourceAction
             Product::where('id', $data->productId)->update($update);
             // 添加更变日志
             $productStockLog = $this->service->log(
+                ProductStockTypeEnum::UNLOCK,
                 $data->productId,
                 $data->skuId,
                 +$quantity,
@@ -307,6 +313,7 @@ abstract class AbstractStockAction extends ResourceAction
             Product::where('id', $data->productId)->update($update);
             //  添加确认操作
             $productStockLog = $this->service->log(
+                ProductStockTypeEnum::CONFIRM,
                 $data->productId,
                 $data->skuId,
                 0,

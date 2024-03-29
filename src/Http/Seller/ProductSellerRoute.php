@@ -7,6 +7,7 @@ use RedJasmine\Product\Http\Seller\Controllers\Api\BrandController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\ProductController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\SellerCategoryController;
 use RedJasmine\Product\Http\Seller\Controllers\Api\CategoryController;
+use RedJasmine\Product\Http\Seller\Controllers\Api\StockController;
 
 class ProductSellerRoute
 {
@@ -34,8 +35,9 @@ class ProductSellerRoute
 
                 Route::apiResource('seller-categories', SellerCategoryController::class)->names('product.seller.product-seller-categories');
                 Route::apiResource('products', ProductController::class)->names('product.seller.products');
-
-
+                Route::get('stocks', [ StockController::class, 'index' ])->name('product.stock.index');
+                Route::get('stocks/{id}', [ StockController::class, 'show' ])->name('product.stock.show');
+                Route::get('stocks/{id}/logs', [ StockController::class, 'logs' ])->name('product.stock.logs');
             });
 
     }

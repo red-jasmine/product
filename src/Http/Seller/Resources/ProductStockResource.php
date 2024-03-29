@@ -1,0 +1,34 @@
+<?php
+
+namespace RedJasmine\Product\Http\Seller\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use RedJasmine\Product\Models\Product;
+use RedJasmine\Support\Http\Resources\WithCollectionResource;
+
+/**
+ * @mixin  Product
+ */
+class ProductStockResource extends JsonResource
+{
+    use WithCollectionResource;
+
+    public function toArray(Request $request) : array
+    {
+
+
+        $skus = null;
+        if ($this->relationLoaded('skus')) {
+            $skus = ProductSkuStockResource::collection($this->skus);
+        }
+        return [
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'stock'        => $this->stock,
+            'lock_stock'   => $this->lock_stock,
+            'safety_stock' => $this->safety_stock,
+            'skus'         => $skus,
+        ];
+    }
+}
