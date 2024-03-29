@@ -137,7 +137,7 @@ abstract class AbstractProductStoreAction extends ResourceAction
                 $this->service->stock()->init([ 'change_type' => 'init', 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ], $onlyLog);
             } else {
                 // 老的SKU
-                $this->service->stock()->reset([ 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ]);
+                $this->service->stock()->reset([ 'change_type' => 'seller', 'sku_id' => $sku->id, 'product_id' => $sku->product_id, 'stock' => $sku->stock ]);
                 unset($sku->stock); // 不对 stock 进行更新
             }
         });

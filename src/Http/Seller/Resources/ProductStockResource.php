@@ -25,6 +25,8 @@ class ProductStockResource extends JsonResource
         return [
             'id'           => $this->id,
             'title'        => $this->title,
+            'barcode'      => $this->barcode,
+            'outer_id'     => $this->outer_id,
             'stock'        => $this->stock,
             'lock_stock'   => $this->lock_stock,
             'safety_stock' => $this->safety_stock,

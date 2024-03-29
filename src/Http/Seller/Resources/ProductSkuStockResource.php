@@ -20,6 +20,8 @@ class ProductSkuStockResource extends JsonResource
         return [
             'id'              => $this->id,
             'product_id'      => $this->product_id,
+            'barcode'         => $this->barcode,
+            'outer_id'        => $this->outer_id,
             'properties'      => $this->properties,
             'properties_name' => $this->properties_name,
             'stock'           => $this->stock,

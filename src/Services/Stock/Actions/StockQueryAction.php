@@ -17,6 +17,8 @@ class StockQueryAction extends QueryAction
 
         return [
             'id',
+            'barcode',
+            'outer_id',
             'stock',
             'title',
             'lock_stock',
