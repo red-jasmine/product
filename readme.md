@@ -30,7 +30,7 @@ $ composer require red-jasmine/product
   - [x] 属性值
 - [x] 库存
 - [x] 库存
-- [x] 渠道库存
+- [ ] 渠道库存
 - [x] 商品系列
 - [ ] 服务
 - [ ] 标签
