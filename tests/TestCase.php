@@ -20,7 +20,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function defineEnvironment($app)
     {
 
-        dd(3);
 
     }
 
