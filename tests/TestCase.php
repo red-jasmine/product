@@ -2,13 +2,14 @@
 
 namespace RedJasmine\Product\Tests;
 
+use Orchestra\Testbench\Concerns\WithWorkbench;
 use function Orchestra\Testbench\artisan;
 
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
 
-
+    use WithWorkbench;
     /**
      * Define environment setup.
      *
@@ -19,9 +20,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function defineEnvironment($app)
     {
 
-        $app['config']->set('database.default', 'mysql');
-        $app['config']->set('app.debug', true);
-
+        dd(3);
 
     }
 
@@ -31,6 +30,19 @@ class TestCase extends \Orchestra\Testbench\TestCase
      * @var bool
      */
     protected $enablesPackageDiscoveries = true;
+
+
+    /**
+     * Get the application timezone.
+     *
+     * @param \Illuminate\Foundation\Application $app
+     *
+     * @return string|null
+     */
+    protected function getApplicationTimezone($app)
+    {
+        return 'Asia/Shanghai';
+    }
 
 
     /**

@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Application\Brand\Services\Handlers;
 
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
 use RedJasmine\Product\Doamin\Brand\Repositories\BrandRepositoryInterface;
-use RedJasmine\Product\Models\Brand;
+use RedJasmine\Product\Domain\Brand\Models\Brand;
 use RedJasmine\Support\Application\CommandHandler;
 
 class BrandCreateCommandHandler extends CommandHandler
@@ -23,6 +23,7 @@ class BrandCreateCommandHandler extends CommandHandler
 
         $brand               = new Brand();
         $brand->creator      = $this->getOperator();
+        $brand->parent_id    = $command->parentId;
         $brand->name         = $command->name;
         $brand->english_name = $command->englishName;
         $brand->initial      = $command->initial;
@@ -31,7 +32,6 @@ class BrandCreateCommandHandler extends CommandHandler
         $brand->is_show      = $command->is_show;
         $brand->status       = $command->status;
         $brand->extends      = $command->extends;
-
 
 
         $this->execute(

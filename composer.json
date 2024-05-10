@@ -15,8 +15,7 @@
         "red-jasmine/support": "1.0.x-dev"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0",
-        "nunomaduro/collision": "^7.8"
+        "orchestra/testbench": "^9.0"
     },
     "autoload": {
         "psr-4": {
@@ -31,10 +30,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RedJasmine\\Product\\ProductServiceProvider"
+                "RedJasmine\\Product\\ProductPackageProvider"
             ],
             "aliases": {
-                "Product": "RedJasmine\\Product\\Facades\\Product"
+
             }
         },
         "branch-alias": {
@@ -46,5 +45,14 @@
         "post-autoload-dump": [
             "@php vendor/bin/testbench package:discover --ansi"
         ]
+    },
+    "repositories": {
+        "red-jasmine/support": {
+            "type": "path",
+            "url": "../support",
+            "options": {
+                "symlink": true
+            }
+        }
     }
 }

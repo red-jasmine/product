@@ -2,14 +2,14 @@
 
 namespace RedJasmine\Product\Application\Brand\UserCases\Commands;
 
-use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Services\Brand\Enums\BrandStatusEnum;
 use RedJasmine\Support\Data\Data;
+use Illuminate\Validation\Rules\Enum;
+use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class BrandCreateCommand extends Data
 {
-    public int             $parent_id   = 0;
+    public int             $parentId    = 0;
     public int             $sort        = 0;
     public string          $name;
     public ?string         $englishName = null;

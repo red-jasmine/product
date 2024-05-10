@@ -3,8 +3,9 @@
 namespace RedJasmine\Product\Services\Brand\Data;
 
 use Illuminate\Validation\Rules\Enum;
+use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
 use RedJasmine\Product\Models\Brand;
-use RedJasmine\Product\Services\Brand\Enums\BrandStatusEnum;
+
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Rules\NotZeroExistsRule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;

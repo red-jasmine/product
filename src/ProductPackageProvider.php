@@ -5,7 +5,7 @@ namespace RedJasmine\Product;
 use Illuminate\Support\ServiceProvider;
 use RedJasmine\Product\Products\ProductService;
 
-class ProductServiceProvider extends ServiceProvider
+class ProductPackageProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
@@ -14,6 +14,7 @@ class ProductServiceProvider extends ServiceProvider
      */
     public function boot() : void
     {
+
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'red-jasmine.product');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'red-jasmine');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
