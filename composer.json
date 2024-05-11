@@ -30,7 +30,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RedJasmine\\Product\\ProductPackageProvider"
+                "\\RedJasmine\\Product\\Application\\ProductApplicationServiceProvider",
+                "\\RedJasmine\\Product\\ProductPackageServiceProvider"
             ],
             "aliases": {
 

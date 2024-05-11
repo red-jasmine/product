@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Application\Brand\Services;
 
 use RedJasmine\Support\Application\ApplicationQueryService;
 
-class BrandQueryCommandService extends ApplicationQueryService
+class BrandQueryService extends ApplicationQueryService
 {
 
 }

@@ -17,7 +17,7 @@ class BrandCreateCommand extends Data
     public ?string         $initial     = null;
     public BrandStatusEnum $status      = BrandStatusEnum::ENABLE;
     public ?array          $extends     = null;
-    public bool            $is_show     = true;
+    public bool            $isShow      = true;
 
 
     public static function attributes(...$args) : array

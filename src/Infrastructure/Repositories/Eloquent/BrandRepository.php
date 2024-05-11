@@ -4,8 +4,9 @@ namespace RedJasmine\Product\Infrastructure\Repositories\Eloquent;
 
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Doamin\Brand\Repositories\BrandRepositoryInterface;
-use RedJasmine\Product\Models\Brand;
+use RedJasmine\Product\Domain\Brand\Models\Brand;
+use RedJasmine\Product\Domain\Brand\Repositories\BrandRepositoryInterface;
+
 
 class BrandRepository implements BrandRepositoryInterface
 {

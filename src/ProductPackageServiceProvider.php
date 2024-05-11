@@ -5,7 +5,7 @@ namespace RedJasmine\Product;
 use Illuminate\Support\ServiceProvider;
 use RedJasmine\Product\Products\ProductService;
 
-class ProductPackageProvider extends ServiceProvider
+class ProductPackageServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.

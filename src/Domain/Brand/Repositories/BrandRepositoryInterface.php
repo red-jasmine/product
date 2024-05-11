@@ -1,8 +1,10 @@
 <?php
 
-namespace RedJasmine\Product\Doamin\Brand\Repositories;
+namespace RedJasmine\Product\Domain\Brand\Repositories;
 
-use RedJasmine\Product\Models\Brand;
+
+
+use RedJasmine\Product\Domain\Brand\Models\Brand;
 
 interface BrandRepositoryInterface
 {
