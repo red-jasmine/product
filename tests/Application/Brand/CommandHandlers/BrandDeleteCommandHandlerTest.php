@@ -2,20 +2,23 @@
 
 namespace RedJasmine\Product\Tests\Application\Brand\CommandHandlers;
 
-use RedJasmine\Product\Tests\Application\Brand\BrandTestCase;
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
+use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandDeleteCommand;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
+use RedJasmine\Product\Tests\Application\Brand\BrandTestCase;
 
-
-class BrandCreateCommandHandlerTest extends BrandTestCase
+class BrandDeleteCommandHandlerTest extends BrandTestCase
 {
 
+
     /**
-     * 测试能创建品牌
-     * 前提条件: 模拟数据
+     * 能修改品牌
+     * 前提条件: 创建品牌
      * 步骤：
-     *  1、创建
+     *  1、
      *  2、
      *  3、
      * 预期结果:
@@ -23,8 +26,9 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
      *  2、
      * @return void
      */
-    public function test_can_create_brand() : void
+    public function test_can_delete_brand() : void
     {
+
         $command = BrandCreateCommand::from([
                                                 'parent_id'    => 0,
                                                 'sort'         => fake()->numberBetween(0,10000000),
@@ -41,20 +45,16 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
         $brandId = $this->brandCommandService()->create($command);
 
 
-        $brand = $this->brandRepository()->find($brandId);
+        $command = BrandDeleteCommand::from([ 'id' => $brandId ]);
+        $this->brandCommandService()->delete($command);
+
+        $this->expectException(ModelNotFoundException::class);
 
 
-        $this->assertEquals($command->name, $brand->name);
-        $this->assertEquals($command->englishName, $brand->english_name);
-        $this->assertEquals($command->sort, $brand->sort);
-        $this->assertEquals($command->logo, $brand->logo);
-        $this->assertEquals($command->isShow, $brand->is_show);
-        $this->assertEquals($command->parentId, $brand->parent_id);
-        $this->assertEquals($command->status->value, $brand->status->value);
+        $this->brandRepository()->find($brandId);
 
-        $this->assertEquals($this->user()->getType(), $brand->creator->getType());
-        $this->assertEquals($this->user()->getID(), $brand->creator->getID());
 
     }
+
 
 }

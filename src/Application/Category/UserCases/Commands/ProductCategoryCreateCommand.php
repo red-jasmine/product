@@ -1,29 +1,23 @@
 <?php
 
-namespace RedJasmine\Product\Services\Category\Data;
+namespace RedJasmine\Product\Application\Category\UserCases\Commands;
 
-use Illuminate\Validation\Rules\Enum;
 use RedJasmine\Product\Domain\Category\Enums\CategoryStatusEnum;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-
-class ProductCategoryData extends Data
+class ProductCategoryCreateCommand extends Data
 {
 
-    public function __construct(
-        public string             $name,
-        public int                $parent_id = 0,
-        public CategoryStatusEnum $status = CategoryStatusEnum::ENABLE,
-        public int                $sort = 0,
-        public bool               $is_leaf = false,
-        public bool               $is_show = false,
-        public string|null        $group_name = null,
-        public string|null        $image = null,
-        public array|null         $extends = null,
-    )
-    {
-    }
+    public string             $name;
+    public int                $parentId  = 0;
+    public CategoryStatusEnum $status    = CategoryStatusEnum::ENABLE;
+    public int                $sort      = 0;
+    public bool               $isLeaf    = false;
+    public bool               $isShow    = false;
+    public string|null        $groupName = null;
+    public string|null        $image     = null;
+    public array|null         $extends   = null;
 
 
     public static function attributes() : array
@@ -53,7 +47,7 @@ class ProductCategoryData extends Data
             'sort'       => [ 'integer' ],
             'is_leaf'    => [ 'required', 'boolean' ],
             'is_show'    => [ 'required', 'boolean' ],
-            'status'     => [ new Enum(CategoryStatusEnum::class) ],
+            'status'     => [],
             'extends'    => [ 'sometimes', 'nullable', 'array' ],
         ];
 

@@ -2,9 +2,9 @@
 
 namespace RedJasmine\Product\Services\Category;
 
+use RedJasmine\Product\Domain\Category\Models\ProductCategory as Model;
 use RedJasmine\Product\Enums\Category\CategoryStatusEnum;
 use RedJasmine\Product\Exceptions\CategoryException;
-use RedJasmine\Product\Models\ProductCategory as Model;
 use RedJasmine\Product\Services\Category\Data\ProductCategoryData;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 

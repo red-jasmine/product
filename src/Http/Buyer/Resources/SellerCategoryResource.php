@@ -4,11 +4,11 @@ namespace RedJasmine\Product\Http\Buyer\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Product\Models\ProductSellerCategory;
+use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory;
 use RedJasmine\Support\Http\Resources\WithCollectionResource;
 
 /**
- * @mixin ProductSellerCategory
+ * @mixin \RedJasmine\Product\Domain\Category\Models\ProductSellerCategory
  */
 class SellerCategoryResource extends JsonResource
 {

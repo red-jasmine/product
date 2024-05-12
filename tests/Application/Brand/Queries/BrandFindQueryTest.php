@@ -1,33 +1,36 @@
 <?php
 
-namespace RedJasmine\Product\Tests\Application\Brand\CommandHandlers;
+namespace RedJasmine\Product\Tests\Application\Brand\Queries;
 
-use RedJasmine\Product\Tests\Application\Brand\BrandTestCase;
+
 use Illuminate\Support\Str;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
+use RedJasmine\Product\Domain\Brand\Models\Brand;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
+use RedJasmine\Product\Tests\Application\Brand\BrandTestCase;
 
-
-class BrandCreateCommandHandlerTest extends BrandTestCase
+class BrandFindQueryTest extends BrandTestCase
 {
 
+
     /**
-     * 测试能创建品牌
-     * 前提条件: 模拟数据
+     * 测试用例
+     * 前提条件: 创建平拍
      * 步骤：
-     *  1、创建
+     *  1、能按ID查询品牌
      *  2、
      *  3、
      * 预期结果:
-     *  1、
+     *  1、 查询品牌信息
      *  2、
      * @return void
      */
-    public function test_can_create_brand() : void
+    public function test_can_find() : void
     {
+
         $command = BrandCreateCommand::from([
                                                 'parent_id'    => 0,
-                                                'sort'         => fake()->numberBetween(0,10000000),
+                                                'sort'         => fake()->numberBetween(0, 10000000),
                                                 'name'         => fake()->name,
                                                 'english_name' => fake('en')->name,
                                                 'logo'         => fake()->imageUrl(200, 200),
@@ -41,19 +44,11 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
         $brandId = $this->brandCommandService()->create($command);
 
 
-        $brand = $this->brandRepository()->find($brandId);
+        $brand = $this->brandQueryService()->find($brandId);
 
 
-        $this->assertEquals($command->name, $brand->name);
-        $this->assertEquals($command->englishName, $brand->english_name);
-        $this->assertEquals($command->sort, $brand->sort);
-        $this->assertEquals($command->logo, $brand->logo);
-        $this->assertEquals($command->isShow, $brand->is_show);
-        $this->assertEquals($command->parentId, $brand->parent_id);
-        $this->assertEquals($command->status->value, $brand->status->value);
-
-        $this->assertEquals($this->user()->getType(), $brand->creator->getType());
-        $this->assertEquals($this->user()->getID(), $brand->creator->getID());
+        $this->assertInstanceOf(Brand::class, $brand);
+        $this->assertEquals($brandId, $brand->id);
 
     }
 

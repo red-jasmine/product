@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Product\Domain\Category\Models\ProductCategory;
+use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory;
 use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
 use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
 use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;

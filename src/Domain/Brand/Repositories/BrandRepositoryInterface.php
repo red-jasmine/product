@@ -3,14 +3,10 @@
 namespace RedJasmine\Product\Domain\Brand\Repositories;
 
 
+use RedJasmine\Support\Domain\Repositories\RepositoryInterface;
 
-use RedJasmine\Product\Domain\Brand\Models\Brand;
 
-interface BrandRepositoryInterface
+interface BrandRepositoryInterface extends RepositoryInterface
 {
-    public function find(int $id) : Brand;
 
-    public function store(Brand $brand) : Brand;
-
-    public function update(Brand $brand) : void;
 }

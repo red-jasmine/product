@@ -2,8 +2,8 @@
 
 namespace RedJasmine\Product\Services\Category;
 
+use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Exceptions\SellerCategoryException;
-use RedJasmine\Product\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Data\ProductSellerCategoryData;
 use RedJasmine\Product\Services\Category\Validators\SellerCategoryValidatorCombiner;
 use RedJasmine\Support\Foundation\Service\ResourceService;

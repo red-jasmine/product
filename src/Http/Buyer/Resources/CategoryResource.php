@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Http\Buyer\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Product\Models\ProductCategory;
+use RedJasmine\Product\Domain\Category\Models\ProductCategory;
 use RedJasmine\Support\Http\Resources\WithCollectionResource;
 
 /**

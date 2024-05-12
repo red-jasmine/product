@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Services\Category\Enums;
+namespace RedJasmine\Product\Domain\Category\Enums;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
@@ -20,8 +20,8 @@ enum CategoryStatusEnum: string
     public static function labels() : array
     {
         return [
-            self::ENABLE->value  => __('global.enable'),
-            self::DISABLE->value => __('global.disable'),
+            self::ENABLE->value  => '启用',
+            self::DISABLE->value => '禁用',
         ];
 
     }

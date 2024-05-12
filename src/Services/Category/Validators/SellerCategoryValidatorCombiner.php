@@ -3,8 +3,8 @@
 namespace RedJasmine\Product\Services\Category\Validators;
 
 use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Product\Models\ProductSellerCategory as Model;
-use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
+use RedJasmine\Product\Domain\Category\Enums\CategoryStatusEnum;
+use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory as Model;
 use RedJasmine\Product\Services\Category\Validators\Rules\CategoryParentRule;
 use RedJasmine\Support\Foundation\Service\Actions\ValidatorCombiner;
 use RedJasmine\Support\Rules\NotZeroExistsRule;

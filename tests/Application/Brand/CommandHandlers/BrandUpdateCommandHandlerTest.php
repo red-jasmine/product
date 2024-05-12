@@ -5,17 +5,18 @@ namespace RedJasmine\Product\Tests\Application\Brand\CommandHandlers;
 use RedJasmine\Product\Tests\Application\Brand\BrandTestCase;
 use Illuminate\Support\Str;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
+use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandUpdateCommand;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
 
-
-class BrandCreateCommandHandlerTest extends BrandTestCase
+class BrandUpdateCommandHandlerTest extends BrandTestCase
 {
 
+
     /**
-     * 测试能创建品牌
-     * 前提条件: 模拟数据
+     * 能修改品牌
+     * 前提条件: 创建品牌
      * 步骤：
-     *  1、创建
+     *  1、
      *  2、
      *  3、
      * 预期结果:
@@ -23,8 +24,9 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
      *  2、
      * @return void
      */
-    public function test_can_create_brand() : void
+    public function test_can_update_brand() : void
     {
+
         $command = BrandCreateCommand::from([
                                                 'parent_id'    => 0,
                                                 'sort'         => fake()->numberBetween(0,10000000),
@@ -41,6 +43,21 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
         $brandId = $this->brandCommandService()->create($command);
 
 
+        $command = BrandUpdateCommand::from([
+                                                'id'           => $brandId,
+                                                'parent_id'    => 0,
+                                                'sort'         => fake()->numberBetween(0,10000000),
+                                                'name'         => fake()->name,
+                                                'english_name' => fake('en')->name,
+                                                'logo'         => fake()->imageUrl(200, 200),
+                                                'initial'      => Str::upper(fake()->randomLetter()),
+                                                'status'       => fake()->randomElement(BrandStatusEnum::values()),
+                                                'extends'      => null,
+                                                'is_show'      => true,
+                                            ]);
+
+        $this->brandCommandService()->update($command);
+
         $brand = $this->brandRepository()->find($brandId);
 
 
@@ -56,5 +73,6 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
         $this->assertEquals($this->user()->getID(), $brand->creator->getID());
 
     }
+
 
 }

@@ -1,22 +1,21 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Category\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-use RedJasmine\Product\Services\Category\Enums\CategoryStatusEnum;
-use RedJasmine\Support\Enums\BoolIntEnum;
+use RedJasmine\Product\Domain\Category\Enums\CategoryStatusEnum;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\ModelTree;
-use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
+use RedJasmine\Support\Traits\Models\ModelTree;
 
-class ProductCategory extends Model
+class ProductSellerCategory extends Model
 {
     use HasDateTimeFormatter;
 
+    use HasOwner;
 
     use HasOperator;
 
@@ -40,9 +39,9 @@ class ProductCategory extends Model
         'group_name',
         'image',
         'sort',
+        'status',
         'is_leaf',
         'is_show',
-        'status',
         'extends',
     ];
 
@@ -58,12 +57,6 @@ class ProductCategory extends Model
         return $this->belongsTo(static::class, 'parent_id', 'id');
     }
 
-
-    public function scopeEnable(Builder $query) : Builder
-    {
-        return $query->where('status', 'enable');
-    }
-
     /**
      * 叶子目录
      *
@@ -76,16 +69,14 @@ class ProductCategory extends Model
         return $query->where('is_leaf', true);
     }
 
+
     /**
      * @return bool
      */
     public function isAllowUse() : bool
     {
-        if ($this->is_leaf === BoolIntEnum::NO) {
-            return false;
-        }
-
-        return true;
+        return $this->is_leaf;
     }
 
 }
+
