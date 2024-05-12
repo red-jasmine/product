@@ -1,6 +1,6 @@
 <?php
 
-namespace Category\CommandHandlers;
+namespace RedJasmine\Product\Tests\Application\Category\CommandHandlers;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use RedJasmine\Product\Application\Category\Services\ProductCategoryCommandService;

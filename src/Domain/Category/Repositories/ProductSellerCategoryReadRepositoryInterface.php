@@ -2,11 +2,12 @@
 
 namespace RedJasmine\Product\Domain\Category\Repositories;
 
+use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Infrastructure\ReadRepositories\ReadRepositoryInterface;
 
 interface ProductSellerCategoryReadRepositoryInterface extends ReadRepositoryInterface
 {
 
-    // TODO  tree
+    public function tree(Data $query) : array;
 
 }

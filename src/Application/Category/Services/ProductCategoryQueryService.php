@@ -5,6 +5,7 @@ namespace RedJasmine\Product\Application\Category\Services;
 use RedJasmine\Product\Domain\Category\Repositories\ProductCategoryReadRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationQueryService;
 
+
 class ProductCategoryQueryService extends ApplicationQueryService
 {
 
