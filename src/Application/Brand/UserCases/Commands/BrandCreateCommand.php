@@ -16,7 +16,7 @@ class BrandCreateCommand extends Data
     public ?string         $logo        = null;
     public ?string         $initial     = null;
     public BrandStatusEnum $status      = BrandStatusEnum::ENABLE;
-    public ?array          $extends     = null;
+    public ?array          $extendInfo  = null;
     public bool            $isShow      = true;
 
 
@@ -31,7 +31,7 @@ class BrandCreateCommand extends Data
             'sort'         => '排序',
             'is_show'      => '是否展示',
             'status'       => '状态',
-            'extends'      => '扩展字段',
+            'extend_info'  => '扩展信息',
         ];
     }
 
@@ -48,7 +48,7 @@ class BrandCreateCommand extends Data
             'sort'         => [ 'integer' ],
             'is_show'      => [ 'boolean' ],
             'status'       => [ new Enum(BrandStatusEnum::class) ],
-            'extends'      => [ 'sometimes', 'nullable', 'array' ],
+            'extend_info'  => [ 'sometimes', 'nullable', 'array' ],
 
         ];
 

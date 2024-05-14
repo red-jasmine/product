@@ -38,10 +38,10 @@ class BrandCreateCommandHandlerTest extends BrandTestCase
                                             ]);
 
 
-        $brandId = $this->brandCommandService()->create($command);
+        $brand = $this->brandCommandService()->create($command);
 
 
-        $brand = $this->brandRepository()->find($brandId);
+        $brand = $this->brandRepository()->find($brand->id);
 
 
         $this->assertEquals($command->name, $brand->name);

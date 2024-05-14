@@ -24,7 +24,7 @@ class ProductSellerCategoryCreateCommand extends Data
     public bool               $isShow    = false;
     public string|null        $groupName = null;
     public string|null        $image     = null;
-    public array|null         $extends   = null;
+    public array|null         $extendInfo   = null;
 
 
     public static function attributes() : array
@@ -37,7 +37,7 @@ class ProductSellerCategoryCreateCommand extends Data
             'is_leaf'    => __('red-jasmine/product::product-category.fields.is_leaf'),
             'is_show'    => __('red-jasmine/product::product-category.fields.is_show'),
             'status'     => __('red-jasmine/product::product-category.fields.status'),
-            'extends'    => __('red-jasmine/product::product-category.fields.extends'),
+            'extend_info'    => __('red-jasmine/product::product-category.fields.extends'),
         ];
     }
 
@@ -55,7 +55,7 @@ class ProductSellerCategoryCreateCommand extends Data
             'is_leaf'    => [ 'required', 'boolean' ],
             'is_show'    => [ 'required', 'boolean' ],
             'status'     => [],
-            'extends'    => [ 'sometimes', 'nullable', 'array' ],
+            'extend_info'    => [ 'sometimes', 'nullable', 'array' ],
         ];
 
     }

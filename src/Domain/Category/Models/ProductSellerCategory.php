@@ -42,14 +42,14 @@ class ProductSellerCategory extends Model
         'status',
         'is_leaf',
         'is_show',
-        'extends',
+        'extend_info',
     ];
 
     protected $casts = [
-        'extends' => 'array',
-        'status'  => CategoryStatusEnum::class,
-        'is_leaf' => 'boolean',
-        'is_show' => 'boolean',
+        'extend_info' => 'array',
+        'status'      => CategoryStatusEnum::class,
+        'is_leaf'     => 'boolean',
+        'is_show'     => 'boolean',
     ];
 
     public function parent() : BelongsTo

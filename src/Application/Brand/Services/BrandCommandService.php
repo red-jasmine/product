@@ -13,7 +13,7 @@ use RedJasmine\Product\Domain\Brand\Repositories\BrandRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationCommandService;
 
 /**
- * @method int create(BrandCreateCommand $command)
+ * @method Brand create(BrandCreateCommand $command)
  * @method void update(BrandUpdateCommand $command)
  * @method void delete(BrandDeleteCommand $command)
  */

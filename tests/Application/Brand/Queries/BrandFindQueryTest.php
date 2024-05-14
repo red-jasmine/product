@@ -41,8 +41,8 @@ class BrandFindQueryTest extends BrandTestCase
                                             ]);
 
 
-        $brandId = $this->brandCommandService()->create($command);
-
+        $brand = $this->brandCommandService()->create($command);
+        $brandId = $brand->id;
 
         $brand = $this->brandQueryService()->find($brandId);
 

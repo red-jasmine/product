@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\UI\Http\Buyer\Api\Resources;
+namespace RedJasmine\Product\UI\Http\Admin\Api\Resources;
 
 use Illuminate\Http\Request;
 use RedJasmine\Support\UI\Http\Resources\Json\JsonResource;

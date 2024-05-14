@@ -40,7 +40,8 @@ class ProductCategoryUpdateCommandHandlerTest extends ApplicationTestCase
                                                       ]);
 
 
-        $id = $this->productCategoryCommandService()->create($command);
+        $model = $this->productCategoryCommandService()->create($command);
+        $id =  $model->id;
 
         $updateCommand = ProductCategoryUpdateCommand::from([
                                                                 'id'         => $id,

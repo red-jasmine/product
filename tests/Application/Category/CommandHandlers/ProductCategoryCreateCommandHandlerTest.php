@@ -40,8 +40,8 @@ class ProductCategoryCreateCommandHandlerTest extends ApplicationTestCase
                                                       ]);
 
 
-        $id = $this->productCategoryCommandService()->create($command);
-
+        $model = $this->productCategoryCommandService()->create($command);
+        $id = $model->id;
 
         $productCategory = $this->productCategoryRepository()->find($id);
 

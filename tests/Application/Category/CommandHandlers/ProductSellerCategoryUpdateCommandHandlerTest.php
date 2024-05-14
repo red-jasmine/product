@@ -42,8 +42,8 @@ class ProductSellerCategoryUpdateCommandHandlerTest extends ApplicationTestCase
                                                             ]);
 
 
-        $id = $this->commandService()->create($command);
-
+        $model = $this->commandService()->create($command);
+        $id =  $model->id;
 
         $command = ProductSellerCategoryUpdateCommand::from([
                                                                 'id'         => $id,

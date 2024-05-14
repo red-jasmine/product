@@ -31,7 +31,7 @@ class BrandDeleteCommandHandlerTest extends BrandTestCase
 
         $command = BrandCreateCommand::from([
                                                 'parent_id'    => 0,
-                                                'sort'         => fake()->numberBetween(0,10000000),
+                                                'sort'         => fake()->numberBetween(0, 10000000),
                                                 'name'         => fake()->name,
                                                 'english_name' => fake('en')->name,
                                                 'logo'         => fake()->imageUrl(200, 200),
@@ -42,10 +42,9 @@ class BrandDeleteCommandHandlerTest extends BrandTestCase
                                             ]);
 
 
-        $brandId = $this->brandCommandService()->create($command);
-
-
-        $command = BrandDeleteCommand::from([ 'id' => $brandId ]);
+        $brand   = $this->brandCommandService()->create($command);
+        $brandId = $brand->id;
+        $command = BrandDeleteCommand::from([ 'id' => $brand->id ]);
         $this->brandCommandService()->delete($command);
 
         $this->expectException(ModelNotFoundException::class);

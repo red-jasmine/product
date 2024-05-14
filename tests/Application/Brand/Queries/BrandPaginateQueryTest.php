@@ -41,8 +41,8 @@ class BrandPaginateQueryTest extends BrandTestCase
                                             ]);
 
 
-        $brandId = $this->brandCommandService()->create($command);
-
+        $brand = $this->brandCommandService()->create($command);
+        $brandId = $brand->id;
         $query = PaginateQuery::from([
                                          'page'     => 1,
                                          'per_page' => 5,

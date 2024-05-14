@@ -43,8 +43,8 @@ class ProductSellerCategoryDeleteCommandHandlerTest extends ApplicationTestCase
                                                             ]);
 
 
-        $id = $this->commandService()->create($command);
-
+        $model = $this->commandService()->create($command);
+        $id =  $model->id;
 
         $command = ProductSellerCategoryDeleteCommand::from([ 'id' => $id ]);
         $this->commandService()->delete($command);

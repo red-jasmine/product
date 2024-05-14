@@ -41,8 +41,8 @@ class ProductSellerCategoryCreateCommandHandlerTest extends ApplicationTestCase
                                                             ]);
 
 
-        $id = $this->commandService()->create($command);
-
+        $model = $this->commandService()->create($command);
+        $id =  $model->id;
 
         $category = $this->repository()->find($id);
 
