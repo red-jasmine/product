@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Application\Property\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use RedJasmine\Product\Application\Property\Services\Pipelines\ProductPropertyPipeline;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyCreateCommand;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyUpdateCommand;
 use RedJasmine\Product\Domain\Property\Models\ProductProperty;
@@ -18,6 +19,18 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 class ProductPropertyCommandService extends ApplicationCommandService
 {
     protected static string $modelClass = ProductProperty::class;
+
+    protected ?string $pipelinesConfigKeyPrefix = 'pipelines.product.properties';
+
+    protected function pipelines() : array
+    {
+        return [
+            'create' => [
+                ProductPropertyPipeline::class
+            ],
+        ];
+    }
+
 
     public function __construct(
         protected ProductPropertyRepositoryInterface $repository
