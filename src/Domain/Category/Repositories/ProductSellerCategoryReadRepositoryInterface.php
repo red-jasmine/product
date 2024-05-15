@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Domain\Category\Repositories;
 
 use RedJasmine\Support\Data\Data;
-use RedJasmine\Support\Infrastructure\ReadRepositories\ReadRepositoryInterface;
+use RedJasmine\Support\Domain\Repositories\ReadRepositoryInterface;
 
 interface ProductSellerCategoryReadRepositoryInterface extends ReadRepositoryInterface
 {

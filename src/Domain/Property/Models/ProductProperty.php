@@ -1,15 +1,14 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Property\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
 class ProductProperty extends Model
 {
@@ -19,25 +18,25 @@ class ProductProperty extends Model
     use HasOperator;
 
 
-    protected $primaryKey = 'pid';
+    protected $primaryKey = 'id';
 
 
     public $incrementing = false;
 
     protected $fillable = [
-        'pid',
+        'id',
         'name',
         'status',
-        'group_id',
-        'extends',
+        'group_id', // TODO 验证
+        'extend_info',
         'sort',
         'creator_type',
         'creator_id',
     ];
 
     protected $casts = [
-        'extends' => 'array',
-        'status'  => PropertyStatusEnum::class
+        'extend_info' => 'array',
+        'status'      => PropertyStatusEnum::class
     ];
 
     public function scopeAvailable(Builder $query) : Builder
@@ -52,6 +51,6 @@ class ProductProperty extends Model
 
     public function values() : HasMany
     {
-        return $this->hasMany(ProductPropertyValue::class, 'pid', 'pid');
+        return $this->hasMany(ProductPropertyValue::class, 'id', 'pid');
     }
 }

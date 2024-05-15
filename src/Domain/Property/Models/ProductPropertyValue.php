@@ -1,13 +1,13 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Property\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
 class ProductPropertyValue extends Model
 {
@@ -18,7 +18,6 @@ class ProductPropertyValue extends Model
 
     public $incrementing = false;
 
-    protected $primaryKey = 'vid';
 
     public function scopeAvailable(Builder $query) : Builder
     {
@@ -31,7 +30,7 @@ class ProductPropertyValue extends Model
         'name',
         'group_id',
         'status',
-        'extends',
+        'extend_info',
         'sort',
         'creator_type',
         'creator_id',
@@ -39,8 +38,8 @@ class ProductPropertyValue extends Model
 
 
     protected $casts = [
-        'extends' => 'array',
-        'status'  => PropertyStatusEnum::class,
+        'extend_info' => 'array',
+        'status'      => PropertyStatusEnum::class,
     ];
 
 
@@ -52,6 +51,6 @@ class ProductPropertyValue extends Model
 
     public function property() : BelongsTo
     {
-        return $this->belongsTo(ProductProperty::class, 'pid', 'pid');
+        return $this->belongsTo(ProductProperty::class, 'pid', 'id');
     }
 }

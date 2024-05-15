@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Services\Property\Data;
+namespace RedJasmine\Product\Application\Property\UserCases\Commands;
 
 use Illuminate\Validation\Rule;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
@@ -9,14 +9,14 @@ use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 
-class PropertyValueData extends Data
+class ProductPropertyValueCreateCommand extends Data
 {
     public int                $pid;
     public string             $name;
-    public int                $sort     = 0;
-    public ?int               $group_id = null;
-    public PropertyStatusEnum $status   = PropertyStatusEnum::ENABLE;
-    public ?array             $extends  = null;
+    public int                $sort       = 0;
+    public int                $groupId    = 0;
+    public PropertyStatusEnum $status     = PropertyStatusEnum::ENABLE;
+    public ?array             $extendInfo = null;
 
     public static function attributes(...$args) : array
     {
@@ -35,12 +35,11 @@ class PropertyValueData extends Data
     public static function rules(ValidationContext $context) : array
     {
         return [
-            'pid'      => [ 'required', 'integer', Rule::exists('product_properties', 'pid') ],
-            'name'     => [ 'required', 'max:30', new PropertyTitleRule() ],
-            'extends'  => [ 'sometimes', 'array' ],
-            'sort'     => [ 'integer' ],
-            'group_id' => [ 'sometimes', 'nullable', 'integer' ],
-            'name'     => [ 'required', new PropertyTitleRule() ],
+            'pid'         => [ 'required', 'integer' ],
+            'name'        => [ 'required', 'max:30', ],
+            'extend_info' => [ 'sometimes', 'array' ],
+            'sort'        => [ 'integer' ],
+            'group_id'    => [ 'sometimes', 'nullable', 'integer' ],
 
         ];
     }

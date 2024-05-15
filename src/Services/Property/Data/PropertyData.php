@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Property\Data;
 
-use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 use RedJasmine\Product\Services\Property\Rules\PropertyTitleRule;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;

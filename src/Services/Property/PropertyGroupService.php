@@ -3,11 +3,10 @@
 namespace RedJasmine\Product\Services\Property;
 
 use App\Models\Patient;
-use RedJasmine\Product\Models\ProductPropertyGroup;
+use RedJasmine\Product\Domain\Property\Models\ProductPropertyGroup;
 use RedJasmine\Product\Services\Property\Actions\Groups;
 use RedJasmine\Product\Services\Property\Data\PropertyGroupData;
 use RedJasmine\Support\Foundation\Service\ResourceService;
-use RedJasmine\Support\Foundation\Service\Service;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**

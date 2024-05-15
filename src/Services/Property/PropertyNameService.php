@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Property;
 
 use App\Models\Patient;
-use RedJasmine\Product\Models\ProductProperty;
+use RedJasmine\Product\Domain\Property\Models\ProductProperty;
 use RedJasmine\Product\Services\Property\Actions\Names;
 use RedJasmine\Product\Services\Property\Data\PropertyData;
 use RedJasmine\Support\Foundation\Service\ResourceService;

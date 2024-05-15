@@ -11,7 +11,7 @@ use RedJasmine\Product\Infrastructure\Repositories\Eloquent\ProductCategoryRepos
 use RedJasmine\Support\Application\ApplicationCommandService;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
-
+// TODO 需要验证名称重复
 /**
  * @method int create(ProductCategoryCreateCommand $command)
  * @method void update(ProductCategoryUpdateCommand $command)

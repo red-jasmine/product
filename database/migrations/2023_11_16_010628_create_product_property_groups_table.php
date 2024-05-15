@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 
 return new class extends Migration {
     public function up() : void
@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('name')->comment('名称');
             $table->bigInteger('sort')->default(0)->comment('排序');
             $table->string('status', 32)->comment(PropertyStatusEnum::comments('状态'));
-            $table->json('extends')->nullable()->comment('扩展字段');
+            $table->json('extend_info')->nullable()->comment('扩展信息');
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');
             $table->timestamps();

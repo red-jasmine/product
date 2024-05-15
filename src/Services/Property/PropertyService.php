@@ -3,9 +3,9 @@
 namespace RedJasmine\Product\Services\Property;
 
 use Illuminate\Database\Eloquent\Collection;
+use RedJasmine\Product\Domain\Property\Models\ProductProperty;
+use RedJasmine\Product\Domain\Property\Models\ProductPropertyValue;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
-use RedJasmine\Product\Models\ProductProperty;
-use RedJasmine\Product\Models\ProductPropertyValue;
 use RedJasmine\Support\Foundation\Service\Service;
 
 
@@ -33,7 +33,7 @@ class PropertyService extends Service
      *
      * @param int $pid
      *
-     * @return ProductPropertyValue[]|Collection
+     * @return \RedJasmine\Product\Domain\Property\Models\ProductPropertyValue[]|Collection
      */
     public function values(int $pid) : Collection|array
     {

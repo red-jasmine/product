@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Property\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
-use RedJasmine\Product\Models\ProductProperty;
+use RedJasmine\Product\Domain\Property\Models\ProductProperty;
 
 abstract class AbstractProductPropertyEvent
 {

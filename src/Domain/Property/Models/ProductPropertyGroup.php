@@ -1,12 +1,12 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Property\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use RedJasmine\Product\Services\Property\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
 class ProductPropertyGroup extends Model
 {
@@ -21,13 +21,13 @@ class ProductPropertyGroup extends Model
         'id',
         'name',
         'status',
-        'extends',
+        'extend_info',
         'sort',
     ];
 
     protected $casts = [
-        'extends' => 'array',
-        'status'  => PropertyStatusEnum::class
+        'extend_info' => 'array',
+        'status'      => PropertyStatusEnum::class
     ];
 
     public function scopeAvailable(Builder $query) : Builder
