@@ -69,6 +69,7 @@ return new class extends Migration {
             // 供应商
 
             // 承诺服务
+            // 税率
 
 
             // 操作人
