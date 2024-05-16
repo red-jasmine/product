@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('product_series', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id')->primary();
             $table->morphs('owner');
             $table->string('name')->comment('系列名称');
             $table->string('remarks')->nullable()->comment('备注');

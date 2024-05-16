@@ -3,15 +3,15 @@
 namespace RedJasmine\Product\Services\Series\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use RedJasmine\Product\Models\ProductSeries;
-use RedJasmine\Product\Models\ProductSeriesProduct;
+use RedJasmine\Product\Domain\Series\Models\ProductSeries;
+use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesData;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesProductData;
 use RedJasmine\Support\Foundation\Service\Actions\CreateAction;
 
 /**
- * @property ProductSeries     $model
- * @property ProductSeriesData $data
+ * @property \RedJasmine\Product\Domain\Series\Models\ProductSeries $model
+ * @property ProductSeriesData                                      $data
  */
 class ProductSeriesCreateAction extends CreateAction
 {

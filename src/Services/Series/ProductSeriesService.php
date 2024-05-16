@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Series;
 
 
-use RedJasmine\Product\Models\ProductSeries;
+use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Services\Series\Actions\ProductSeriesCreateAction;
 use RedJasmine\Product\Services\Series\Actions\ProductSeriesDeleteAction;
 use RedJasmine\Product\Services\Series\Actions\ProductSeriesUpdateAction;

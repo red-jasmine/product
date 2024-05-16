@@ -2,13 +2,13 @@
 
 namespace RedJasmine\Product\Services\Series\Actions;
 
-use RedJasmine\Product\Models\ProductSeries;
+use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Services\Series\Data\ProductSeriesData;
 use RedJasmine\Support\Foundation\Service\Actions\DeleteAction;
 
 /**
- * @property ProductSeries     $model
- * @property ProductSeriesData $data
+ * @property \RedJasmine\Product\Domain\Series\Models\ProductSeries $model
+ * @property ProductSeriesData                                      $data
  */
 class ProductSeriesDeleteAction extends DeleteAction
 {
