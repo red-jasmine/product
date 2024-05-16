@@ -36,7 +36,7 @@ class ProductCategoryUpdateCommandHandlerTest extends ApplicationTestCase
                                                           'is_show'    => false,
                                                           'group_name' => fake()->name,
                                                           'image'      => fake()->imageUrl,
-                                                          'extends'    => [],
+                                                          'expands'    => [],
                                                       ]);
 
 
@@ -53,7 +53,7 @@ class ProductCategoryUpdateCommandHandlerTest extends ApplicationTestCase
                                                                 'is_show'    => false,
                                                                 'group_name' => fake()->name,
                                                                 'image'      => fake()->imageUrl,
-                                                                'extends'    => [],
+                                                                'expands'    => [],
                                                             ]);
 
 

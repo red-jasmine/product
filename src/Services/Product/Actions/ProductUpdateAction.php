@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Product\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use RedJasmine\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Product\Services\Product\Events\ProductUpdatedEvent;
 use RedJasmine\Product\Services\Product\ProductService;

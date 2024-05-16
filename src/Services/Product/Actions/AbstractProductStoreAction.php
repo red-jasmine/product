@@ -6,11 +6,11 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use RedJasmine\Product\Models\ProductInfo;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\ProductInfo;
+use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
-use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Services\Product\Data\ProductData;
 use RedJasmine\Product\Services\Product\Data\ProductPropData;
 use RedJasmine\Product\Services\Product\Data\ProductSkuData;
@@ -73,9 +73,9 @@ abstract class AbstractProductStoreAction extends ResourceAction
 
 
     /**
-     * @param Product $product
+     * @param \RedJasmine\Product\Domain\Product\Models\Product $product
      *
-     * @return Product
+     * @return \RedJasmine\Product\Domain\Product\Models\Product
      * @throws Exception|Throwable
      */
     protected function storeProduct(Product $product) : Product
@@ -184,9 +184,9 @@ abstract class AbstractProductStoreAction extends ResourceAction
 
 
     /**
-     * @param Product     $product
-     * @param ProductData $productData
-     * @param array       $data
+     * @param \RedJasmine\Product\Domain\Product\Models\Product $product
+     * @param ProductData                                       $productData
+     * @param array                                             $data
      *
      * @return Product
      * @throws ProductPropertyException
@@ -253,8 +253,8 @@ abstract class AbstractProductStoreAction extends ResourceAction
     }
 
     /**
-     * @param Product     $product
-     * @param ProductData $productData
+     * @param \RedJasmine\Product\Domain\Product\Models\Product $product
+     * @param ProductData                                       $productData
      *
      * @return void
      * @throws ProductPropertyException
@@ -269,7 +269,7 @@ abstract class AbstractProductStoreAction extends ResourceAction
         $product->skusAll = collect([]);
         if ($product->exists === true) {
             /**
-             * @var Collection|array|Product[] $all
+             * @var Collection|array|\RedJasmine\Product\Domain\Product\Models\Product[] $all
              */
             $product->skusAll = $product->skus()->withTrashed()->get()->keyBy('properties');
         }

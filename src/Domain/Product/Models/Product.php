@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Product\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -11,15 +11,16 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Domain\Category\Models\ProductCategory;
 use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory;
+use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductTypeEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
-use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
-use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;
-use RedJasmine\Product\Services\Product\Enums\ShippingTypeEnum;
-use RedJasmine\Product\Services\Product\Enums\SubStockTypeEnum;
+use RedJasmine\Product\Models\Brand;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
 
 

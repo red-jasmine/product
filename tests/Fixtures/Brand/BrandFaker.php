@@ -19,7 +19,7 @@ class BrandFaker
             'logo'         => fake()->imageUrl(200, 200),
             'initial'      => Str::upper(fake()->randomLetter()),
             'status'       => fake()->randomElement(BrandStatusEnum::values()),
-            'extends'      => null,
+            'expands'      => null,
             'is_show'      => 1,
         ];
     }

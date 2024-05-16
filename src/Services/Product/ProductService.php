@@ -4,10 +4,9 @@ namespace RedJasmine\Product\Services\Product;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Services\Product\Data\ProductData;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
-
 use RedJasmine\Product\Services\Stock\StockService;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\ResourceService;
@@ -80,7 +79,7 @@ class ProductService extends ResourceService
     /**
      * 联动设置时间
      *
-     * @param Product $product
+     * @param \RedJasmine\Product\Domain\Product\Models\Product $product
      *
      * @return void
      */
@@ -133,7 +132,7 @@ class ProductService extends ResourceService
         try {
             DB::beginTransaction();
             /**
-             * @var Product $product
+             * @var \RedJasmine\Product\Domain\Product\Models\Product $product
              */
             $product = $this->query()->onlyTrashed()->find($id);
             $product->info()->onlyTrashed()->forceDelete();
@@ -169,7 +168,7 @@ class ProductService extends ResourceService
         try {
             DB::beginTransaction();
             /**
-             * @var Product $product
+             * @var \RedJasmine\Product\Domain\Product\Models\Product $product
              */
             $product = $this->query()->onlyTrashed()->find($id);
             $product->info()->onlyTrashed()->restore();
@@ -197,8 +196,8 @@ class ProductService extends ResourceService
     /**
      * 设状态
      *
-     * @param int               $id
-     * @param ProductStatusEnum $productStatus
+     * @param int                                                               $id
+     * @param \RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum $productStatus
      *
      * @return bool
      */

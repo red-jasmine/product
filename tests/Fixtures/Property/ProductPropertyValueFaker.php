@@ -18,7 +18,7 @@ class ProductPropertyValueFaker
             'name'        => fake()->name,
             'sort'        => fake()->randomNumber(),
             'status'      => PropertyStatusEnum::ENABLE->value,
-            'extend_info' => [],
+            'expands' => [],
         ];
     }
 
@@ -30,7 +30,7 @@ class ProductPropertyValueFaker
 
     public function updateCommand(array $data) : ProductPropertyValueUpdateCommand
     {
-        return ProductPropertyGroupUpdateCommand::from(array_merge($this->data(), $data));
+        return ProductPropertyValueUpdateCommand::from(array_merge($this->data(), $data));
     }
 
 }

@@ -10,8 +10,8 @@ return new class extends Migration {
         Schema::create('product_skus', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary()->comment('SKU ID');
             $table->unsignedBigInteger('product_id')->default(0)->comment('商品ID');
+            $table->string('properties_name')->nullable()->comment('规格属性名称');
             $table->string('properties')->nullable()->comment('规格属性值字符串');
-            $table->string('properties_name', 60)->nullable()->comment('规格属性名称');
             // SKU 信息
             $table->decimal('price', 10, 2, true)->default(0)->comment('销售价');
             $table->decimal('market_price', 10, 2, true)->nullable()->comment('市场价');
@@ -30,6 +30,7 @@ return new class extends Migration {
             // 状态
             $table->string('status')->comment('状态');
             // 操作
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->timestamp('modified_time')->nullable()->comment('修改时间');
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');

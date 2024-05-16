@@ -37,7 +37,7 @@ class ProductSellerCategoryCreateCommandHandlerTest extends ApplicationTestCase
                                                                 'is_show'    => false,
                                                                 'group_name' => fake()->name,
                                                                 'image'      => fake()->imageUrl,
-                                                                'extends'    => [],
+                                                                'expands'    => [],
                                                             ]);
 
 

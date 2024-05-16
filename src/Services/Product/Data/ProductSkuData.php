@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Product\Data;
 
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
 

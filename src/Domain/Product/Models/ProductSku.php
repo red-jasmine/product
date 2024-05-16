@@ -1,11 +1,11 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 

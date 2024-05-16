@@ -21,12 +21,12 @@ class ProductPropertyGroup extends Model
         'id',
         'name',
         'status',
-        'extend_info',
+        'expands',
         'sort',
     ];
 
     protected $casts = [
-        'extend_info' => 'array',
+        'expands' => 'array',
         'status'      => PropertyStatusEnum::class
     ];
 

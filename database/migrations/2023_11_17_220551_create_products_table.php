@@ -35,16 +35,12 @@ return new class extends Migration {
             // 运费
             $table->unsignedTinyInteger('freight_payer')->default(0)->comment('运费承担方');
             $table->unsignedBigInteger('postage_id')->nullable()->comment('运费模板ID');
-            // 下单类
-            $table->unsignedBigInteger('min')->nullable()->comment('起购量');
-            $table->unsignedBigInteger('max')->nullable()->comment('限购量');
-            $table->unsignedBigInteger('multiple')->default(1)->comment('购买倍数');
             // 库存
             $table->unsignedTinyInteger('sub_stock')->default(0)->comment('减库存方式');
 
-            $table->decimal('price', 10, 2, true)->default(0)->comment('销售价');
-            $table->decimal('market_price', 10, 2, true)->nullable()->comment('市场价');
-            $table->decimal('cost_price', 10, 2, true)->nullable()->comment('成本价');
+            $table->decimal('price', 10)->default(0)->comment('销售价');
+            $table->decimal('market_price', 10)->nullable()->comment('市场价');
+            $table->decimal('cost_price', 10)->nullable()->comment('成本价');
             $table->unsignedBigInteger('stock')->default(0)->comment('库存');
             $table->unsignedBigInteger('channel_stock')->default(0)->comment('渠道库存');
             $table->unsignedBigInteger('lock_stock')->default(0)->comment('锁定库存');
@@ -56,6 +52,10 @@ return new class extends Migration {
             // 用户类
             $table->unsignedTinyInteger('vip')->default(0)->comment('VIP');
             $table->unsignedInteger('points')->default(0)->comment('积分');
+            // 用户限购类
+            $table->unsignedBigInteger('min')->default(1)->comment('起购量');
+            $table->unsignedBigInteger('max')->default(0)->comment('限购量');
+            $table->unsignedBigInteger('multiple')->default(1)->comment('购买倍数');
             // 展现
             $table->unsignedTinyInteger('is_hot')->default(0)->comment('热销');
             $table->unsignedTinyInteger('is_new')->default(0)->comment('新品');
@@ -65,7 +65,14 @@ return new class extends Migration {
             $table->timestamp('on_sale_time')->nullable()->comment('上架时间');
             $table->timestamp('sold_out_time')->nullable()->comment('售停时间');
             $table->timestamp('off_sale_time')->nullable()->comment('下架时间');
+
+            // 供应商
+
+            // 承诺服务
+
+
             // 操作人
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->timestamp('modified_time')->nullable()->comment('修改时间');
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');

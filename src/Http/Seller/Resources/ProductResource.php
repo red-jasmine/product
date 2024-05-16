@@ -4,11 +4,11 @@ namespace RedJasmine\Product\Http\Seller\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Support\Http\Resources\WithCollectionResource;
 
 /**
- * @mixin  Product
+ * @mixin  \RedJasmine\Product\Domain\Product\Models\Product
  */
 class ProductResource extends JsonResource
 {

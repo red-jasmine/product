@@ -4,20 +4,18 @@ namespace RedJasmine\Product\Services\Product\Validators;
 
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
-use RedJasmine\Product\Services\Product\Enums\FreightPayerEnum;
-use RedJasmine\Product\Services\Product\Enums\ProductStatusEnum;
-use RedJasmine\Product\Services\Product\Enums\ProductTypeEnum;
-use RedJasmine\Product\Services\Product\Enums\ShippingTypeEnum;
-use RedJasmine\Product\Services\Product\Enums\SubStockTypeEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductTypeEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Services\Brand\Rules\BrandAvailableRule;
 use RedJasmine\Product\Services\Category\Rules\CategoryAvailableRule;
 use RedJasmine\Product\Services\Category\Rules\SellerCategoryAvailableRule;
 use RedJasmine\Product\Services\Product\ProductService;
-
 use RedJasmine\Product\Services\Product\Validators\Rules\PriceRule;
 use RedJasmine\Support\Enums\BoolIntEnum;
 use RedJasmine\Support\Foundation\Service\Actions\ValidatorCombiner;
-use RedJasmine\Support\Rules\NotZeroExistsRule;
 
 class BasicValidator extends ValidatorCombiner
 {

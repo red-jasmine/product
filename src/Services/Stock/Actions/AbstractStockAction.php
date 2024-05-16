@@ -3,9 +3,9 @@
 namespace RedJasmine\Product\Services\Stock\Actions;
 
 use Illuminate\Support\Facades\DB;
+use RedJasmine\Product\Domain\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Exceptions\ProductStockException;
-use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Stock\Data\StockActionData;
 use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;

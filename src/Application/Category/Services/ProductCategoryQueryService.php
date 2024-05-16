@@ -25,7 +25,7 @@ class ProductCategoryQueryService extends ApplicationQueryService
             'image',
             'group_name', 'sort',
             'is_leaf', 'is_show',
-            'status', 'extends',
+            'status', 'expands',
         ];
 
     }

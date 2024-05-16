@@ -30,7 +30,7 @@ class ProductPropertyValue extends Model
         'name',
         'group_id',
         'status',
-        'extend_info',
+        'expands',
         'sort',
         'creator_type',
         'creator_id',
@@ -38,7 +38,7 @@ class ProductPropertyValue extends Model
 
 
     protected $casts = [
-        'extend_info' => 'array',
+        'expands' => 'array',
         'status'      => PropertyStatusEnum::class,
     ];
 

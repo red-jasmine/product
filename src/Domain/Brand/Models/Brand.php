@@ -39,7 +39,7 @@ class Brand extends Model
     public $incrementing = false;
 
     protected $casts = [
-        'extend_info' => 'array',
+        'expands' => 'array',
         'is_show' => 'boolean',
         'status'  => BrandStatusEnum::class
     ];
@@ -53,7 +53,7 @@ class Brand extends Model
         'initial',
         'is_show',
         'status',
-        'extend_info',
+        'expands',
         'logo',
         'sort',
     ];

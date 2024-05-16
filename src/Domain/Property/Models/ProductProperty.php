@@ -28,14 +28,14 @@ class ProductProperty extends Model
         'name',
         'status',
         'group_id', // TODO 验证
-        'extend_info',
+        'expands',
         'sort',
         'creator_type',
         'creator_id',
     ];
 
     protected $casts = [
-        'extend_info' => 'array',
+        'expands' => 'array',
         'status'      => PropertyStatusEnum::class
     ];
 

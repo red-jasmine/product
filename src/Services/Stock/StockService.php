@@ -4,12 +4,12 @@ namespace RedJasmine\Product\Services\Stock;
 
 use Exception;
 use Illuminate\Support\Str;
-use RedJasmine\Product\Models\Product;
-use RedJasmine\Product\Models\ProductSku;
+use RedJasmine\Product\Domain\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Models\ProductStockLog;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Services\Stock\Data\StockActionData;
+use RedJasmine\Product\Services\Stock\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -58,7 +58,7 @@ class StockService extends ResourceService
      *
      * @param int $skuID
      *
-     * @return ProductSku
+     * @return \RedJasmine\Product\Domain\Product\Models\ProductSku
      */
     public function getSKU(int $skuID) : ProductSku
     {

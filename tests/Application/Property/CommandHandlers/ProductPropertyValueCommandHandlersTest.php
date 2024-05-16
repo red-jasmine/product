@@ -8,6 +8,7 @@ use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyRepositoryInt
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyValueRepositoryInterface;
 use RedJasmine\Product\Tests\Application\ApplicationTestCase;
 use RedJasmine\Product\Tests\Fixtures\Property\ProductPropertyFaker;
+use RedJasmine\Product\Tests\Fixtures\Property\ProductPropertyValueFaker;
 
 class ProductPropertyValueCommandHandlersTest extends ApplicationTestCase
 {
@@ -42,28 +43,41 @@ class ProductPropertyValueCommandHandlersTest extends ApplicationTestCase
         // 创建属性
         $command         = (new ProductPropertyFaker)->createCommand();
         $productProperty = $this->propertyCommandService()->create($command);
-        $productProperty = $this->propertyRepository()->find($productProperty->id);
-        $this->assertEquals($command->name, $productProperty->name);
 
+
+        $valueCreateCommand = (new ProductPropertyValueFaker())->createCommand([ 'pid' => $productProperty->id ]);
+
+        $productPropertyValue = $this->commandService()->create($valueCreateCommand);
+
+        $productPropertyValue = $this->repository()->find($productPropertyValue->id);
+
+
+        $this->assertEquals($valueCreateCommand->pid, $productPropertyValue->pid);
+        $this->assertEquals($valueCreateCommand->sort, $productPropertyValue->sort);
     }
 
 
     public function test_can_update() : void
     {
-        $command = (new ProductPropertyFaker)->createCommand();
+        // 创建属性
+        $command         = (new ProductPropertyFaker)->createCommand();
+        $productProperty = $this->propertyCommandService()->create($command);
 
-        $productProperty = $this->commandService()->create($command);
+
+        $valueCreateCommand = (new ProductPropertyValueFaker())->createCommand([ 'pid' => $productProperty->id ]);
+
+        $productPropertyValue = $this->commandService()->create($valueCreateCommand);
 
 
-        $command = (new ProductPropertyFaker)->updateCommand([ 'id' => $productProperty->id ]);
+        $valueUpdateCommand = (new ProductPropertyValueFaker())->updateCommand([ 'id' => $productPropertyValue->id ]);
 
-        $this->commandService()->update($command);
+        $this->commandService()->update($valueUpdateCommand);
 
-        $productProperty = $this->repository()->find($productProperty->id);
+        $productPropertyValue = $this->repository()->find($valueUpdateCommand->id);
 
-        $this->assertEquals($command->name, $productProperty->name);
-        $this->assertEquals($command->sort, $productProperty->sort);
-
+        $this->assertEquals($valueUpdateCommand->id, $productPropertyValue->id);
+        $this->assertEquals($valueUpdateCommand->name, $productPropertyValue->name);
+        $this->assertEquals($valueUpdateCommand->sort, $productPropertyValue->sort);
 
     }
 

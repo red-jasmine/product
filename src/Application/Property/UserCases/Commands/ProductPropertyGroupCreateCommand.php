@@ -14,14 +14,14 @@ class ProductPropertyGroupCreateCommand extends Data
     public string             $name;
     public int                $sort       = 0;
     public PropertyStatusEnum $status     = PropertyStatusEnum::ENABLE;
-    public ?array             $extendInfo = null;
+    public ?array             $expands = null;
 
     public static function attributes(...$args) : array
     {
 
         return [
             'name'    => '名称',
-            'extends' => '扩展参数',
+            'expands' => '扩展参数',
             'sort'    => '排序',
             'status'  => '状态',
         ];
@@ -32,7 +32,7 @@ class ProductPropertyGroupCreateCommand extends Data
 
         return [
             'name'        => [ 'required', 'max:30', new PropertyTitleRule() ],
-            'extend_info' => [ 'sometimes', 'array' ],
+            'expands' => [ 'sometimes', 'array' ],
 
         ];
     }

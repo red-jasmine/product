@@ -40,11 +40,11 @@ class ProductCategory extends Model
         'is_leaf',
         'is_show',
         'status',
-        'extend_info',
+        'expands',
     ];
 
     protected $casts = [
-        'extend_info' => 'array',
+        'expands' => 'array',
         'status'  => CategoryStatusEnum::class,
         'is_leaf' => 'boolean',
         'is_show' => 'boolean',

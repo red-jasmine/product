@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Product\Actions;
 
-use RedJasmine\Product\Models\Product;
+use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Support\Foundation\Service\Actions\DeleteAction;
 
 /**

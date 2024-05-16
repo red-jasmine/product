@@ -24,7 +24,8 @@ class ProductSeriesCreateCommandHandler extends CommandHandler
         $model->name    = $command->name;
 
         // 验证重复
-        if ($command->products->count() !== $command->products->pluck('product_id')->unique->count()) {
+
+        if ($command->products->count() !== $command->products->pluck('productId')->unique()->count()) {
             throw new \RuntimeException('Products must have product identically');
         }
         // 验证商品是否存在 TODO

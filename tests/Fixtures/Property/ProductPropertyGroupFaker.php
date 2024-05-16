@@ -17,7 +17,7 @@ class ProductPropertyGroupFaker
             'name'        => fake()->name,
             'sort'        => fake()->randomNumber(),
             'status'      => PropertyStatusEnum::ENABLE->value,
-            'extend_info' => [],
+            'expands' => [],
         ];
     }
 
