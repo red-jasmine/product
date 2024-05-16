@@ -70,6 +70,8 @@ return new class extends Migration {
 
             // 承诺服务
             // 税率
+            // 审核状态
+            // 是否违规
 
 
             // 操作人
