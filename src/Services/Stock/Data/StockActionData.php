@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Stock\Data;
 
 
-use RedJasmine\Product\Services\Stock\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Support\Data\Data;
 
 class StockActionData extends Data

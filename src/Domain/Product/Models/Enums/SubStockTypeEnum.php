@@ -4,15 +4,15 @@ namespace RedJasmine\Product\Domain\Product\Models\Enums;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-enum SubStockTypeEnum: int
+enum SubStockTypeEnum: string
 {
     use EnumsHelper;
 
-    case DEFAULT = 0;
+    case DEFAULT = 'default';
 
-    case ORDER = 1;
+    case ORDER = 'order';
 
-    case PAYMENT = 2;
+    case PAYMENT = 'payment';
 
 
     public static function labels() : array

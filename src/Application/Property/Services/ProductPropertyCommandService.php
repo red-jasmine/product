@@ -10,7 +10,6 @@ use RedJasmine\Product\Domain\Property\Models\ProductProperty;
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationCommandService;
 use RedJasmine\Support\Data\Data;
-use RedJasmine\Support\Helpers\ID\Snowflake;
 
 /**
  * @method ProductProperty create(ProductPropertyCreateCommand $command)
@@ -26,7 +25,7 @@ class ProductPropertyCommandService extends ApplicationCommandService
     {
         return [
             'create' => [
-                ProductPropertyPipeline::class
+
             ],
         ];
     }
@@ -39,12 +38,12 @@ class ProductPropertyCommandService extends ApplicationCommandService
         parent::__construct();
     }
 
-
-    public function newModel() : Model
+    public function newModel($data = null) : Model
     {
-        $model                         = parent::newModel();
-        $model->{$model->getKeyName()} = Snowflake::getInstance()->nextId();
-        return $model;
+        if ($model = $this->repository->findByName($data->name)) {
+            return $model;
+        }
+        return parent::newModel($data);
     }
 
 

@@ -2,23 +2,23 @@
 
 namespace RedJasmine\Product\Domain\Product\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Ecommerce\Domain\Models\Casts\PromiseServicesCastTransformer;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ProductTypeEnum;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ShippingTypeEnum;
+use RedJasmine\Product\Domain\Brand\Models\Brand;
 use RedJasmine\Product\Domain\Category\Models\ProductCategory;
 use RedJasmine\Product\Domain\Category\Models\ProductSellerCategory;
 use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ProductTypeEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
-use RedJasmine\Product\Models\Brand;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOwner;
@@ -52,6 +52,7 @@ class Product extends Model
         'is_new'           => 'boolean',
         'is_best'          => 'boolean',
         'is_benefit'       => 'boolean',
+        'promise_services' => PromiseServicesCastTransformer::class
     ];
 
 
@@ -96,6 +97,14 @@ class Product extends Model
     }
 
 
+    public function addSku(ProductSku $sku) : static
+    {
+        $sku->product_id = $this->id;
+        $this->skus->push($sku);
+        return $this;
+
+    }
+
     /**
      * 系列
      * @return HasOneThrough
@@ -111,40 +120,6 @@ class Product extends Model
             'series_id'
         )->with([ 'products' ]);
     }
-
-
-    protected function marketPrice() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value, array $attributes) => $value,
-            set: fn($value) => trim($value) === '' ? null : $value,
-        );
-    }
-
-    protected function costPrice() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value, array $attributes) => $value,
-            set: fn($value) => trim($value) === '' ? null : $value,
-        );
-    }
-
-    protected function min() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value, array $attributes) => $value,
-            set: fn($value) => trim($value) === '' ? null : $value,
-        );
-    }
-
-    protected function max() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value, array $attributes) => $value,
-            set: fn($value) => trim($value) === '' ? null : $value,
-        );
-    }
-
 
 
 }

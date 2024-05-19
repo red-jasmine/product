@@ -5,10 +5,10 @@ namespace RedJasmine\Product\Services\Stock\Actions;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Product\Exceptions\ProductStockException;
-use RedJasmine\Product\Models\ProductStockLog;
 use RedJasmine\Product\Services\Stock\Data\StockActionData;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
 use RedJasmine\Product\Services\Stock\StockService;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Foundation\Service\Actions\ResourceAction;
@@ -41,7 +41,7 @@ abstract class AbstractStockAction extends ResourceAction
      * @param StockActionData $data
      * @param bool            $onlyLog
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
@@ -82,7 +82,7 @@ abstract class AbstractStockAction extends ResourceAction
     /**
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
@@ -141,7 +141,7 @@ abstract class AbstractStockAction extends ResourceAction
     /**
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException|Throwable
      */
@@ -182,7 +182,7 @@ abstract class AbstractStockAction extends ResourceAction
     /**
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
@@ -231,7 +231,7 @@ abstract class AbstractStockAction extends ResourceAction
     /**
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
@@ -247,7 +247,7 @@ abstract class AbstractStockAction extends ResourceAction
      *
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable
@@ -292,7 +292,7 @@ abstract class AbstractStockAction extends ResourceAction
     /**
      * @param StockActionData $data
      *
-     * @return ProductStockLog|null
+     * @return \RedJasmine\Product\Domain\Stock\Models\ProductStockLog|null
      * @throws AbstractException
      * @throws ProductStockException
      * @throws Throwable

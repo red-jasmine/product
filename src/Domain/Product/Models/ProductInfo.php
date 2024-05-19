@@ -9,12 +9,9 @@ use RedJasmine\Support\Traits\Models\HasOperator;
 
 class ProductInfo extends Model
 {
-
     use HasDateTimeFormatter;
 
     use SoftDeletes;
-
-
 
 
     protected $casts = [
@@ -23,7 +20,7 @@ class ProductInfo extends Model
         'images'      => 'array',
         'videos'      => 'array',
         'tools'       => 'array',
-        'extends'     => 'array',
+        'expands'     => 'array',
     ];
 
 }

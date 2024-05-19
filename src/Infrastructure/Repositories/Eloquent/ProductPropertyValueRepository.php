@@ -12,4 +12,10 @@ class ProductPropertyValueRepository extends EloquentRepository implements Produ
 {
     protected static string $eloquentModelClass = ProductPropertyValue::class;
 
+    public function findByNameInProperty(int $pid, string $name) : ?ProductPropertyValue
+    {
+        return static::$eloquentModelClass::where('pid', $pid)->where('name', $name)->first();
+    }
+
+
 }

@@ -28,12 +28,5 @@ class ProductSellerCategoryCommandService extends ApplicationCommandService
         parent::__construct();
     }
 
-    public function newModel() : Model
-    {
-        $model                         = parent::newModel();
-        $model->{$model->getKeyName()} = Snowflake::getInstance()->nextId();
-        return $model;
-    }
-
 
 }

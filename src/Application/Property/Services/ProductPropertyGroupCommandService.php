@@ -27,13 +27,6 @@ class ProductPropertyGroupCommandService extends ApplicationCommandService
     }
 
 
-    public function newModel() : Model
-    {
-        $model                         = parent::newModel();
-        $model->{$model->getKeyName()} = Snowflake::getInstance()->nextId();
-        return $model;
-    }
-
 
     public function delete(Data $data) : void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Services\Stock\Enums;
+namespace RedJasmine\Product\Domain\Stock\Models\Enums;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
@@ -9,8 +9,8 @@ enum ProductStockTypeEnum: string
 
     use EnumsHelper;
 
-    case RESET = 'reset';
     case INIT = 'init';
+    case RESET = 'reset';
     case ADD = 'add';
     case SUB = 'sub';
     case LOCK = 'lock';

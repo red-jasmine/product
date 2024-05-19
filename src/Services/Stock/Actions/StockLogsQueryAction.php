@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Product\Services\Stock\Actions;
 
-use RedJasmine\Product\Models\ProductStockLog;
+use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Support\Foundation\Service\Actions\QueryAction;
 
 class StockLogsQueryAction extends QueryAction

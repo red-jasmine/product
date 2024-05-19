@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->bigInteger('lock_stock')->default(0)->comment('锁定库存');
             $table->nullableMorphs('channel');
             $table->nullableMorphs('creator');
-            $table->json('extends')->nullable()->comment('扩展');
+            $table->json('expands')->nullable()->comment('扩展');
             $table->timestamps();
             $table->comment('商品-库存-记录');
         });

@@ -4,16 +4,16 @@ namespace RedJasmine\Product\Domain\Product\Models\Enums;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-enum FreightPayerEnum: int
+enum FreightPayerEnum: string
 {
 
     use EnumsHelper;
 
-    case DEFAULT = 0;
+    case DEFAULT = 'default';
 
-    case SELLER = 1;
+    case SELLER = 'seller';
 
-    case BUYER = 2;
+    case BUYER = 'buyer';
 
     public static function labels() : array
     {

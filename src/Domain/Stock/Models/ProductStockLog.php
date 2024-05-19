@@ -1,14 +1,14 @@
 <?php
 
-namespace RedJasmine\Product\Models;
+namespace RedJasmine\Product\Domain\Stock\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockChangeTypeEnum;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\HasOwner;
 
 
@@ -26,7 +26,7 @@ class ProductStockLog extends Model
     protected $casts = [
         'type'        => ProductStockTypeEnum::class,
         'change_type' => ProductStockChangeTypeEnum::class,
-        'extends'     => 'array'
+        'expands'     => 'array'
     ];
 
 

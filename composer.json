@@ -12,7 +12,8 @@
     "homepage": "https://github.com/red-jasmine/product",
     "keywords": ["Laravel", "Product"],
     "require": {
-        "red-jasmine/support": "1.0.x-dev"
+        "red-jasmine/support": "1.0.x-dev",
+        "red-jasmine/ecommerce": "1.0.x-dev"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0"
@@ -51,6 +52,13 @@
         "red-jasmine/support": {
             "type": "path",
             "url": "../support",
+            "options": {
+                "symlink": true
+            }
+        },
+        "red-jasmine/ecommerce": {
+            "type": "path",
+            "url": "../ecommerce",
             "options": {
                 "symlink": true
             }

@@ -3,10 +3,10 @@
 namespace RedJasmine\Product\Services\Product\Data;
 
 use Illuminate\Support\Collection;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ProductTypeEnum;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ProductTypeEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
@@ -43,7 +43,6 @@ class ProductData extends Data
     public ?int                  $min              = null;
     public ?int                  $max              = null;
     public int                   $multiple         = 1;
-    public int                   $fakeSales        = 0;
     public int                   $deliveryTime     = 0;
     public int                   $vip              = 0;
     public int                   $points           = 0;

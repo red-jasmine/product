@@ -4,10 +4,10 @@ namespace RedJasmine\Product\Services\Product\Validators;
 
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ProductTypeEnum;
+use RedJasmine\Ecommerce\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ProductTypeEnum;
-use RedJasmine\Product\Domain\Product\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Services\Brand\Rules\BrandAvailableRule;
 use RedJasmine\Product\Services\Category\Rules\CategoryAvailableRule;

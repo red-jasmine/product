@@ -6,10 +6,10 @@ use Exception;
 use Illuminate\Support\Str;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
-use RedJasmine\Product\Models\ProductStockLog;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
+use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Product\Services\Stock\Data\StockActionData;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockChangeTypeEnum;
-use RedJasmine\Product\Services\Stock\Enums\ProductStockTypeEnum;
 use RedJasmine\Support\Foundation\Service\ResourceService;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -72,16 +72,16 @@ class StockService extends ResourceService
 
 
     /**
-     * @param ProductStockTypeEnum       $type
-     * @param int                        $productId
-     * @param int                        $skuId
-     * @param int                        $stock
-     * @param int                        $lockStock
-     * @param ProductStockChangeTypeEnum $changeTypeEnum
-     * @param string|null                $changeDetail
+     * @param \RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum       $type
+     * @param int                                                                      $productId
+     * @param int                                                                      $skuId
+     * @param int                                                                      $stock
+     * @param int                                                                      $lockStock
+     * @param \RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum $changeTypeEnum
+     * @param string|null                                                              $changeDetail
      *
-     * @param StockChannelData|null      $channel
-     * @param array|null                 $extends
+     * @param StockChannelData|null                                                    $channel
+     * @param array|null                                                               $extends
      *
      * @return ProductStockLog|null
      * @throws Exception

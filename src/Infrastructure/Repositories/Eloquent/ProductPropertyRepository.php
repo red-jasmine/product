@@ -12,4 +12,17 @@ class ProductPropertyRepository extends EloquentRepository implements ProductPro
 {
     protected static string $eloquentModelClass = ProductProperty::class;
 
+    /**
+     * 按名称查询
+     *
+     * @param string $name
+     *
+     * @return ProductProperty|null
+     */
+    public function findByName(string $name) : ?ProductProperty
+    {
+        return static::$eloquentModelClass::where('name', $name)->first();
+    }
+
+
 }
