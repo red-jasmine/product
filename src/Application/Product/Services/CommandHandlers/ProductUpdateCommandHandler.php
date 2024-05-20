@@ -4,15 +4,16 @@ namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
-use RedJasmine\Product\Application\Product\UserCases\Commands\ProductCreateCommand;
+use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
 use RedJasmine\Product\Application\Stock\Services\StockCommandService;
 use RedJasmine\Product\Application\Stock\UserCases\StockInitCommand;
+use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Domain\Property\PropertyFormatter;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 
-class ProductCreateCommandHandler extends ProductCommand
+class ProductUpdateCommandHandler extends ProductCommand
 {
 
     public function __construct(
@@ -25,30 +26,29 @@ class ProductCreateCommandHandler extends ProductCommand
 
     }
 
-    // 需要组合 品牌服务、分类服务、卖家分类服务、属性服务
-
-    public function handle(ProductCreateCommand $command) : Product
+    public function handle(ProductUpdateCommand $command)
     {
-
-        DB::beginTransaction();
         try {
-
+            DB::beginTransaction();
             /**
              * @var $product Product
              */
-            $product = $this->getService()->newModel($command);
-
-            // 基础验证
-            // 验证 销售属性和 规格一一对应
+            $product = $this->getService()->getRepository()->find($command->id);
             $this->fillProduct($product, $command);
 
-            // 多规格区别处理
+            $product->skus()->withTrashed()->get();
+            $product->skus->each(function ($sku) {
+                $sku->deleted_at = $sku->deleted_at ?? now();
+                $sku->status     = ProductStatusEnum::DELETED;
+            });
+
             switch ($command->isMultipleSpec) {
                 case true: // 多规格
 
                     $propertyFormatter = new PropertyFormatter();
                     // 获取规格信息 TODO 使用服务
                     $saleProps = $propertyFormatter->formatArray($command->saleProps->toArray());
+
                     // 规格验证 TODO
                     $product->info->sale_props = $saleProps;
 
@@ -58,8 +58,10 @@ class ProductCreateCommandHandler extends ProductCommand
                     //$product->addSku($defaultSku);
 
                     $command->skus?->each(function ($skuData) use ($product) {
-                        $sku     = new ProductSku();
-                        $sku->id = $this->getService()->buildId();
+                        $sku = $product->skus->where('properties', $skuData->properties)->first() ?? new ProductSku(); // TODO 获取实体
+                        if (!$sku->exists) {
+                            $sku->id = $this->getService()->buildId();
+                        }
                         $this->fillSku($sku, $skuData);
                         $product->addSku($sku);
                     });
@@ -74,21 +76,22 @@ class ProductCreateCommandHandler extends ProductCommand
                     break;
             }
 
+
             $this->execute(
                 execute: null,
-                persistence: fn() => $this->getService()->getRepository()->store($product)
+                persistence: fn() => $this->getService()->getRepository()->update($product)
             );
 
-            // 操作库存
+
+            // 修改库存 把 删除的库存设置为 0
             $skuCommand = $command->skus?->keyBy('properties');
 
             foreach ($product->skus as $sku) {
-                if ($sku->deleted_at) {
-                    // 删除库存
-                    continue;
-                }
                 $stock = $skuCommand[$sku->properties]?->stock ?? $command->stock;
-                $this->stockCommandService->init(StockInitCommand::from(
+                if ($sku->deleted_at) {
+                    $stock = 0;
+                }
+                $this->stockCommandService->reset(StockInitCommand::from(
                     [
                         'product_id'  => $product->id,
                         'sku_id'      => $sku->id,
@@ -97,16 +100,15 @@ class ProductCreateCommandHandler extends ProductCommand
                     ])
                 );
             }
-
             DB::commit();
 
             return $product;
-        } catch (\Throwable $exception) {
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            throw $exception;
+            throw  $throwable;
         }
 
-    }
 
+    }
 
 }

@@ -5,6 +5,7 @@ namespace RedJasmine\Product\Application\Product\Services;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use RedJasmine\Product\Application\Product\Services\CommandHandlers\ProductCreateCommandHandler;
+use RedJasmine\Product\Application\Product\Services\CommandHandlers\ProductUpdateCommandHandler;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductCreateCommand;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductInfo;
@@ -31,6 +32,7 @@ class ProductCommandService extends ApplicationCommandService
 
     protected static $macros = [
         'create' => ProductCreateCommandHandler::class,
+        'update' => ProductUpdateCommandHandler::class,
     ];
 
 

@@ -3,13 +3,17 @@
 namespace RedJasmine\Product\Application\Stock\Services;
 
 use Exception;
+use Illuminate\Support\Facades\DB;
+use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
 use RedJasmine\Product\Application\Stock\UserCases\StockInitCommand;
+use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
 use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Product\Domain\Stock\Repositories\ProductSkuRepositoryInterface;
 use RedJasmine\Product\Domain\Stock\StockDomainService;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Support\Application\ApplicationCommandService;
+use Throwable;
 
 class StockCommandService extends ApplicationCommandService
 {
@@ -43,32 +47,110 @@ class StockCommandService extends ApplicationCommandService
 
 
     /**
+     * 初始化库存
+     *
      * @param StockInitCommand $command
      *
      * @return void
      * @throws ProductStockException
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function init(StockInitCommand $command) : void
     {
-        $command->stock = $this->validateQuantity($command->stock);
-        $this->domainService->init($command->skuId, $command->productId, $command->stock);
+        try {
+            DB::beginTransaction();
+            $command->stock = $this->validateQuantity($command->stock);
+            $this->domainService->init($command->skuId, $command->productId, $command->stock);
 
-        $log                = new ProductStockLog();
-        $log->product_id    = $command->productId;
-        $log->sku_id        = $command->skuId;
-        $log->change_type   = $command->changeType;
-        $log->change_detail = $command->changeDetail;
-        $log->channel_type  = $command->channelType;
-        $log->channel_id    = $command->channelId;
-        $log->type          = ProductStockTypeEnum::INIT;
-        $log->stock         = $command->stock;
-        $log->lock_stock    = 0;
-        $log->creator       = $this->getOperator();
+            $log                = new ProductStockLog();
+            $log->product_id    = $command->productId;
+            $log->sku_id        = $command->skuId;
+            $log->change_type   = $command->changeType;
+            $log->change_detail = $command->changeDetail;
+            $log->channel_type  = $command->channelType;
+            $log->channel_id    = $command->channelId;
+            $log->type          = ProductStockTypeEnum::INIT;
+            $log->stock         = $command->stock;
+            $log->lock_stock    = 0;
+            $log->creator       = $this->getOperator();
 
-        $this->log($log);
+            $this->log($log);
+
+            DB::commit();
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
 
     }
+
+
+    /**
+     * 重置库存
+     *
+     * @param StockInitCommand $command
+     *
+     * @return void
+     * @throws ProductStockException
+     * @throws Throwable
+     * @throws StockException
+     */
+    public function reset(StockInitCommand $command) : void
+    {
+        try {
+            DB::beginTransaction();
+            $command->stock = $this->validateQuantity($command->stock);
+            $stock          = $this->domainService->reset($command->skuId, $command->productId, $command->stock);
+            if ($stock) {
+                $log                = new ProductStockLog();
+                $log->product_id    = $command->productId;
+                $log->sku_id        = $command->skuId;
+                $log->change_type   = $command->changeType;
+                $log->change_detail = $command->changeDetail;
+                $log->channel_type  = $command->channelType;
+                $log->channel_id    = $command->channelId;
+                $log->type          = ProductStockTypeEnum::RESET;
+                $log->stock         = $stock;
+                $log->lock_stock    = 0;
+                $log->creator       = $this->getOperator();
+
+                $this->log($log);
+            }
+            DB::commit();
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            throw  $throwable;
+        }
+
+
+    }
+
+
+    public function add(StockCommand $command) : void
+    {
+
+    }
+
+    public function sub(StockCommand $command) : void
+    {
+
+    }
+
+    public function lock(StockCommand $command) : void
+    {
+
+    }
+
+    public function unlock(StockCommand $command) : void
+    {
+
+    }
+
+    public function confirm(StockCommand $command) : void
+    {
+
+    }
+
 
     /**
      * @param ProductStockLog $log

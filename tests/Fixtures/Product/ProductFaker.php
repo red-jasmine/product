@@ -6,6 +6,7 @@ use RedJasmine\Ecommerce\Domain\Models\Enums\ProductTypeEnum;
 use RedJasmine\Ecommerce\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Product\Application\Product\UserCases\Commands\Product;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductCreateCommand;
+use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
 use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
@@ -81,6 +82,12 @@ class ProductFaker
     {
 
         return ProductCreateCommand::from(array_merge($this->data(), $data));
+    }
+
+
+    public function updateCommand(array $data = []) : ProductUpdateCommand
+    {
+        return ProductUpdateCommand::from(array_merge($this->data(), $data));
     }
 
 }

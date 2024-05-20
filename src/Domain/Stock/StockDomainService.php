@@ -27,14 +27,18 @@ class StockDomainService extends Service
      * @param int $productId
      * @param int $stock
      *
-     * @return void
-     * @throws StockException
+     * @return int
+     * @throws StockException|\Throwable
      */
-    public function reset(int $skuId, int $productId, int $stock) : void
+    public function reset(int $skuId, int $productId, int $stock) : int
     {
-        $sku = ProductSku::withTrashed()->select([ 'id', 'product_id', 'stock', 'channel_stock', 'lock_stock' ])->find($skuId);
+        $sku = ProductSku::withTrashed()
+                         ->select([ 'id', 'product_id', 'stock', 'channel_stock', 'lock_stock' ])
+                         ->lockForUpdate()
+                         ->find($skuId);
         if (bccomp($sku->stock, $stock, 0) === 0) {
-            return;
+
+            return 0;
         }
         if (bccomp($stock, $sku->channel_stock, 0) < 0) {
             throw new StockException('活动库存占用');
@@ -43,6 +47,10 @@ class StockDomainService extends Service
         $stockUpdate = DB::raw("stock + $quantity");
         ProductSku::withTrashed()->where('id', $sku->id)->update([ 'stock' => $stockUpdate ]);
         Product::withTrashed()->where('id', $productId)->update([ 'stock' => $stockUpdate ]);
+
+        return $quantity;
+
+
     }
 
 }
