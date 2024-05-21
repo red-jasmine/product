@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
 use RedJasmine\Product\Application\Stock\Services\StockCommandService;
+use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
 use RedJasmine\Product\Application\Stock\UserCases\StockInitCommand;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
@@ -91,9 +92,9 @@ class ProductUpdateCommandHandler extends ProductCommand
                 if ($sku->deleted_at) {
                     $stock = 0;
                 }
-                $this->stockCommandService->reset(StockInitCommand::from(
+                $this->stockCommandService->reset(StockCommand::from(
                     [
-                        'product_id'  => $product->id,
+                        'product_id'  => $sku->product_id,
                         'sku_id'      => $sku->id,
                         'stock'       => $stock,
                         'change_type' => ProductStockChangeTypeEnum::SELLER->value

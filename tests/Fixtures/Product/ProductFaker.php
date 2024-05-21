@@ -36,7 +36,7 @@ class ProductFaker
             'price'              => fake()->numberBetween(100, 1000),
             'market_price'       => fake()->numberBetween(100, 1000),
             'cost_price'         => fake()->numberBetween(100, 1000),
-            'stock'              => fake()->numberBetween(100, 1000),
+            'stock'              => fake()->numberBetween(1, 10),
             'safety_stock'       => fake()->numberBetween(10, 20),
             'delivery_time'      => fake()->randomElement([ 0, 2, 12, 24, 48, 72 ]),
             'unit '              => 1,

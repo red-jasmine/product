@@ -70,7 +70,7 @@ class ProductTestCase extends ApplicationTestCase
         foreach ($skuProperties as $property) {
             $skus[] = [
                 'properties'   => $property,
-                'stock'        => fake()->numberBetween(10, 100),
+                'stock'        => fake()->numberBetween(1, 10),
                 'image'        => fake()->imageUrl(),
                 'barcode'      => fake()->ean13(),
                 'price'        => fake()->numberBetween(100, 1000),
