@@ -197,7 +197,6 @@ class StockCommandService extends ApplicationCommandService
         $log     = new ProductStockLog;
         $log->id = $this->buildId();
 
-        $log                = new ProductStockLog();
         $log->product_id    = $command->productId;
         $log->sku_id        = $command->skuId;
         $log->change_type   = $command->changeType;

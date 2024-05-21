@@ -12,4 +12,10 @@ class BrandRepository extends EloquentRepository implements BrandRepositoryInter
 {
     protected static string $eloquentModelClass = Brand::class;
 
+    public function findByName($name) : ?Brand
+    {
+        return static::$eloquentModelClass::where('name', $name)->first();
+    }
+
+
 }

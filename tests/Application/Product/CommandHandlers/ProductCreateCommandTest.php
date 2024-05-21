@@ -2,18 +2,34 @@
 
 namespace Product\CommandHandlers;
 
+use RedJasmine\Product\Application\Brand\Services\BrandCommandService;
+use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
 use RedJasmine\Product\Tests\Application\Product\CommandHandlers\ProductTestCase;
 use RedJasmine\Product\Tests\Fixtures\Product\ProductFaker;
 
 class ProductCreateCommandTest extends ProductTestCase
 {
 
+
+    public function brandCommandService() : BrandCommandService
+    {
+        return app(BrandCommandService::class);
+    }
+
+
     public function test_can_create_product() : void
     {
-        $command = (new ProductFaker())->createCommand();
+
+
+        $data = [];
+
+
+        $brand = $this->brandCommandService()->create(BrandCreateCommand::from([ 'name' => '李宁' ]));
+
+        $data['brand_id'] = $brand->id;
+        $command = (new ProductFaker())->createCommand($data);
 
         $this->commandService()->create($command);
-
 
     }
 

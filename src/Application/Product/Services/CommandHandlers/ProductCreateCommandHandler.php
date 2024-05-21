@@ -42,6 +42,12 @@ class ProductCreateCommandHandler extends ProductCommand
             // 验证 销售属性和 规格一一对应
             $this->fillProduct($product, $command);
 
+
+            if ($product->brand_id) {
+                $this->brandQueryService->find($product->brand_id);
+            }
+
+
             // 多规格区别处理
             switch ($command->isMultipleSpec) {
                 case true: // 多规格
