@@ -27,7 +27,7 @@ return new class extends Migration {
             // 基础信息
             $table->string('image')->nullable()->comment('主图');
             $table->string('barcode', 32)->nullable()->comment('条形码');
-            $table->string('outer_id')->nullable()->comment('商家编码');
+            $table->string('outer_id')->nullable()->comment('商品编码');
             // 状态相关
             $table->unsignedBigInteger('sort')->default(0)->comment('排序');
             //单位
