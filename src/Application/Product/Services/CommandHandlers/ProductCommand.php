@@ -3,15 +3,29 @@
 namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 
 
+use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\Sku;
+use RedJasmine\Product\Application\Stock\Services\StockCommandService;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
+use RedJasmine\Product\Domain\Property\PropertyFormatter;
 use RedJasmine\Support\Application\CommandHandler;
-use RedJasmine\Support\Data\Data;
 
 class ProductCommand extends CommandHandler
 {
+
+    public function __construct(
+        protected BrandQueryService   $brandQueryService,
+        protected StockCommandService $stockCommandService,
+        protected PropertyFormatter   $propertyFormatter,
+    )
+    {
+        $this->stockCommandService->setOperator($this->getOperator());
+        parent::__construct();
+
+    }
+
 
     protected function defaultSku(Product $product) : ProductSku
     {

@@ -21,7 +21,6 @@ class ProductTestCase extends ApplicationTestCase
     }
 
 
-
     protected function create_properties($propertyNames) : array
     {
 
@@ -88,6 +87,19 @@ class ProductTestCase extends ApplicationTestCase
             'skus'       => $skus,
             'sale_props' => $saleProps
         ];
+
+    }
+
+
+    protected function buildBaseProperties($propertyNames = [
+        '年份季节' => '2024年春夏', // 单选
+        '款式'     => '其他',// 单选
+        '材质成分' => [ '亚麻' => 8, '兔毛' => 5, ],// 值参数
+        '重量'     => 54, // 输入类型
+        '吊牌价'   => 156, // 输入
+        '流行元素' => [ '流星元素', '亮片' ],// 多选
+    ])
+    {
 
     }
 

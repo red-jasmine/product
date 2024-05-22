@@ -15,15 +15,8 @@ use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 class ProductCreateCommandHandler extends ProductCommand
 {
 
-    public function __construct(
-        protected BrandQueryService $brandQueryService,
-        public StockCommandService  $stockCommandService,
-    )
-    {
-        $this->stockCommandService->setOperator($this->getOperator());
-        parent::__construct();
 
-    }
+
 
     // 需要组合 品牌服务、分类服务、卖家分类服务、属性服务
 
@@ -52,9 +45,7 @@ class ProductCreateCommandHandler extends ProductCommand
             switch ($command->isMultipleSpec) {
                 case true: // 多规格
 
-                    $propertyFormatter = new PropertyFormatter();
-                    // 获取规格信息 TODO 使用服务
-                    $saleProps = $propertyFormatter->formatArray($command->saleProps->toArray());
+                    $saleProps = $this->propertyFormatter->formatArray($command->saleProps->toArray());
                     // 规格验证 TODO
                     $product->info->sale_props = $saleProps;
 

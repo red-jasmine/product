@@ -51,7 +51,7 @@ class ProductCreateCommandTest extends ProductTestCase
 
 
         $command = (new ProductFaker())->createCommand($this->buildSkusData());
-
+        dd($command->saleProps);
         $command->isMultipleSpec = true;
         $this->commandService()->create($command);
 

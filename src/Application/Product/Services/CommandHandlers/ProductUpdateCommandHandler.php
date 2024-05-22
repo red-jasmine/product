@@ -3,29 +3,16 @@
 namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
-use RedJasmine\Product\Application\Stock\Services\StockCommandService;
 use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
-use RedJasmine\Product\Application\Stock\UserCases\StockInitCommand;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
-use RedJasmine\Product\Domain\Property\PropertyFormatter;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 
 class ProductUpdateCommandHandler extends ProductCommand
 {
 
-    public function __construct(
-        protected BrandQueryService $brandQueryService,
-        public StockCommandService  $stockCommandService,
-    )
-    {
-        $this->stockCommandService->setOperator($this->getOperator());
-        parent::__construct();
-
-    }
 
     public function handle(ProductUpdateCommand $command)
     {
@@ -46,9 +33,9 @@ class ProductUpdateCommandHandler extends ProductCommand
             switch ($command->isMultipleSpec) {
                 case true: // 多规格
 
-                    $propertyFormatter = new PropertyFormatter();
-                    // 获取规格信息 TODO 使用服务
-                    $saleProps = $propertyFormatter->formatArray($command->saleProps->toArray());
+
+                    // 获取规格信息
+                    $saleProps = $this->propertyFormatter->formatArray($command->saleProps->toArray());
 
                     // 规格验证 TODO
                     $product->info->sale_props = $saleProps;
