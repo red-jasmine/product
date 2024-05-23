@@ -26,8 +26,10 @@ class ProductProperty extends Model
     protected $fillable = [
         'id',
         'name',
+        'type',
+        'unit',
         'status',
-        'group_id', // TODO 验证
+        'group_id',
         'expands',
         'sort',
         'creator_type',
@@ -36,7 +38,7 @@ class ProductProperty extends Model
 
     protected $casts = [
         'expands' => 'array',
-        'status'      => PropertyStatusEnum::class
+        'status'  => PropertyStatusEnum::class
     ];
 
     public function scopeAvailable(Builder $query) : Builder

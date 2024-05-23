@@ -8,5 +8,5 @@ use RedJasmine\Support\Domain\Repositories\RepositoryInterface;
 
 interface ProductPropertyGroupRepositoryInterface extends RepositoryInterface
 {
-
+    public function findByName(string $name);
 }

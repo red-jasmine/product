@@ -14,23 +14,25 @@ class ProductPropertyValueFaker
     public function data() : array
     {
         return [
-            'group_id'    => 0,
-            'name'        => fake()->name,
-            'sort'        => fake()->randomNumber(),
-            'status'      => PropertyStatusEnum::ENABLE->value,
-            'expands' => [],
+            'group_id' => 0,
+            'name'     => fake()->word,
+            'unit'     => null,
+            'sort'     => fake()->randomNumber(),
+            'status'   => PropertyStatusEnum::ENABLE->value,
+            'expands'  => [],
         ];
     }
 
     public function createCommand(array $data) : ProductPropertyValueCreateCommand
     {
-        return ProductPropertyValueCreateCommand::from(array_merge($this->data(), $data));
+
+        return ProductPropertyValueCreateCommand::validateAndCreate(array_merge($this->data(), $data));
     }
 
 
     public function updateCommand(array $data) : ProductPropertyValueUpdateCommand
     {
-        return ProductPropertyValueUpdateCommand::from(array_merge($this->data(), $data));
+        return ProductPropertyValueUpdateCommand::validateAndCreate(array_merge($this->data(), $data));
     }
 
 }

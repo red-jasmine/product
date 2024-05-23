@@ -9,7 +9,6 @@ use RedJasmine\Product\Domain\Property\Models\ProductPropertyGroup;
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyGroupRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationCommandService;
 use RedJasmine\Support\Data\Data;
-use RedJasmine\Support\Helpers\ID\Snowflake;
 
 /**
  * @method ProductPropertyGroup create(ProductPropertyGroupCreateCommand $command)
@@ -27,11 +26,19 @@ class ProductPropertyGroupCommandService extends ApplicationCommandService
     }
 
 
-
     public function delete(Data $data) : void
     {
         throw new \RuntimeException(' does not support');
     }
+
+    public function newModel($data = null) : Model
+    {
+        if ($model = $this->repository->findByName($data->name)) {
+            return $model;
+        }
+        return parent::newModel($data);
+    }
+
 
 
 }

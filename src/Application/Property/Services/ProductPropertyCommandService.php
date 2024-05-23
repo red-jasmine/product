@@ -23,11 +23,8 @@ class ProductPropertyCommandService extends ApplicationCommandService
 
     protected function pipelines() : array
     {
-        return [
-            'create' => [
+        return [];
 
-            ],
-        ];
     }
 
 

@@ -23,13 +23,13 @@ class ProductPropertyGroupFaker
 
     public function createCommand(array $data = []) : ProductPropertyGroupCreateCommand
     {
-        return ProductPropertyGroupCreateCommand::from(array_merge($this->data(), $data));
+        return ProductPropertyGroupCreateCommand::validateAndCreate(array_merge($this->data(), $data));
     }
 
 
     public function updateCommand(array $data = []) : ProductPropertyGroupUpdateCommand
     {
-        return ProductPropertyGroupUpdateCommand::from(array_merge($this->data(), $data));
+        return ProductPropertyGroupUpdateCommand::validateAndCreate(array_merge($this->data(), $data));
     }
 
 }

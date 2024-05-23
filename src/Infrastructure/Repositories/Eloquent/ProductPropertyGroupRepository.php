@@ -12,4 +12,15 @@ class ProductPropertyGroupRepository extends EloquentRepository implements Produ
 {
     protected static string $eloquentModelClass = ProductPropertyGroup::class;
 
+    /**
+     * @param string $name
+     *
+     * @return ProductPropertyGroup|null
+     */
+    public function findByName(string $name) : ?ProductPropertyGroup
+    {
+        return static::$eloquentModelClass::where('name', $name)->first();
+    }
+
+
 }

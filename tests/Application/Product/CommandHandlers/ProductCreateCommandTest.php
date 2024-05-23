@@ -27,7 +27,7 @@ class ProductCreateCommandTest extends ProductTestCase
         $brand = $this->brandCommandService()->create(BrandCreateCommand::from([ 'name' => '李宁' ]));
 
         $data['brand_id'] = $brand->id;
-        $command = (new ProductFaker())->createCommand($data);
+        $command          = (new ProductFaker())->createCommand($data);
 
         $this->commandService()->create($command);
 
@@ -49,9 +49,10 @@ class ProductCreateCommandTest extends ProductTestCase
     public function test_can_create_multiple_spec_product() : void
     {
 
+        // 构件基础属性
 
         $command = (new ProductFaker())->createCommand($this->buildSkusData());
-        dd($command->saleProps);
+
         $command->isMultipleSpec = true;
         $this->commandService()->create($command);
 

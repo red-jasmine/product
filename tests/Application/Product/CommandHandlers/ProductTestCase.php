@@ -7,6 +7,7 @@ use RedJasmine\Product\Application\Property\Services\ProductPropertyCommandServi
 use RedJasmine\Product\Application\Property\Services\ProductPropertyValueCommandService;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyCreateCommand;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyValueCreateCommand;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
 use RedJasmine\Product\Domain\Property\PropertyFormatter;
 use RedJasmine\Product\Tests\Application\ApplicationTestCase;
 use RedJasmine\Product\Tests\Fixtures\Product\ProductFaker;
@@ -28,11 +29,11 @@ class ProductTestCase extends ApplicationTestCase
         $propertyValueCommandService = app(ProductPropertyValueCommandService::class);
         $properties                  = [];
         foreach ($propertyNames as $name => $valueNames) {
-            $property = $propertyCommandService->create(ProductPropertyCreateCommand::from([ 'name' => $name ]));
+            $property = $propertyCommandService->create(ProductPropertyCreateCommand::validateAndCreate([ 'name' => $name ]));
             $values   = [];
             // 创建值
             foreach ($valueNames as $valueName) {
-                $values[] = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::from([ 'pid' => $property->id, 'name' => $valueName ]));
+                $values[] = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::validateAndCreate([ 'pid' => $property->id, 'name' => $valueName ]));
             }
 
             $properties[] = [
@@ -47,8 +48,8 @@ class ProductTestCase extends ApplicationTestCase
 
 
     protected function buildSkusData($propertyNames = [
-        '颜色' => [ '白色', '黑色', '红色', '蓝色', '绿色' ],
-        '尺码' => [ 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL' ],
+        '颜色' => [ '白色', '黑色', '红色', ],
+        '尺码' => [ 'S', 'M', 'L', 'XL', ],
     ]) : array
     {
         $properties = $this->create_properties($propertyNames);
@@ -91,13 +92,112 @@ class ProductTestCase extends ApplicationTestCase
     }
 
 
+    protected function defaultProperties() : array
+    {
+        return [
+            [
+                'name'   => '颜色',
+                'type'   => PropertyTypeEnum::SELECT->value,
+                'values' => [
+                    [ 'name' => '白色' ],
+                    [ 'name' => '黑色' ],
+                    [ 'name' => '红色' ],
+                    [ 'name' => '蓝色' ],
+                    [ 'name' => '绿色' ],
+                ],
+            ],
+            [
+                'name'   => '尺码',
+                'type'   => PropertyTypeEnum::SELECT,
+                'values' => [
+                    [ 'name' => 'S', ],
+                    [ 'name' => 'M' ],
+                    [ 'name' => 'L' ],
+                    [ 'name' => 'XL' ],
+                    [ 'name' => 'XXL' ],
+                ],
+            ],
+            [
+                'name'   => '吊牌价',
+                'unit'   => '元',
+                'type'   => PropertyTypeEnum::TEXT->value,
+                'values' => [],
+            ],
+            [
+                'name'   => '款式',
+                'type'   => PropertyTypeEnum::SELECT->value,
+                'values' => [
+                    [ 'name' => '吊带' ],
+                    [ 'name' => '披肩' ],
+                    [ 'name' => '其他' ],
+                ],
+            ],
+            [
+                'name'   => '上市时间',
+                'type'   => PropertyTypeEnum::DATE->value,
+                'values' => [
+
+                ],
+            ],
+            [
+                'name'   => '年份季节',
+                'type'   => PropertyTypeEnum::TEXT->value,
+                'values' => [
+                    [ 'name' => '2024年春夏' ],
+                    [ 'name' => '2024年秋冬' ],
+                ],
+            ],
+            [
+                'name'   => '流行元素',
+                'type'   => PropertyTypeEnum::MULTIPLE->value,
+                'values' => [
+                    [ 'name' => '流星元素' ],
+                    [ 'name' => '亮片' ],
+                    [ 'name' => '露背' ],
+                    [ 'name' => '做旧' ],
+                ],
+            ],
+        ];
+    }
+
+
+    protected function createProperties(array $properties = null) : array
+    {
+
+        if ($properties === null) {
+            $properties = $this->defaultProperties();
+        }
+
+
+        $propertyCommandService      = app(ProductPropertyCommandService::class);
+        $propertyValueCommandService = app(ProductPropertyValueCommandService::class);
+        foreach ($properties as $propertyData) {
+            $property = $propertyCommandService->create(ProductPropertyCreateCommand::validateAndCreate($propertyData));
+            $values   = [];
+            // 创建值
+            foreach ($propertyData['values'] ?? [] as $valueData) {
+                $values[] = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::validateAndCreate([ 'pid' => $property->id, ...$valueData ]));
+            }
+
+            $properties[] = [
+                'property' => $property,
+                'values'   => $values,
+            ];
+
+        }
+
+        return $properties;
+
+
+    }
+
+
     protected function buildBaseProperties($propertyNames = [
-        '年份季节' => '2024年春夏', // 单选
-        '款式'     => '其他',// 单选
-        '材质成分' => [ '亚麻' => 8, '兔毛' => 5, ],// 值参数
-        '重量'     => 54, // 输入类型
-        '吊牌价'   => 156, // 输入
-        '流行元素' => [ '流星元素', '亮片' ],// 多选
+        '吊牌价'   => 168,
+        '上市时间' => '2024-05-01',
+        '年份季节' => [ '2024年春夏' ],
+        '流行元素' => [ '亮片', '露背' ],
+
     ])
     {
 

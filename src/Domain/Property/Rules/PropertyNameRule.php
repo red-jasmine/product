@@ -1,12 +1,12 @@
 <?php
 
-namespace RedJasmine\Product\Services\Property\Rules;
+namespace RedJasmine\Product\Domain\Property\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class PropertyTitleRule implements ValidationRule
+class PropertyNameRule implements ValidationRule
 {
     /**
      */
@@ -15,7 +15,7 @@ class PropertyTitleRule implements ValidationRule
 
         // 不能包含特殊字符
         if (Str::contains($value, [ ':', ';', ',' ])) {
-            $fail('属性名称不支持特殊符号');
+            $fail('名称不支持特殊符号');
         }
     }
 }

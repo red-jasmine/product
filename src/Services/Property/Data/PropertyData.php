@@ -3,7 +3,7 @@
 namespace RedJasmine\Product\Services\Property\Data;
 
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
-use RedJasmine\Product\Services\Property\Rules\PropertyTitleRule;
+use RedJasmine\Product\Domain\Property\Rules\PropertyNameRule;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
@@ -33,11 +33,11 @@ class PropertyData extends Data
     {
 
         return [
-            'name'     => [ 'required', 'max:30', new PropertyTitleRule() ],
+            'name'     => [ 'required', 'max:30', new PropertyNameRule() ],
             'extends'  => [ 'sometimes', 'nullable', 'array' ],
             'sort'     => [ 'integer' ],
             'group_id' => [ 'sometimes', 'nullable', 'integer' ],
-            'name'     => [ 'required', new PropertyTitleRule() ],
+            'name'     => [ 'required', new PropertyNameRule() ],
 
         ];
     }

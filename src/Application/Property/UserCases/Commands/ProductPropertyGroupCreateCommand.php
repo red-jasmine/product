@@ -2,9 +2,8 @@
 
 namespace RedJasmine\Product\Application\Property\UserCases\Commands;
 
-use Illuminate\Validation\Rule;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
-use RedJasmine\Product\Services\Property\Rules\PropertyTitleRule;
+use RedJasmine\Product\Domain\Property\Rules\PropertyNameRule;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
@@ -12,8 +11,8 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 class ProductPropertyGroupCreateCommand extends Data
 {
     public string             $name;
-    public int                $sort       = 0;
-    public PropertyStatusEnum $status     = PropertyStatusEnum::ENABLE;
+    public int                $sort    = 0;
+    public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
     public ?array             $expands = null;
 
     public static function attributes(...$args) : array
@@ -31,7 +30,7 @@ class ProductPropertyGroupCreateCommand extends Data
     {
 
         return [
-            'name'        => [ 'required', 'max:30', new PropertyTitleRule() ],
+            'name'    => [ 'required', 'max:64', new PropertyNameRule()],
             'expands' => [ 'sometimes', 'array' ],
 
         ];
