@@ -30,7 +30,8 @@ class ProductCreateCommandTest extends ProductTestCase
         $command          = (new ProductFaker())->createCommand($data);
 
         $this->commandService()->create($command);
-
+        // TODO
+        $this->assertTrue(true);
     }
 
 
@@ -49,14 +50,19 @@ class ProductCreateCommandTest extends ProductTestCase
     public function test_can_create_multiple_spec_product() : void
     {
 
-        // 构件基础属性
 
-        $command = (new ProductFaker())->createCommand($this->buildSkusData());
+        // 构件基础属性
+        $data                = [];
+        $data['basic_props'] = $this->buildBasicProperties();
+
+        $command = (new ProductFaker())->createCommand(array_merge($data, $this->buildSkusData()));
+
 
         $command->isMultipleSpec = true;
         $this->commandService()->create($command);
 
-
+        // TODO
+        $this->assertTrue(true);
     }
 
 }

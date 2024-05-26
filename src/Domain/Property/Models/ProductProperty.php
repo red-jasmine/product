@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
+use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
@@ -38,6 +39,7 @@ class ProductProperty extends Model
 
     protected $casts = [
         'expands' => 'array',
+        'type'    => PropertyTypeEnum::class,
         'status'  => PropertyStatusEnum::class
     ];
 

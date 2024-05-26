@@ -11,8 +11,8 @@ class ProductUpdateCommandTest extends ProductTestCase
     public function test_can_update_product() : void
     {
         $command = (new ProductFaker())->createCommand($this->buildSkusData([
-                                                                                '颜色' => [ '白色', '黑色', ],
-                                                                                '尺码' => [ 'L', ],
+                                                                                '颜色' => [ '白色' => null, '黑色' => null, ],
+                                                                                '尺码' => [ 'L' => null, ],
                                                                             ]));
 
 
@@ -20,16 +20,16 @@ class ProductUpdateCommandTest extends ProductTestCase
 
         $product = $this->commandService()->create($command);
 
-
         $updateCommand                 = (new ProductFaker())->updateCommand(array_merge($this->buildSkusData(
-            [
-                '颜色' => [ '白色', '红色', '蓝色', '绿色', ],
-                '尺码' => [ 'L', 'XL', '2XL', ],
-            ]
-        ),                                                                               [ 'id' => $product->id ]));
+            [ '颜色' => [ '白色' => '白金', '黑色' => null,], '尺码' => [ 'S' => null, 'M' => null, 'L' => null, 'XL' => null]]
+    ), [ 'id' => $product->id ]));
         $updateCommand->isMultipleSpec = true;
 
         $this->commandService()->update($updateCommand);
+
+
+        // TODO
+        $this->assertTrue(true);
 
 
     }

@@ -9,6 +9,6 @@ use RedJasmine\Support\Infrastructure\ReadRepositories\QueryBuilderReadRepositor
 class ProductReadRepository extends QueryBuilderReadRepository implements ProductReadRepositoryInterface
 {
 
-    public $modelClass = Product::class;
+    public static $modelClass = Product::class;
 
 }

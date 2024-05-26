@@ -5,20 +5,22 @@ namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 
 use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\Sku;
+use RedJasmine\Product\Application\Property\Services\PropertyValidateService;
 use RedJasmine\Product\Application\Stock\Services\StockCommandService;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
-use RedJasmine\Product\Domain\Property\PropertyFormatter;
+use RedJasmine\Product\Domain\Product\PropertyFormatter;
 use RedJasmine\Support\Application\CommandHandler;
 
 class ProductCommand extends CommandHandler
 {
 
     public function __construct(
-        protected BrandQueryService   $brandQueryService,
-        protected StockCommandService $stockCommandService,
-        protected PropertyFormatter   $propertyFormatter,
+        protected BrandQueryService       $brandQueryService,
+        protected StockCommandService     $stockCommandService,
+        protected PropertyFormatter       $propertyFormatter,
+        protected PropertyValidateService $propertyValidateService,
     )
     {
         $this->stockCommandService->setOperator($this->getOperator());
@@ -93,15 +95,10 @@ class ProductCommand extends CommandHandler
         $product->info->height      = $command->height;
         $product->info->length      = $command->length;
         $product->info->size        = $command->size;
-        $product->info->basic_props = $command->basicProps;
-        $product->info->sale_props  = $command->saleProps;
         $product->info->remarks     = $command->remarks;
         $product->info->tools       = $command->tools;
         $product->info->expands     = $command->expands;
-        $product->info->basic_props = $command->basicProps;
-        $product->info->sale_props  = $command->saleProps;
-
-
+        $product->info->basic_props = $this->propertyValidateService->basicProps($command->basicProps?->toArray()??[]);
     }
 
 

@@ -12,7 +12,6 @@ class ProductPropertyValueCreateCommand extends Data
 {
     public int                $pid;
     public string             $name;
-    public ?string            $unit;
     public int                $sort    = 0;
     public int                $groupId = 0;
     public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
@@ -24,7 +23,6 @@ class ProductPropertyValueCreateCommand extends Data
         return [
             'pid'      => '属性ID',
             'name'     => '名称',
-            'unit'     => '单位',
             'expands'  => '扩展参数',
             'sort'     => '排序',
             'group_id' => '分组',
@@ -38,7 +36,6 @@ class ProductPropertyValueCreateCommand extends Data
         return [
             'pid'      => [ 'required', 'integer' ],
             'name'     => [ 'required', 'max:64',  new PropertyNameRule()],
-            'unit'     => [ 'sometimes', 'max:10', ],
             'expands'  => [ 'sometimes', 'nullable', 'array' ],
             'sort'     => [ 'integer' ],
             'group_id' => [ 'sometimes', 'nullable', 'integer' ],

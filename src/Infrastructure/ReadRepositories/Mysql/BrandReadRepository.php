@@ -13,6 +13,6 @@ class BrandReadRepository extends QueryBuilderReadRepository implements BrandRea
     /**
      * @var $modelClass class-string
      */
-    protected string $modelClass = Brand::class;
+    protected static string $modelClass = Brand::class;
 
 }

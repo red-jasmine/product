@@ -24,6 +24,7 @@ use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\BrandReadRepository
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductCategoryReadRepository;
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductPropertyGroupReadRepository;
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductPropertyReadRepository;
+use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductPropertyValueReadRepository;
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductReadRepository;
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductSellerCategoryReadRepository;
 use RedJasmine\Product\Infrastructure\ReadRepositories\Mysql\ProductSeriesReadRepository;
@@ -58,7 +59,7 @@ class ProductApplicationServiceProvider extends ServiceProvider
         $this->app->bind(ProductPropertyReadRepositoryInterface::class, ProductPropertyReadRepository::class);
 
         $this->app->bind(ProductPropertyValueRepositoryInterface::class, ProductPropertyValueRepository::class);
-        $this->app->bind(ProductPropertyValueReadRepositoryInterface::class, ProductPropertyValueRepository::class);
+        $this->app->bind(ProductPropertyValueReadRepositoryInterface::class, ProductPropertyValueReadRepository::class);
 
 
         $this->app->bind(ProductSeriesRepositoryInterface::class, ProductSeriesRepository::class);

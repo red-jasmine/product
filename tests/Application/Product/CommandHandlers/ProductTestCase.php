@@ -3,14 +3,16 @@
 namespace RedJasmine\Product\Tests\Application\Product\CommandHandlers;
 
 use RedJasmine\Product\Application\Product\Services\ProductCommandService;
+use RedJasmine\Product\Application\Product\UserCases\Commands\Property;
 use RedJasmine\Product\Application\Property\Services\ProductPropertyCommandService;
 use RedJasmine\Product\Application\Property\Services\ProductPropertyValueCommandService;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyCreateCommand;
 use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyValueCreateCommand;
+use RedJasmine\Product\Domain\Product\PropertyFormatter;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
-use RedJasmine\Product\Domain\Property\PropertyFormatter;
+use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyRepositoryInterface;
+use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyValueRepositoryInterface;
 use RedJasmine\Product\Tests\Application\ApplicationTestCase;
-use RedJasmine\Product\Tests\Fixtures\Product\ProductFaker;
 
 class ProductTestCase extends ApplicationTestCase
 {
@@ -22,18 +24,26 @@ class ProductTestCase extends ApplicationTestCase
     }
 
 
-    protected function create_properties($propertyNames) : array
+    protected function createProperties($propertyNames) : array
     {
 
-        $propertyCommandService      = app(ProductPropertyCommandService::class);
+        $propertyCommandService = app(ProductPropertyCommandService::class);
+
         $propertyValueCommandService = app(ProductPropertyValueCommandService::class);
+        $propertyRepository          = app(ProductPropertyRepositoryInterface::class);
+        $propertyValueRepository     = app(ProductPropertyValueRepositoryInterface::class);
         $properties                  = [];
-        foreach ($propertyNames as $name => $valueNames) {
-            $property = $propertyCommandService->create(ProductPropertyCreateCommand::validateAndCreate([ 'name' => $name ]));
-            $values   = [];
+        foreach ($propertyNames as $propertyData) {
+            if (!$property = $propertyRepository->findByName($propertyData['name'])) {
+                $property = $propertyCommandService->create(ProductPropertyCreateCommand::validateAndCreate($propertyData));
+            }
+            $values = [];
             // 创建值
-            foreach ($valueNames as $valueName) {
-                $values[] = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::validateAndCreate([ 'pid' => $property->id, 'name' => $valueName ]));
+            foreach ($propertyData['values'] ?? [] as $valueData) {
+                if (!$value = $propertyValueRepository->findByNameInProperty($property->id, $valueData['name'])) {
+                    $value = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::validateAndCreate(array_merge([ 'pid' => $property->id ], $valueData)));
+                }
+                $values[] = $value;
             }
 
             $properties[] = [
@@ -47,20 +57,30 @@ class ProductTestCase extends ApplicationTestCase
     }
 
 
-    protected function buildSkusData($propertyNames = [
-        '颜色' => [ '白色', '黑色', '红色', ],
-        '尺码' => [ 'S', 'M', 'L', 'XL', ],
+    protected function buildSkusData($skuPropertyNames = [
+        '颜色' => [ '白色' => '白金', '黑色' => null, '红色' => null, ],
+        '尺码' => [ 'S' => null, 'M' => null, 'L' => null, 'XL' => null, ],
     ]) : array
     {
-        $properties = $this->create_properties($propertyNames);
 
-        $saleProps = [];
-        foreach ($properties as $item) {
-            $saleProps[] = [
-                'pid' => $item['property']->id,
-                'vid' => collect($item['values'])->pluck('id')->toArray(),
-            ];
+        $saleProperties = [];
+        // 构建属性参数
+        $propertyRepository      = app(ProductPropertyRepositoryInterface::class);
+        $propertyValueRepository = app(ProductPropertyValueRepositoryInterface::class);
+        foreach ($skuPropertyNames as $name => $values) {
+            $saleProperty        = [];
+            $property            = $propertyRepository->findByName($name);
+            $saleProperty['pid'] = $property->id;
+
+            foreach ($values as $valueName => $valueNameAlias) {
+                $value                             = $propertyValueRepository->findByNameInProperty($property->id, $valueName);
+                $saleProperty['value'][$value->id] = $valueNameAlias;
+            }
+            // 判断类型
+            $saleProperties[] = $saleProperty;
         }
+
+        $saleProps = collect(Property::collect($saleProperties))->toArray();
 
         $skuProperties = app(PropertyFormatter::class)->crossJoinToString($saleProps);
 
@@ -70,20 +90,16 @@ class ProductTestCase extends ApplicationTestCase
         foreach ($skuProperties as $property) {
             $skus[] = [
                 'properties'   => $property,
-                'stock'        => fake()->numberBetween(1, 10),
                 'image'        => fake()->imageUrl(),
                 'barcode'      => fake()->ean13(),
+                'outer_id'     => fake()->numerify('########'),
+                'stock'        => fake()->numberBetween(1, 10),
                 'price'        => fake()->numberBetween(100, 1000),
                 'market_price' => fake()->numberBetween(100, 1000),
                 'cost_price'   => fake()->numberBetween(100, 1000),
-                'outer_id'     => fake()->numerify('########'),
                 'safety_stock' => fake()->numberBetween(100, 1000),
-
             ];
-
         }
-
-
         return [
             'skus'       => $skus,
             'sale_props' => $saleProps
@@ -92,9 +108,9 @@ class ProductTestCase extends ApplicationTestCase
     }
 
 
-    protected function defaultProperties() : array
+    protected function initProperties() : void
     {
-        return [
+        $inits = [
             [
                 'name'   => '颜色',
                 'type'   => PropertyTypeEnum::SELECT->value,
@@ -141,7 +157,7 @@ class ProductTestCase extends ApplicationTestCase
             ],
             [
                 'name'   => '年份季节',
-                'type'   => PropertyTypeEnum::TEXT->value,
+                'type'   => PropertyTypeEnum::SELECT->value,
                 'values' => [
                     [ 'name' => '2024年春夏' ],
                     [ 'name' => '2024年秋冬' ],
@@ -158,49 +174,53 @@ class ProductTestCase extends ApplicationTestCase
                 ],
             ],
         ];
-    }
 
 
-    protected function createProperties(array $properties = null) : array
-    {
-
-        if ($properties === null) {
-            $properties = $this->defaultProperties();
-        }
-
-
-        $propertyCommandService      = app(ProductPropertyCommandService::class);
-        $propertyValueCommandService = app(ProductPropertyValueCommandService::class);
-        foreach ($properties as $propertyData) {
-            $property = $propertyCommandService->create(ProductPropertyCreateCommand::validateAndCreate($propertyData));
-            $values   = [];
-            // 创建值
-            foreach ($propertyData['values'] ?? [] as $valueData) {
-                $values[] = $propertyValueCommandService->create(ProductPropertyValueCreateCommand::validateAndCreate([ 'pid' => $property->id, ...$valueData ]));
-            }
-
-            $properties[] = [
-                'property' => $property,
-                'values'   => $values,
-            ];
-
-        }
-
-        return $properties;
-
+        $this->createProperties($inits);
 
     }
 
 
-    protected function buildBaseProperties($propertyNames = [
+    protected function buildBasicProperties($basePropertyNames = [
         '吊牌价'   => 168,
         '上市时间' => '2024-05-01',
-        '年份季节' => [ '2024年春夏' ],
+        '年份季节' => '2024年春夏',
         '流行元素' => [ '亮片', '露背' ],
 
-    ])
+    ]) : array
     {
+        $baseProperties = [];
+        // 构建属性参数
+        $propertyRepository      = app(ProductPropertyRepositoryInterface::class);
+        $propertyValueRepository = app(ProductPropertyValueRepositoryInterface::class);
+        foreach ($basePropertyNames as $name => $values) {
+            $baseProperty        = [];
+            $property            = $propertyRepository->findByName($name);
+            $baseProperty['pid'] = $property->id;
+            switch ($property->type) {
+                case PropertyTypeEnum::TEXT:
+                case PropertyTypeEnum::DATE:
+                    $baseProperty['value'] = (string)$values;
+                    break;
+                case PropertyTypeEnum::SELECT:
+                    $value                 = $propertyValueRepository->findByNameInProperty($property->id, $values);
+                    $baseProperty['value'] = $value->id;
+                    break;
+                case PropertyTypeEnum::MULTIPLE:
+                    foreach ($values as $valueName) {
+                        $value                   = $propertyValueRepository->findByNameInProperty($property->id, $valueName);
+                        $baseProperty['value'][] = $value->id;
+                    }
 
+                    break;
+            }
+            // 判断类型
+            $baseProperties[] = $baseProperty;
+        }
+
+        $result = Property::collect($baseProperties);
+
+        return collect($result)->toArray();
     }
 
 }

@@ -14,6 +14,6 @@ class ProductPropertyGroupReadRepository extends QueryBuilderReadRepository impl
     /**
      * @var $modelClass class-string
      */
-    protected string $modelClass = ProductPropertyGroup::class;
+    protected static string $modelClass = ProductPropertyGroup::class;
 
 }

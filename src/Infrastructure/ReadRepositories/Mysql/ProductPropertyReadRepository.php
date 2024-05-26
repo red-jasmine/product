@@ -14,6 +14,17 @@ class ProductPropertyReadRepository extends QueryBuilderReadRepository implement
     /**
      * @var $modelClass class-string
      */
-    protected string $modelClass = ProductProperty::class;
+    protected static string $modelClass = ProductProperty::class;
+
+    /**
+     * @param array $ids
+     *
+     * @return ProductProperty[]||null
+     */
+    public function findByIds(array $ids)
+    {
+        return static::$modelClass::query()->whereIn('id', $ids)->get();
+    }
+
 
 }

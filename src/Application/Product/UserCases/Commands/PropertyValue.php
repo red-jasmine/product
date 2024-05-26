@@ -8,10 +8,15 @@ use Spatie\LaravelData\Optional;
 class PropertyValue extends Data
 {
 
-    public string|Optional $name;
+    /**
+     * 属性值ID 为0 是 输入类型
+     * @var int|string|null
+     */
+    public null|int|string $vid;
     /**
      * 属性值
-     * @var int|array|string
+     * @var string|Optional
      */
-    public int|array|string $vid;
+    public string|Optional $name;
+
 }

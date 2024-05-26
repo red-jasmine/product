@@ -16,7 +16,6 @@ class ProductPropertyValueFaker
         return [
             'group_id' => 0,
             'name'     => fake()->word,
-            'unit'     => null,
             'sort'     => fake()->randomNumber(),
             'status'   => PropertyStatusEnum::ENABLE->value,
             'expands'  => [],

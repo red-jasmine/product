@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Product\Domain\Property;
+namespace RedJasmine\Product\Domain\Product;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -48,8 +48,7 @@ class PropertyFormatter
      */
     public function crossJoinToString(array $props = []) : array
     {
-        $crossJoin = $this->crossJoinToArray($props);
-
+        $crossJoin         = $this->crossJoinToArray($props);
         $crossJoinTextList = [];
         foreach ($crossJoin as $item) {
             $crossJoinTextList[] = $this->toString($item);
@@ -69,9 +68,9 @@ class PropertyFormatter
         $skuProperties = [];
         foreach ($props as $item) {
             $pid            = (int)$item['pid'];
-            $values         = $item['vid'] ?? [];
+            $values         = $item['value'] ?? [];
             $propertyValues = [];
-            foreach ($values as $vid) {
+            foreach ($values as $vid => $alias) {
                 $propertyValues[] = [ 'pid' => $pid, 'vid' => (int)$vid ];
             }
             $skuProperties[] = $propertyValues;

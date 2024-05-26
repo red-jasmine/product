@@ -14,6 +14,6 @@ class ProductSellerCategoryReadRepository extends QueryBuilderReadRepository imp
     /**
      * @var $modelClass class-string
      */
-    protected string $modelClass = ProductSellerCategory::class;
+    protected static string $modelClass = ProductSellerCategory::class;
 
 }

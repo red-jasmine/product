@@ -14,6 +14,11 @@ interface ProductPropertyRepositoryInterface extends RepositoryInterface
 {
 
 
+    /**
+     * @param string $name
+     *
+     * @return ProductProperty
+     */
     public function findByName(string $name);
 
 }
