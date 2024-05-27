@@ -114,7 +114,7 @@ abstract class AbstractStockAction extends ResourceAction
             // 添加更变日志
             // 添加更变日志
             $productStockLog = $this->service->log(
-                ProductStockTypeEnum::RESET,
+                ProductStockTypeEnum::SET,
                 $data->productId,
                 $data->skuId,
                 $quantity,

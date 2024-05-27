@@ -14,7 +14,7 @@ class ProductUpdateCommandTest extends ProductTestCase
 
         $command = (new ProductFaker())->createCommand($this->buildSkusData([
                                                                                 '颜色' => [ '白色' => null, '黑色' => null, ],
-                                                                                '尺码' => [ 'L' => null, ],
+                                                                                '尺码' => [ 'L' => null,'M' => null, 'XL' => null],
                                                                             ]));
 
 
@@ -23,9 +23,10 @@ class ProductUpdateCommandTest extends ProductTestCase
         $product = $this->commandService()->create($command);
 
 
+
         $skus          = $this->buildSkusData(
             [
-                '颜色' => [ '白色' => '白金', '黑色' => null, ],
+                '颜色' => [ '白色' => '白金', '黑色' => null,'绿色' => null, ],
                 '尺码' => [ 'S' => null, 'M' => null, 'L' => null, 'XL' => null ]
             ]
         );

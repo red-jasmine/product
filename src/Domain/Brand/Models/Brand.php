@@ -72,4 +72,9 @@ class Brand extends Model
         return $this;
     }
 
+    public function isAllowUse() : bool
+    {
+        return $this->status === BrandStatusEnum::ENABLE;
+    }
+
 }

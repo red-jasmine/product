@@ -6,10 +6,12 @@ use Illuminate\Support\Collection;
 use RedJasmine\Product\Application\Product\UserCases\Commands\Sku;
 use RedJasmine\Product\Domain\Product\Models\ValueObjects\Property;
 use RedJasmine\Product\Domain\Product\Models\ValueObjects\PropValue;
+use RedJasmine\Product\Domain\Product\PropertyFormatter;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
 use RedJasmine\Product\Domain\Property\Models\ProductProperty;
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyReadRepositoryInterface;
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyValueReadRepositoryInterface;
+use RedJasmine\Product\Exceptions\ProductPropertyException;
 
 /**
  * 属性验证服务
@@ -19,6 +21,7 @@ class PropertyValidateService
     public function __construct(
         protected ProductPropertyReadRepositoryInterface      $propertyReadRepository,
         protected ProductPropertyValueReadRepositoryInterface $valueReadRepository,
+        protected PropertyFormatter                           $propertyFormatter,
     )
     {
 
@@ -130,10 +133,61 @@ class PropertyValidateService
      * @param Collection<Sku>      $skus
      *
      * @return Collection
+     * @throws ProductPropertyException
      */
     public function validateSkus(Collection $saleProps, Collection $skus) : Collection
     {
-        dd($saleProps);
+        // 验证总数量
+        foreach ($skus as $sku) {
+            $sku->properties     = $this->propertyFormatter->formatString($sku->properties);
+            $sku->propertiesName = $this->buildSkuName($saleProps, $sku);
+        }
 
+        $crossJoinString = $this->propertyFormatter->crossJoinToString($saleProps->toArray());
+        $skuProperties   = $skus->pluck('properties')->unique()->toArray();
+        // 对比数量
+
+        if (count($crossJoinString) !== count($skus)) {
+            throw new ProductPropertyException('cross join too many properties');
+        }
+
+        $diff = collect($crossJoinString)->diff($skuProperties);
+
+
+        if ($diff->count() > 0) {
+            throw new ProductPropertyException('cross join too many properties');
+        }
+
+        return $skus;
+    }
+
+    /**
+     * @param Collection $saleProps
+     * @param Sku        $sku
+     *
+     * @return string
+     * @throws ProductPropertyException
+     */
+    protected function buildSkuName(Collection $saleProps, Sku $sku) : string
+    {
+        $propertiesArray = $this->propertyFormatter->toArray($sku->properties);
+        $labels          = [];
+        foreach ($propertiesArray as $property) {
+            $pid      = $property['pid'];
+            $vid      = $property['vid'][0];
+            $property = $saleProps->where('pid', $pid)->first();
+
+            $value = $property->values->where('vid', $vid)->first();
+
+            $labels[] = [
+                'pid'   => $property->pid,
+                'vid'   => $value->vid,
+                'name'  => $property->name,
+                'value' => $value->name,
+                'alias' => $value->alias,
+            ];
+        }
+
+        return $this->propertyFormatter->toNameString($labels);
     }
 }

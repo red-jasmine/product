@@ -9,6 +9,7 @@ use Spatie\LaravelData\Optional;
 class Sku extends Data
 {
     public string                $properties;
+    public ?string               $propertiesName;
     public string                $price;
     public ProductStatusEnum     $status      = ProductStatusEnum::ON_SALE;
     public int                   $stock       = 0;

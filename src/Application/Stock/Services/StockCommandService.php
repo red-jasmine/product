@@ -44,38 +44,6 @@ class StockCommandService extends ApplicationCommandService
         }
         return $quantity;
     }
-
-
-    /**
-     * 初始化库存
-     *
-     * @param StockCommand $command
-     *
-     * @return void
-     * @throws ProductStockException
-     * @throws Exception|Throwable
-     */
-    public function init(StockCommand $command) : void
-    {
-        try {
-            DB::beginTransaction();
-            $command->stock = $this->validateQuantity($command->stock);
-
-            $sku             = ProductSku::make();
-            $sku->id         = $command->skuId;
-            $sku->product_id = $command->productId;
-
-            $this->repository->init($sku, $command->stock);
-            $this->log(ProductStockTypeEnum::INIT, $command);
-            DB::commit();
-        } catch (\Throwable $throwable) {
-            DB::rollBack();
-            throw  $throwable;
-        }
-
-    }
-
-
     /**
      * 重置库存
      *
@@ -86,23 +54,23 @@ class StockCommandService extends ApplicationCommandService
      * @throws Throwable
      * @throws StockException
      */
-    public function reset(StockCommand $command) : void
+    public function set(StockCommand $command) : void
     {
         try {
             DB::beginTransaction();
             $command->stock = $this->validateQuantity($command->stock);
             $sku            = $this->repository->find($command->skuId);
             $stock          = $this->repository->reset($sku, $command->stock);
-            $this->log(ProductStockTypeEnum::RESET, $command, $stock);
+            $this->log(ProductStockTypeEnum::SET, $command, $stock);
 
             DB::commit();
         } catch (\Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
-
-
     }
+
+
 
 
     public function add(StockCommand $command) : void
@@ -207,12 +175,11 @@ class StockCommandService extends ApplicationCommandService
         $log->creator       = $this->getOperator();
 
         switch ($stockType) {
-            case ProductStockTypeEnum::INIT:
             case ProductStockTypeEnum::ADD:
                 $log->stock      = $command->stock;
                 $log->lock_stock = 0;
                 break;
-            case ProductStockTypeEnum::RESET:
+            case ProductStockTypeEnum::SET:
                 $log->stock      = $restStock;
                 $log->lock_stock = 0;
                 break;
@@ -234,7 +201,7 @@ class StockCommandService extends ApplicationCommandService
         }
 
         $hasLog = true;
-        if ($stockType === ProductStockTypeEnum::RESET && $restStock === 0) {
+        if ($stockType === ProductStockTypeEnum::SET && $restStock === 0) {
             $hasLog = false;
         }
         if ($hasLog) {

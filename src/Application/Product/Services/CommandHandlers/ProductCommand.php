@@ -4,23 +4,36 @@ namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 
 
 use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
+use RedJasmine\Product\Application\Category\Services\ProductCategoryQueryService;
+use RedJasmine\Product\Application\Product\Services\ProductCommandService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\Sku;
 use RedJasmine\Product\Application\Property\Services\PropertyValidateService;
 use RedJasmine\Product\Application\Stock\Services\StockCommandService;
+use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Domain\Product\PropertyFormatter;
+use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
+use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
+use RedJasmine\Product\Exceptions\ProductException;
+use RedJasmine\Product\Exceptions\ProductPropertyException;
+use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Support\Application\CommandHandler;
+use Throwable;
 
+/**
+ * @method  ProductCommandService getService()
+ */
 class ProductCommand extends CommandHandler
 {
 
     public function __construct(
-        protected BrandQueryService       $brandQueryService,
-        protected StockCommandService     $stockCommandService,
-        protected PropertyFormatter       $propertyFormatter,
-        protected PropertyValidateService $propertyValidateService,
+        protected BrandQueryService           $brandQueryService,
+        protected StockCommandService         $stockCommandService,
+        protected PropertyFormatter           $propertyFormatter,
+        protected PropertyValidateService     $propertyValidateService,
+        protected ProductCategoryQueryService $categoryQueryService,
     )
     {
         $this->stockCommandService->setOperator($this->getOperator());
@@ -33,7 +46,7 @@ class ProductCommand extends CommandHandler
     {
         $sku                  = new ProductSku();
         $sku->id              = $product->id;
-        $sku->properties      = '000000:000000;';
+        $sku->properties      = '';
         $sku->properties_name = '';
         $sku->price           = $product->price;
         $sku->cost_price      = $product->cost_price;
@@ -99,22 +112,118 @@ class ProductCommand extends CommandHandler
         $product->info->tools       = $command->tools;
         $product->info->expands     = $command->expands;
 
-        $product->info->basic_props = $this->propertyValidateService->basicProps($command->basicProps?->toArray()??[]);
+        $product->info->basic_props = $this->propertyValidateService->basicProps($command->basicProps?->toArray() ?? []);
     }
 
 
     protected function fillSku(ProductSku $sku, Sku $data) : void
     {
-        $sku->properties   = $data->properties;
-        $sku->image        = $data->image;
-        $sku->barcode      = $data->barcode;
-        $sku->outer_id     = $data->outerId;
-        $sku->properties   = $data->properties;
-        $sku->price        = $data->price;
-        $sku->safety_stock = $data->safetyStock;
-        $sku->market_price = $data->marketPrice;
-        $sku->cost_price   = $data->costPrice;
-        $sku->status       = $data->status;
-        $sku->deleted_at   = null;
+        $sku->properties      = $data->properties;
+        $sku->properties_name = $data->propertiesName;
+        $sku->image           = $data->image;
+        $sku->barcode         = $data->barcode;
+        $sku->outer_id        = $data->outerId;
+        $sku->properties      = $data->properties;
+        $sku->price           = $data->price;
+        $sku->safety_stock    = $data->safetyStock;
+        $sku->market_price    = $data->marketPrice;
+        $sku->cost_price      = $data->costPrice;
+        $sku->status          = $data->status;
+        $sku->deleted_at      = null;
     }
+
+
+    /**
+     * @param Product                                                            $product
+     * @param \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command
+     *
+     * @return void
+     * @throws ProductPropertyException
+     * @throws ProductException
+     */
+    public function handleCore(Product $product, \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command) : void
+    {
+        // 基础验证
+        // 验证 销售属性和 规格一一对应
+        $this->fillProduct($product, $command);
+
+        try {
+            if ($product->brand_id && !$this->brandQueryService->isAllowUse($product->brand_id)) {
+                throw new ProductException('品牌不可使用');
+            }
+        } catch (\Throwable $exception) {
+            throw new ProductException('品牌不可使用');
+        }
+        try {
+            if ($product->category_id && !$this->categoryQueryService->isAllowUse($product->category_id)) {
+                throw new ProductException('类目不可使用');
+            }
+        } catch (\Throwable $exception) {
+            throw new ProductException('类目不可使用');
+        }
+
+        // 多规格区别处理
+        switch ($command->isMultipleSpec) {
+            case true: // 多规格
+
+                $saleProps                 = $this->propertyValidateService->saleProps($command->saleProps->toArray());
+                $product->info->sale_props = $saleProps->toArray();
+                // 验证规格
+
+                // 加入默认规格
+                $defaultSku = $product->skus->where('properties', '')->first() ?? $this->defaultSku($product);
+                $defaultSku->setDeleted();
+                $product->addSku($defaultSku);
+
+                $this->propertyValidateService->validateSkus($saleProps, $command->skus);
+                $command->skus?->each(function ($skuData) use ($product) {
+                    $sku     = $product->skus->where('properties', $skuData->properties)->first() ?? new ProductSku();
+                    $sku->id = $sku->id ?? $this->getService()->buildId();
+                    $this->fillSku($sku, $skuData);
+                    $product->addSku($sku);
+                });
+
+
+                break;
+            case false: // 单规格
+
+                $product->info->sale_props = [];
+                $sku                       = $this->defaultSku($product);
+                $product->addSku($sku);
+                break;
+        }
+    }
+
+    /**
+     * @param Product                                                            $product
+     * @param \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command
+     *
+     * @return void
+     * @throws StockException
+     * @throws ProductStockException
+     * @throws Throwable
+     */
+    protected function handleStock(Product $product, \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command) : void
+    {
+
+        // 修改库存 把 删除的库存设置为 0
+        $skuCommand = $command->skus?->keyBy('properties');
+
+        foreach ($product->skus as $sku) {
+            $stock = $skuCommand[$sku->properties]?->stock ?? $command->stock;
+            if ($sku->deleted_at) {
+                $stock = 0;
+            }
+            $this->stockCommandService->set(StockCommand::from(
+                [
+                    'product_id'  => $sku->product_id,
+                    'sku_id'      => $sku->id,
+                    'stock'       => $stock,
+                    'change_type' => ProductStockChangeTypeEnum::SELLER->value
+                ])
+            );
+        }
+    }
+
+
 }

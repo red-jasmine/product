@@ -33,4 +33,10 @@ class ProductSku extends Model
     }
 
 
+    public function setDeleted()
+    {
+        $this->deleted_at = $this->deleted_at ?? now();
+        $this->status     = ProductStatusEnum::DELETED;
+    }
+
 }

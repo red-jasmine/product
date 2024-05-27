@@ -26,8 +26,9 @@ class ProductCreateCommandTest extends ProductTestCase
 
         $brand = $this->brandCommandService()->create(BrandCreateCommand::from([ 'name' => '李宁' ]));
 
-        $data['brand_id'] = $brand->id;
-        $command          = (new ProductFaker())->createCommand($data);
+        $data['brand_id']    = $brand->id;
+        $data['category_id'] = 0;
+        $command             = (new ProductFaker())->createCommand($data);
 
         $this->commandService()->create($command);
         // TODO

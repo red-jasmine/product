@@ -9,8 +9,7 @@ enum ProductStockTypeEnum: string
 
     use EnumsHelper;
 
-    case INIT = 'init';
-    case RESET = 'reset';
+    case SET = 'set';
     case ADD = 'add';
     case SUB = 'sub';
     case LOCK = 'lock';
@@ -21,8 +20,7 @@ enum ProductStockTypeEnum: string
     public static function labels() : array
     {
         return [
-            self::RESET->value   => '重置',
-            self::INIT->value    => '初始化',
+            self::SET->value     => '设置',
             self::ADD->value     => '增加',
             self::SUB->value     => '扣减',
             self::LOCK->value    => '锁定',

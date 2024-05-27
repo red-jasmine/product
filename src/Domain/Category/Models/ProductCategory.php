@@ -82,6 +82,10 @@ class ProductCategory extends Model
             return false;
         }
 
+        if ($this->status !== CategoryStatusEnum::ENABLE) {
+            return false;
+        }
+        // TODO 所有上级是否支持使用
         return true;
     }
 

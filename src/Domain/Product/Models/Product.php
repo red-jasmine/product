@@ -100,7 +100,9 @@ class Product extends Model
     public function addSku(ProductSku $sku) : static
     {
         $sku->product_id = $this->id;
-        $this->skus->push($sku);
+        if (!$this->skus->where('id', $sku->id)->first()) {
+            $this->skus->push($sku);
+        }
         return $this;
 
     }

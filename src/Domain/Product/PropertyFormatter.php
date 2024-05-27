@@ -11,6 +11,23 @@ class PropertyFormatter
 
 
     /**
+     * 转换规格名称
+     *
+     * @param array $labels
+     *
+     * @return string
+     */
+    public function toNameString(array $labels) : string
+    {
+        $labelString = [];
+        foreach ($labels as $label) {
+            $labelString[] = implode(':', [ $label['name'], filled($label['alias'] ?? '') ? $label['alias'] : $label['value'] ]);
+        }
+
+        return implode(';', $labelString);
+    }
+
+    /**
      * @param string|null $value
      *
      * @return string
@@ -108,7 +125,7 @@ class PropertyFormatter
             $properties[$pid] = $pid . ':' . implode(',', $values);
         }
         asort($properties);
-        return Str::finish(implode(';', $properties), ';');
+        return implode(';', $properties);
 
     }
 
