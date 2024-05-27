@@ -12,9 +12,6 @@ use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Size;
-use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class Product extends Data
 {
@@ -28,6 +25,7 @@ class Product extends Data
 
     public UserData $owner;
 
+    public ?UserData $supplier;
 
 
     public string $title;
@@ -67,6 +65,8 @@ class Product extends Data
     public bool $isBenefit   = false;
     public int  $safetyStock = 0;
 
+    public ?int $supplierProductId = null;
+
 
     public ?string $keywords    = null;
     public ?string $description = null;
@@ -105,8 +105,6 @@ class Product extends Data
      * @var Collection<Sku>|null
      */
     public ?Collection $skus = null;
-
-
 
 
 }

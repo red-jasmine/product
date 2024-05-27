@@ -61,38 +61,41 @@ class ProductCommand extends CommandHandler
 
     protected function fillProduct(Product $product, \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command) : void
     {
-        $product->owner              = $command->owner;
-        $product->product_type       = $command->productType;
-        $product->shipping_type      = $command->shippingType;
-        $product->title              = $command->title;
-        $product->image              = $command->image;
-        $product->barcode            = $command->barcode;
-        $product->outer_id           = $command->outerId;
-        $product->is_multiple_spec   = $command->isMultipleSpec;
-        $product->sort               = $command->sort;
-        $product->unit               = $command->unit;
-        $product->status             = $command->status;
-        $product->price              = $command->price;
-        $product->market_price       = $command->marketPrice;
-        $product->cost_price         = $command->costPrice;
-        $product->brand_id           = $command->brandId;
-        $product->category_id        = $command->categoryId;
-        $product->seller_category_id = $command->sellerCategoryId;
-        $product->freight_payer      = $command->freightPayer;
-        $product->postage_id         = $command->postageId;
-        $product->min_limit          = $command->minLimit;
-        $product->max_limit          = $command->maxLimit;
-        $product->step_limit         = $command->stepLimit;
-        $product->sub_stock          = $command->subStock;
-        $product->delivery_time      = $command->deliveryTime;
-        $product->vip                = $command->vip;
-        $product->points             = $command->points;
-        $product->is_hot             = $command->isHot;
-        $product->is_new             = $command->isNew;
-        $product->is_best            = $command->isBest;
-        $product->is_benefit         = $command->isBenefit;
-        $product->promise_services   = $command->promiseServices;
-        $product->safety_stock       = $command->safetyStock;
+        $product->owner               = $command->owner;
+        $product->product_type        = $command->productType;
+        $product->shipping_type       = $command->shippingType;
+        $product->title               = $command->title;
+        $product->image               = $command->image;
+        $product->barcode             = $command->barcode;
+        $product->outer_id            = $command->outerId;
+        $product->is_multiple_spec    = $command->isMultipleSpec;
+        $product->sort                = $command->sort;
+        $product->unit                = $command->unit;
+        $product->status              = $command->status;
+        $product->price               = $command->price;
+        $product->market_price        = $command->marketPrice;
+        $product->cost_price          = $command->costPrice;
+        $product->brand_id            = $command->brandId;
+        $product->category_id         = $command->categoryId;
+        $product->seller_category_id  = $command->sellerCategoryId;
+        $product->freight_payer       = $command->freightPayer;
+        $product->postage_id          = $command->postageId;
+        $product->min_limit           = $command->minLimit;
+        $product->max_limit           = $command->maxLimit;
+        $product->step_limit          = $command->stepLimit;
+        $product->sub_stock           = $command->subStock;
+        $product->delivery_time       = $command->deliveryTime;
+        $product->vip                 = $command->vip;
+        $product->points              = $command->points;
+        $product->is_hot              = $command->isHot;
+        $product->is_new              = $command->isNew;
+        $product->is_best             = $command->isBest;
+        $product->is_benefit          = $command->isBenefit;
+        $product->promise_services    = $command->promiseServices;
+        $product->safety_stock        = $command->safetyStock;
+        $product->supplier_type       = $command->supplier?->getType();
+        $product->supplier_id         = $command->supplier?->getID();
+        $product->supplier_product_id = $command->supplierProductId;
 
 
         $product->info->id          = $product->id;
@@ -128,6 +131,7 @@ class ProductCommand extends CommandHandler
         $sku->safety_stock    = $data->safetyStock;
         $sku->market_price    = $data->marketPrice;
         $sku->cost_price      = $data->costPrice;
+        $sku->supplier_sku_id = $data->supplierSkuId;
         $sku->status          = $data->status;
         $sku->deleted_at      = null;
     }

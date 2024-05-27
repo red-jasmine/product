@@ -28,6 +28,8 @@ return new class extends Migration {
             $table->string('outer_id')->nullable()->comment('商家编码');
             // 状态
             $table->string('status')->comment('状态');
+            // 供应商
+            $table->unsignedBigInteger('supplier_sku_id')->nullable()->comment('供应商 SKU ID');
             // 操作
             $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->timestamp('modified_time')->nullable()->comment('修改时间');

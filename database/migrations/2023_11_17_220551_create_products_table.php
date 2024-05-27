@@ -68,10 +68,12 @@ return new class extends Migration {
             $table->timestamp('sold_out_time')->nullable()->comment('售停时间');
             $table->timestamp('off_sale_time')->nullable()->comment('下架时间');
             // 供应商
+            $table->string('supplier_type')->nullable()->comment('供应商类型');
+            $table->unsignedBigInteger('supplier_id')->nullable()->comment('供应商ID');
+            $table->unsignedBigInteger('supplier_product_id')->nullable()->comment('供应商 商品ID');
             // 税率
             // 审核状态
             // 是否违规
-            // 监控
             $table->unsignedBigInteger('safety_stock')->default(0)->comment('安全库存');
             //统计项
             $table->unsignedBigInteger('views')->default(0)->comment('浏览量');
