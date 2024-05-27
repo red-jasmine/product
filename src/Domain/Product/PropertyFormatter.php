@@ -68,9 +68,11 @@ class PropertyFormatter
         $skuProperties = [];
         foreach ($props as $item) {
             $pid            = (int)$item['pid'];
-            $values         = $item['value'] ?? [];
+            $values         = $item['values'] ?? [];
             $propertyValues = [];
-            foreach ($values as $vid => $alias) {
+            foreach ($values as $value) {
+                $vid              = $value['vid'] ?? null;
+                $alias            = $value['alias'] ?? null;
                 $propertyValues[] = [ 'pid' => $pid, 'vid' => (int)$vid ];
             }
             $skuProperties[] = $propertyValues;

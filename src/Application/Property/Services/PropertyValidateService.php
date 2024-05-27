@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\Application\Property\Services;
 
 use Illuminate\Support\Collection;
+use RedJasmine\Product\Application\Product\UserCases\Commands\Sku;
 use RedJasmine\Product\Domain\Product\Models\ValueObjects\Property;
 use RedJasmine\Product\Domain\Product\Models\ValueObjects\PropValue;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
@@ -46,32 +47,26 @@ class PropertyValidateService
             $saleProp->name   = $property->name;
             $saleProp->values = collect();
 
-            $values = $prop['value'] ?? [];
+            $values = $prop['values'] ?? [];
 
             switch ($property->type) {
                 case PropertyTypeEnum::TEXT:
                 case PropertyTypeEnum::DATE:
 
-                    $salePropValue       = new PropValue();
-                    $salePropValue->vid  = 0;
-                    $salePropValue->name = (string)$values;
+                    $salePropValue        = new PropValue();
+                    $salePropValue->vid   = 0;
+                    $salePropValue->name  = (string)($values[0]['name'] ?? '');
+                    $salePropValue->alias = (string)($values[0]['alias'] ?? '');
                     $saleProp->values->add($salePropValue);
                     break;
                 case PropertyTypeEnum::SELECT:
                 case PropertyTypeEnum::MULTIPLE:
 
-                    $values = is_array($values) ? $values : [ $values ];
-
-                    $ids = array_is_list($values) ? array_values($values) : array_keys($values);
-
-                    $propValues = $this->valueReadRepository->findByIdsInProperty($saleProp->pid, array_unique($ids))->keyBy('id');
-
-                    foreach ($values as $vid => $alias) {
-                        if (array_is_list($values)) {
-                            $vid   = $alias;
-                            $alias = null;
-                        }
-
+                    $propValues       = $this->valueReadRepository->findByIdsInProperty($saleProp->pid, collect($values)->pluck('vid')->toArray())->keyBy('id');
+                    $saleProp->values = collect();
+                    foreach ($values as $value) {
+                        $vid                  = $value['vid'];
+                        $alias                = $value['alias'] ?? '';
                         $salePropValue        = new PropValue();
                         $salePropValue->vid   = $vid;
                         $salePropValue->name  = $propValues[$salePropValue->vid]->name;
@@ -81,8 +76,8 @@ class PropertyValidateService
 
                     break;
             }
+            $saleProps->push($saleProp);
 
-            $saleProps[] = $saleProp;
         }
 
 
@@ -101,6 +96,7 @@ class PropertyValidateService
      */
     public function saleProps(array $props = []) : Collection
     {
+
         $pid        = collect($props)->pluck('pid')->unique()->toArray();
         $properties = collect($this->propertyReadRepository->findByIds($pid))->keyBy('id');
         $saleProps  = collect();
@@ -109,11 +105,14 @@ class PropertyValidateService
             $property       = $properties[$prop['pid']];
             $saleProp->pid  = $property->id;
             $saleProp->name = $property->name;
-            $values         = $prop['value'] ?? [];
-            $propValues     = $this->valueReadRepository->findByIdsInProperty($saleProp->pid, array_unique(array_keys($values)))->keyBy('id');
+            $values         = $prop['values'] ?? [];
+
+            $propValues = $this->valueReadRepository->findByIdsInProperty($saleProp->pid, collect($values)->pluck('vid')->toArray())->keyBy('id');
 
             $saleProp->values = collect();
-            foreach ($values as $vid => $alias) {
+            foreach ($values as $value) {
+                $vid                  = $value['vid'];
+                $alias                = $value['alias'] ?? '';
                 $salePropValue        = new PropValue();
                 $salePropValue->vid   = $vid;
                 $salePropValue->name  = $propValues[$salePropValue->vid]->name;
@@ -123,5 +122,18 @@ class PropertyValidateService
             $saleProps[] = $saleProp;
         }
         return $saleProps;
+    }
+
+
+    /**
+     * @param Collection<Property> $saleProps
+     * @param Collection<Sku>      $skus
+     *
+     * @return Collection
+     */
+    public function validateSkus(Collection $saleProps, Collection $skus) : Collection
+    {
+        dd($saleProps);
+
     }
 }

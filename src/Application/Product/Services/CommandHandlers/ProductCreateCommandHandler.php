@@ -44,6 +44,8 @@ class ProductCreateCommandHandler extends ProductCommand
                     //$defaultSku->deleted_at = now();
                     //$product->addSku($defaultSku);
 
+                    $this->propertyValidateService->validateSkus($saleProps, $command->skus);
+
                     $command->skus?->each(function ($skuData) use ($product) {
                         $sku     = new ProductSku();
                         $sku->id = $this->getService()->buildId();

@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Product\Application\Product\UserCases\Commands;
 
+use Illuminate\Support\Collection;
 use RedJasmine\Support\Data\Data;
 
 class Property extends Data
@@ -13,11 +14,11 @@ class Property extends Data
      */
     public int $pid;
 
+
     /**
-     * 属性值
-     * @var int|array|string|null
+     * @var Collection<PropValue>|null
      */
-    public int|array|string|null $value;
+    public ?Collection $values = null;
 
 
 }

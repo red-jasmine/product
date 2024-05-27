@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use RedJasmine\Product\Application\Product\Services\CommandHandlers\ProductCreateCommandHandler;
 use RedJasmine\Product\Application\Product\Services\CommandHandlers\ProductUpdateCommandHandler;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductCreateCommand;
+use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductInfo;
 use RedJasmine\Product\Domain\Product\Repositories\ProductRepositoryInterface;
@@ -17,6 +18,8 @@ use RedJasmine\Support\Data\Data;
 /**
  * @see ProductCreateCommandHandler::handle()
  * @method Product create(ProductCreateCommand $command)
+ * @see ProductUpdateCommandHandler::handle()
+ * @method void update(ProductUpdateCommand $command)
  */
 class ProductCommandService extends ApplicationCommandService
 {

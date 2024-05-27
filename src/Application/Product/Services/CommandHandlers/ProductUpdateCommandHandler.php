@@ -35,10 +35,9 @@ class ProductUpdateCommandHandler extends ProductCommand
 
 
                     // 获取规格信息
-                    $saleProps = $this->propertyFormatter->formatArray($command->saleProps->toArray());
+                    $saleProps                 = $this->propertyValidateService->saleProps($command->saleProps->toArray());
 
-                    // 规格验证 TODO
-                    $product->info->sale_props = $saleProps;
+                    $product->info->sale_props = $saleProps->toArray();
 
                     // 可选  后续考虑 TODO
                     //$defaultSku             = $this->defaultSku($product);

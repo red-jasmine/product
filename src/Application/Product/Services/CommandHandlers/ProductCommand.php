@@ -98,6 +98,7 @@ class ProductCommand extends CommandHandler
         $product->info->remarks     = $command->remarks;
         $product->info->tools       = $command->tools;
         $product->info->expands     = $command->expands;
+
         $product->info->basic_props = $this->propertyValidateService->basicProps($command->basicProps?->toArray()??[]);
     }
 
