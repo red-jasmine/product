@@ -29,7 +29,6 @@ class ProductQueryAction extends QueryAction
     {
         return [
             'info', 'skus', 'skus.info', 'brand', 'category', 'sellerCategory', 'series'
-
         ];
     }
 
