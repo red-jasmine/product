@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RedJasmine\Product\Domain\Category\Enums\CategoryStatusEnum;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Enums\BoolIntEnum;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\ModelTree;
+use RedJasmine\Support\Domain\Models\Traits\ModelTree;
 
 class ProductCategory extends Model
 {
@@ -78,7 +77,7 @@ class ProductCategory extends Model
      */
     public function isAllowUse() : bool
     {
-        if ($this->is_leaf === BoolIntEnum::NO) {
+        if ($this->is_leaf === false) {
             return false;
         }
 

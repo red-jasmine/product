@@ -4,7 +4,7 @@ namespace RedJasmine\Product\Domain\Series\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 
 class ProductSeriesProduct extends Model
 {

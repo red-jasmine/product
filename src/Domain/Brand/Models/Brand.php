@@ -5,12 +5,10 @@ namespace RedJasmine\Product\Domain\Brand\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
-
-use RedJasmine\Support\Traits\Models\ModelTree;
 
 
 class Brand extends Model
@@ -25,7 +23,7 @@ class Brand extends Model
     use HasOperator;
 
 
-    use ModelTree;
+    use \RedJasmine\Support\Domain\Models\Traits\ModelTree;
 
     // 父级ID字段名称，默认值为 parent_id
     protected string $parentColumn = 'parent_id';

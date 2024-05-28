@@ -52,6 +52,7 @@ class BrandController extends Controller
         $request->offsetSet('id', $id);
         $command = BrandUpdateCommand::from($request);
         $this->commandService->update($command);
+
         return static::success();
 
     }

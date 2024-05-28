@@ -5,13 +5,12 @@ namespace RedJasmine\Product\Application\Stock\Services;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
-use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
-use RedJasmine\Product\Domain\Stock\Models\ProductSku;
 use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Product\Domain\Stock\Repositories\ProductSkuRepositoryInterface;
 use RedJasmine\Product\Domain\Stock\StockDomainService;
 use RedJasmine\Product\Exceptions\ProductStockException;
+use RedJasmine\Product\Exceptions\StockException;
 use RedJasmine\Support\Application\ApplicationCommandService;
 use Throwable;
 

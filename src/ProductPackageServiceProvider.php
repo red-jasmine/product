@@ -35,10 +35,7 @@ class ProductPackageServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/product.php', 'red-jasmine.product');
 
-        // Register the service the package provides.
-        $this->app->singleton('product', function ($app) {
-            return new ProductService();
-        });
+
     }
 
     /**
@@ -48,7 +45,7 @@ class ProductPackageServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [ 'product' ];
+        return [ ];
     }
 
     /**

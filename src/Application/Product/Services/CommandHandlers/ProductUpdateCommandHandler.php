@@ -5,13 +5,7 @@ namespace RedJasmine\Product\Application\Product\Services\CommandHandlers;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Application\Product\Services\ProductCommandService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductUpdateCommand;
-use RedJasmine\Product\Application\Stock\UserCases\StockCommand;
-use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
-use RedJasmine\Product\Domain\Product\Models\ProductSku;
-use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
-use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
-use RedJasmine\Product\Exceptions\ProductStockException;
 use Throwable;
 
 /**

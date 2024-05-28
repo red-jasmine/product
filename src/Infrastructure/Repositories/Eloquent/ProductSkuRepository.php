@@ -3,11 +3,11 @@
 namespace RedJasmine\Product\Infrastructure\Repositories\Eloquent;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
 use RedJasmine\Product\Domain\Stock\Models\Product;
 use RedJasmine\Product\Domain\Stock\Models\ProductSku;
 use RedJasmine\Product\Domain\Stock\Models\ProductStockLog;
 use RedJasmine\Product\Domain\Stock\Repositories\ProductSkuRepositoryInterface;
+use RedJasmine\Product\Exceptions\StockException;
 
 class ProductSkuRepository implements ProductSkuRepositoryInterface
 {
@@ -79,7 +79,7 @@ class ProductSkuRepository implements ProductSkuRepositoryInterface
      * @param int        $stock
      *
      * @return void
-     * @throws StockException
+     * @throws \RedJasmine\Product\Exceptions\StockException
      */
     public function sub(ProductSku $sku, int $stock) : void
     {
@@ -121,7 +121,7 @@ class ProductSkuRepository implements ProductSkuRepositoryInterface
      * @param int        $stock
      *
      * @return void
-     * @throws StockException
+     * @throws \RedJasmine\Product\Exceptions\StockException
      */
     public function unlock(ProductSku $sku, int $stock) : void
     {
@@ -144,7 +144,7 @@ class ProductSkuRepository implements ProductSkuRepositoryInterface
      * @param int        $stock
      *
      * @return void
-     * @throws StockException
+     * @throws \RedJasmine\Product\Exceptions\StockException
      */
     public function confirm(ProductSku $sku, int $stock) : void
     {

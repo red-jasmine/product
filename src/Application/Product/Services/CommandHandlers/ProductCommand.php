@@ -14,11 +14,11 @@ use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Product;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Domain\Product\PropertyFormatter;
-use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Exceptions\ProductException;
 use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Product\Exceptions\ProductStockException;
+use RedJasmine\Product\Exceptions\StockException;
 use RedJasmine\Support\Application\CommandHandler;
 use Throwable;
 
@@ -203,7 +203,7 @@ class ProductCommand extends CommandHandler
      * @param \RedJasmine\Product\Application\Product\UserCases\Commands\Product $command
      *
      * @return void
-     * @throws StockException
+     * @throws \RedJasmine\Product\Exceptions\StockException
      * @throws ProductStockException
      * @throws Throwable
      */

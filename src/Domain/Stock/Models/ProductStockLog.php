@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RedJasmine\Product\Domain\Product\Models\ProductSku;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockChangeTypeEnum;
 use RedJasmine\Product\Domain\Stock\Models\Enums\ProductStockTypeEnum;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOwner;
 
 
 class ProductStockLog extends Model
@@ -19,7 +18,7 @@ class ProductStockLog extends Model
 
     use HasDateTimeFormatter;
 
-    use HasOwner;
+    use \RedJasmine\Support\Domain\Models\Traits\HasOwner;
 
     use HasOperator;
 

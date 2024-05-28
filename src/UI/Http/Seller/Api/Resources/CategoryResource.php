@@ -26,7 +26,7 @@ class CategoryResource extends JsonResource
             'is_leaf'     => $this->is_leaf,
             'is_show'     => $this->is_show,
             'status'      => $this->status,
-            'extend_info' => $this->extend_info,
+            'expands' => $this->expands,
             'children'    => $this->children ? static::collection(collect($this->children)) : null,
         ];
     }

@@ -3,9 +3,9 @@
 namespace RedJasmine\Product\Domain\Stock;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Product\Domain\Stock\Exceptions\StockException;
 use RedJasmine\Product\Domain\Stock\Models\Product;
 use RedJasmine\Product\Domain\Stock\Models\ProductSku;
+use RedJasmine\Product\Exceptions\StockException;
 use RedJasmine\Support\Application\Service;
 
 class StockDomainService extends Service
