@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Product\Domain\Stock\Models\Product;
 use RedJasmine\Product\Domain\Stock\Models\ProductSku;
 use RedJasmine\Product\Exceptions\StockException;
-use RedJasmine\Support\Application\Service;
+use RedJasmine\Support\Foundation\Service\Service;
 
 class StockDomainService extends Service
 {

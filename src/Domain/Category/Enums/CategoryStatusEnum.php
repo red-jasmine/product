@@ -25,4 +25,14 @@ enum CategoryStatusEnum: string
         ];
 
     }
+
+
+    public static function colors():array
+    {
+        return [
+            self::ENABLE->value  => 'success',
+            self::DISABLE->value => 'gray',
+        ];
+
+    }
 }

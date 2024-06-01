@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
 use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 
 class Brand extends Model
 {
-
-    use HasServiceContext;
 
     use HasDateTimeFormatter;
 
@@ -59,14 +56,13 @@ class Brand extends Model
 
     public function create() : static
     {
-        $this->id      = Snowflake::getInstance()->nextId();
-        $this->creator = $this->getOperator();
+        $this->id = Snowflake::getInstance()->nextId();
         return $this;
     }
 
     public function modify() : static
     {
-        $this->updater = $this->getOperator();
+
         return $this;
     }
 

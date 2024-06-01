@@ -3,6 +3,7 @@
 namespace RedJasmine\Product\UI\Http\Seller\Api\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Application\Category\Services\ProductCategoryQueryService;
 use RedJasmine\Product\Application\Category\UserCases\Queries\ProductCategoryTreeQuery;
 use RedJasmine\Product\UI\Http\Seller\Api\Resources\CategoryResource;
@@ -18,7 +19,7 @@ class CategoryController extends Controller
     {
     }
 
-    public function tree(Request $request) : \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function tree(Request $request) : AnonymousResourceCollection
     {
         $tree = $this->queryService->tree(ProductCategoryTreeQuery::from($request));
         return CategoryResource::collection($tree);

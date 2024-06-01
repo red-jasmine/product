@@ -25,7 +25,8 @@ class ProductController extends Controller
 
     public function index(Request $request) : AnonymousResourceCollection
     {
-        $result = $this->queryService->paginate(PaginateQuery::from($request));
+
+        $result = $this->queryService->paginate(PaginateQuery::from($request->all()));
         return ProductResource::collection($result->appends($request->query()));
     }
 
