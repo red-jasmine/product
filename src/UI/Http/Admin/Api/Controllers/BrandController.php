@@ -10,6 +10,7 @@ use RedJasmine\Product\Application\Brand\Services\BrandQueryService;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandCreateCommand;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandDeleteCommand;
 use RedJasmine\Product\Application\Brand\UserCases\Commands\BrandUpdateCommand;
+use RedJasmine\Product\Application\Brand\UserCases\Queries\BrandPaginateQuery;
 use RedJasmine\Product\UI\Http\Admin\Api\Resources\BrandResource;
 use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
 use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
@@ -28,7 +29,7 @@ class BrandController extends Controller
     public function index(Request $request) : AnonymousResourceCollection
     {
 
-        $result = $this->queryService->paginate(PaginateQuery::from($request));
+        $result = $this->queryService->paginate(BrandPaginateQuery::from($request));
         return BrandResource::collection($result->appends($request->query()));
     }
 
