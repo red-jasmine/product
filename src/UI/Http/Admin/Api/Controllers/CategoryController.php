@@ -12,7 +12,7 @@ use RedJasmine\Product\UI\Http\Admin\Api\Resources\CategoryResource;
 use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
 use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
 
-class CategoryController
+class CategoryController extends Controller
 {
     public function __construct(
         protected ProductCategoryQueryService   $queryService,

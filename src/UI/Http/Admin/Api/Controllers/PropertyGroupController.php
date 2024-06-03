@@ -2,14 +2,19 @@
 
 namespace RedJasmine\Product\UI\Http\Admin\Api\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Application\Property\Services\ProductPropertyGroupCommandService;
 use RedJasmine\Product\Application\Property\Services\ProductPropertyGroupQueryService;
+use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyGroupCreateCommand;
+use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyGroupDeleteCommand;
+use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyGroupUpdateCommand;
 use RedJasmine\Product\Application\Property\UserCases\Queries\PropertyGroupPaginateQuery;
 use RedJasmine\Product\UI\Http\Admin\Api\Resources\PropertyGroupResource;
+use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
 
-class PropertyGroupController
+class PropertyGroupController extends Controller
 {
     public function __construct(
         protected ProductPropertyGroupCommandService $commandService,
@@ -17,30 +22,42 @@ class PropertyGroupController
 
     )
     {
+
     }
 
 
     public function index(Request $request) : AnonymousResourceCollection
     {
-
         $result = $this->queryService->paginate(PropertyGroupPaginateQuery::from($request));
         return PropertyGroupResource::collection($result);
+    }
+
+    public function store(Request $request) : PropertyGroupResource
+    {
+
+        $result = $this->commandService->create(ProductPropertyGroupCreateCommand::from($request));
+        return PropertyGroupResource::make($result);
 
     }
 
-    public function store(Request $request)
+    public function show($id, Request $request) : PropertyGroupResource
     {
+        $result = $this->queryService->find($id, FindQuery::from($request));
+        return PropertyGroupResource::make($result);
+
     }
 
-    public function show($id)
+    public function update(Request $request, $id) : JsonResponse
     {
+        $request->offsetSet('id', $id);
+        $this->commandService->update(ProductPropertyGroupUpdateCommand::from($request));
+        return self::success();
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Request $request, $id) : JsonResponse
     {
-    }
-
-    public function destroy($id)
-    {
+        $request->offsetSet('id', $id);
+        $this->commandService->delete(ProductPropertyGroupDeleteCommand::from($request));
+        return self::success();
     }
 }

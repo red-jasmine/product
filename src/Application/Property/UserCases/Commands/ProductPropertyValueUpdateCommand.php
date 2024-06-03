@@ -11,7 +11,6 @@ class ProductPropertyValueUpdateCommand extends Data
 {
     public int                $id;
     public string             $name;
-    public ?string            $unit;
     public int                $sort    = 0;
     public int                $groupId = 0;
     public PropertyStatusEnum $status  = PropertyStatusEnum::ENABLE;
@@ -23,7 +22,7 @@ class ProductPropertyValueUpdateCommand extends Data
         return [
             'id'       => '属性ID',
             'name'     => '名称',
-            'unit'     => '单位',
+
             'expands'  => '扩展参数',
             'sort'     => '排序',
             'group_id' => '分组',
@@ -37,7 +36,6 @@ class ProductPropertyValueUpdateCommand extends Data
         return [
             'id' => [ 'required', 'integer' ],
             'name'     => [ 'required', 'max:64', ],
-            'unit'     => [ 'sometimes', 'max:10', ],
             'expands'  => [ 'sometimes', 'nullable', 'array' ],
             'sort'     => [ 'integer' ],
             'group_id' => [ 'sometimes', 'nullable', 'integer' ],

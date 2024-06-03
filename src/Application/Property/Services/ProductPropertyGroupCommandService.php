@@ -26,11 +26,6 @@ class ProductPropertyGroupCommandService extends ApplicationCommandService
     }
 
 
-    public function delete(Data $data) : void
-    {
-        throw new \RuntimeException(' does not support');
-    }
-
     public function newModel($data = null) : Model
     {
         if ($model = $this->repository->findByName($data->name)) {
@@ -38,7 +33,6 @@ class ProductPropertyGroupCommandService extends ApplicationCommandService
         }
         return parent::newModel($data);
     }
-
 
 
 }

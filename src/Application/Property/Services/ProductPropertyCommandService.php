@@ -9,6 +9,9 @@ use RedJasmine\Product\Application\Property\UserCases\Commands\ProductPropertyUp
 use RedJasmine\Product\Domain\Property\Models\ProductProperty;
 use RedJasmine\Product\Domain\Property\Repositories\ProductPropertyRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationCommandService;
+use RedJasmine\Support\Application\Handlers\CreateCommandHandler;
+use RedJasmine\Support\Application\Handlers\DeleteCommandHandler;
+use RedJasmine\Support\Application\Handlers\UpdateCommandHandler;
 use RedJasmine\Support\Data\Data;
 
 /**
@@ -23,9 +26,12 @@ class ProductPropertyCommandService extends ApplicationCommandService
 
     protected function pipelines() : array
     {
-        return [];
+        return [
+        ];
 
     }
+
+    // TODO 重名判断
 
 
     public function __construct(
@@ -41,12 +47,6 @@ class ProductPropertyCommandService extends ApplicationCommandService
             return $model;
         }
         return parent::newModel($data);
-    }
-
-
-    public function delete(Data $data) : void
-    {
-        throw new \RuntimeException('does not support');
     }
 
 
