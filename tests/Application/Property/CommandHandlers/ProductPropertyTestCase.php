@@ -17,7 +17,7 @@ class ProductPropertyTestCase extends ApplicationTestCase
 
     protected function groupCommandService() : ProductPropertyGroupCommandService
     {
-        return app(ProductPropertyGroupCommandService::class)->setOperator($this->user());
+        return app(ProductPropertyGroupCommandService::class);
     }
 
 
@@ -29,7 +29,7 @@ class ProductPropertyTestCase extends ApplicationTestCase
 
     public function propertyCommandService() : ProductPropertyCommandService
     {
-        return app(ProductPropertyCommandService::class)->setOperator($this->user());
+        return app(ProductPropertyCommandService::class);
     }
 
 
@@ -41,7 +41,7 @@ class ProductPropertyTestCase extends ApplicationTestCase
 
     public function valueCommandService() : ProductPropertyValueCommandService
     {
-        return app(ProductPropertyValueCommandService::class)->setOperator($this->user());
+        return app(ProductPropertyValueCommandService::class);
     }
 
 

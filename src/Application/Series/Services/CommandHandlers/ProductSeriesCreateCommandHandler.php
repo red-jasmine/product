@@ -7,6 +7,7 @@ use RedJasmine\Product\Application\Series\UserCases\Commands\ProductSeriesProduc
 use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
 use RedJasmine\Support\Application\CommandHandler;
+use RedJasmine\Support\Facades\ServiceContext;
 
 class ProductSeriesCreateCommandHandler extends CommandHandler
 {
@@ -19,7 +20,7 @@ class ProductSeriesCreateCommandHandler extends CommandHandler
          */
         $model          = $this->getService()->newModel();
         $model->owner   = $command->owner;
-        $model->creator = $this->getService()->getOperator();
+        $model->creator = ServiceContext::getOperator();
         $model->remarks = $command->remarks;
         $model->name    = $command->name;
 

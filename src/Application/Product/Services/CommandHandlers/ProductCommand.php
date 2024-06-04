@@ -36,7 +36,7 @@ class ProductCommand extends CommandHandler
         protected ProductCategoryQueryService $categoryQueryService,
     )
     {
-        $this->stockCommandService->setOperator($this->getOperator());
+
         parent::__construct();
 
     }

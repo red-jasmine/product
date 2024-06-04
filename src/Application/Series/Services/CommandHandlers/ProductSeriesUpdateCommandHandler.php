@@ -8,6 +8,7 @@ use RedJasmine\Product\Application\Series\UserCases\Commands\ProductSeriesUpdate
 use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
 use RedJasmine\Support\Application\CommandHandler;
+use RedJasmine\Support\Facades\ServiceContext;
 
 class ProductSeriesUpdateCommandHandler extends CommandHandler
 {
@@ -21,7 +22,7 @@ class ProductSeriesUpdateCommandHandler extends CommandHandler
         $model          = $this->getService()->getRepository()->find($command->id);
         $model->remarks = $command->remarks;
         $model->name    = $command->name;
-        $model->updater = $this->getService()->getOperator();
+        $model->updater = ServiceContext::getOperator();
 
         $model->products = Collection::make([]);
 

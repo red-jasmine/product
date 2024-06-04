@@ -26,7 +26,7 @@ class ProductTestCase extends ApplicationTestCase
 
     public function commandService() : ProductCommandService
     {
-        return app(ProductCommandService::class)->setOperator($this->user());
+        return app(ProductCommandService::class);
 
     }
 

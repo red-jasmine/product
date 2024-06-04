@@ -14,12 +14,12 @@ class BrandTestCase extends ApplicationTestCase
 
     protected function brandCommandService() : BrandCommandService
     {
-        return app(BrandCommandService::class)->setOperator($this->user());
+        return app(BrandCommandService::class);
     }
 
     protected function brandQueryService() : BrandQueryService
     {
-        return app(BrandQueryService::class)->setOperator($this->user());
+        return app(BrandQueryService::class);
     }
 
 

@@ -15,7 +15,7 @@ class ProductSeriesCommandHandlersTest extends ApplicationTestCase
 
     public function commandService() : ProductSeriesCommandService
     {
-        return app(ProductSeriesCommandService::class)->setOperator($this->user());
+        return app(ProductSeriesCommandService::class);
     }
 
     public function repository() : ProductSeriesRepositoryInterface
@@ -122,7 +122,6 @@ class ProductSeriesCommandHandlersTest extends ApplicationTestCase
         $this->assertEquals($command->remarks, $model->remarks);
         $this->assertEquals($command->owner->getType(), $model->owner->getType());
         $this->assertEquals($command->owner->getID(), $model->owner->getID());
-
         $this->assertEquals($command->products->count(), $model->products->count());
 
 

@@ -22,7 +22,7 @@ class ProductSellerCategoryDeleteCommandHandlerTest extends ApplicationTestCase
 
     protected function commandService() : ProductSellerCategoryCommandService
     {
-        return app(ProductSellerCategoryCommandService::class)->setOperator($this->user());
+        return app(ProductSellerCategoryCommandService::class);
     }
 
 

@@ -26,7 +26,7 @@ class ProductCategoryTreeQueryHandlerTest extends ApplicationTestCase
 
     protected function productCategoryCommandService() : ProductCategoryCommandService
     {
-        return app(ProductCategoryCommandService::class)->setOperator($this->user());
+        return app(ProductCategoryCommandService::class);
     }
 
     /**

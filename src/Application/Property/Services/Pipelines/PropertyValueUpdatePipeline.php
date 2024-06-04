@@ -6,6 +6,7 @@ namespace RedJasmine\Product\Application\Property\Services\Pipelines;
 use Closure;
 use RedJasmine\Product\Application\Property\Services\ProductPropertyValueQueryService;
 use RedJasmine\Product\Application\Property\UserCases\Queries\PropertyValuePaginateQuery;
+use RedJasmine\Product\Exceptions\ProductPropertyException;
 use RedJasmine\Support\Application\CommandHandler;
 use RedJasmine\Support\Application\CommandHandlerPipeline;
 
@@ -18,19 +19,23 @@ class PropertyValueUpdatePipeline extends CommandHandlerPipeline
     }
 
 
-    public function executing(CommandHandler $handler, Closure $next)
+    /**
+     * @param CommandHandler $handler
+     * @param Closure        $next
+     *
+     * @return mixed
+     * @throws ProductPropertyException
+     */
+    public function executing(CommandHandler $handler, Closure $next) : mixed
     {
 
-        $paginate = $this->queryService->withQuery(function ($query) use ($handler, $next) {
-            $query->where('id', '<>', $handler->aggregate->id);
-        })->paginate(PropertyValuePaginateQuery::from([
-                                                          'name' => $handler->getArguments()[0]->name,
-                                                          'pid'  => $handler->aggregate->pid,
-                                                      ]));
+        $hasRepeatCount = $this->queryService
+            ->getModelQuery()->where('id', '<>', $handler->aggregate->id)
+            ->where('name', $handler->getArguments()[0]->name)
+            ->where('pid', $handler->aggregate->pid)->count();
 
-        if (count($paginate->items())) {
-            // TODO 需要改造
-            throw new \RuntimeException('Property value update failed');
+        if ($hasRepeatCount > 0) {
+            throw new ProductPropertyException('Property Value Update Failed:', $handler->getArguments()[0]->name);
         }
 
 

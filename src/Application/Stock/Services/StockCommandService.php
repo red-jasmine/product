@@ -12,6 +12,7 @@ use RedJasmine\Product\Domain\Stock\StockDomainService;
 use RedJasmine\Product\Exceptions\ProductStockException;
 use RedJasmine\Product\Exceptions\StockException;
 use RedJasmine\Support\Application\ApplicationCommandService;
+use RedJasmine\Support\Facades\ServiceContext;
 use Throwable;
 
 class StockCommandService extends ApplicationCommandService
@@ -171,7 +172,7 @@ class StockCommandService extends ApplicationCommandService
         $log->channel_type  = $command->channelType;
         $log->channel_id    = $command->channelId;
         $log->type          = $stockType;
-        $log->creator       = $this->getOperator();
+        $log->creator       = ServiceContext::getOperator();
 
         switch ($stockType) {
             case ProductStockTypeEnum::ADD:
