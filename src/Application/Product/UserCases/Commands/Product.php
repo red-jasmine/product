@@ -10,8 +10,10 @@ use RedJasmine\Ecommerce\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Product\Domain\Product\Models\Enums\FreightPayerEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
+use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class Product extends Data
 {
@@ -23,15 +25,18 @@ class Product extends Data
         ];
     }
 
-    public UserData $owner;
+    public Amount $price;
+
+
+    public UserInterface $owner;
 
     public ?UserData $supplier;
 
 
     public string $title;
 
-    public int     $stock   = 0;
-    public Amount  $price;
+    public int $stock = 0;
+
     public Amount  $marketPrice;
     public Amount  $costPrice;
     public ?string $image   = null;
@@ -106,5 +111,12 @@ class Product extends Data
      */
     public ?Collection $skus = null;
 
+
+    public static function rules(ValidationContext $context) : array
+    {
+        return [
+            'owner' => 'nullable',
+        ];
+    }
 
 }

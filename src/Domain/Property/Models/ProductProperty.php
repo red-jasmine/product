@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyStatusEnum;
 use RedJasmine\Product\Domain\Property\Models\Enums\PropertyTypeEnum;
+use RedJasmine\Support\Domain\Models\OperatorInterface;
 use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
-class ProductProperty extends Model
+class ProductProperty extends Model implements OperatorInterface
 {
 
     use HasDateTimeFormatter;

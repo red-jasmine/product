@@ -63,7 +63,6 @@ class ProductResource extends JsonResource
             'brand_id'           => $this->brand_id,
             'category_id'        => $this->category_id,
             'seller_category_id' => $this->seller_category_id,
-
             'info'           => new ProductInfoResource($this->whenLoaded('info')),
             'brand'          => new BrandResource($this->whenLoaded('brand')),
             'category'       => new CategoryResource($this->whenLoaded('category')),

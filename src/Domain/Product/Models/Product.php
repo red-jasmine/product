@@ -19,12 +19,13 @@ use RedJasmine\Product\Domain\Product\Models\Enums\ProductStatusEnum;
 use RedJasmine\Product\Domain\Product\Models\Enums\SubStockTypeEnum;
 use RedJasmine\Product\Domain\Series\Models\ProductSeries;
 use RedJasmine\Product\Domain\Series\Models\ProductSeriesProduct;
+use RedJasmine\Support\Domain\Models\OperatorInterface;
 use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Domain\Models\Traits\HasOwner;
 
 
-class Product extends Model
+class Product extends Model implements OperatorInterface
 {
     use HasDateTimeFormatter;
 

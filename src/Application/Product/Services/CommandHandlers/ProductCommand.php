@@ -37,7 +37,7 @@ class ProductCommand extends CommandHandler
     )
     {
 
-        parent::__construct();
+     parent::__construct();
 
     }
 

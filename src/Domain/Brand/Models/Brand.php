@@ -5,12 +5,13 @@ namespace RedJasmine\Product\Domain\Brand\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Product\Domain\Brand\Models\Enums\BrandStatusEnum;
+use RedJasmine\Support\Domain\Models\OperatorInterface;
 use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 
-class Brand extends Model
+class Brand extends Model implements OperatorInterface
 {
 
     use HasDateTimeFormatter;
