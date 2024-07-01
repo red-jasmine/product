@@ -11,4 +11,10 @@ class ProductCategoryRepository extends EloquentRepository implements ProductCat
 
     protected static string $eloquentModelClass = ProductCategory::class;
 
+    public function findByName($name) : ?ProductCategory
+    {
+        return static::$eloquentModelClass::where('name', $name)->first();
+    }
+
+
 }

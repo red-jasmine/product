@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Product\Application\Category\Services\ProductCategoryCommandService;
 use RedJasmine\Product\Application\Category\Services\ProductCategoryQueryService;
+use RedJasmine\Product\Application\Category\UserCases\Commands\ProductCategoryCreateCommand;
 use RedJasmine\Product\Application\Category\UserCases\Queries\ProductCategoryPaginateQuery;
 use RedJasmine\Product\Application\Category\UserCases\Queries\ProductCategoryTreeQuery;
 use RedJasmine\Product\UI\Http\Admin\Api\Resources\CategoryResource;
@@ -36,13 +37,15 @@ class CategoryController extends Controller
         return CategoryResource::collection($result);
     }
 
-    public function store(Request $request)
+    public function store(Request $request):CategoryResource
     {
+        $command = ProductCategoryCreateCommand::from($request);
+        $result  = $this->commandService->create($command);
+        return CategoryResource::make($result);
     }
 
     public function show($id, Request $request) : CategoryResource
     {
-
 
         $result = $this->queryService->find($id, FindQuery::from($request));
         return CategoryResource::make($result);

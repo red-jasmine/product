@@ -15,9 +15,9 @@ class ProductCategoryCreateCommand extends Data
     public int                $sort      = 0;
     public bool               $isLeaf    = false;
     public bool               $isShow    = false;
-    public string|null        $groupName = null;
-    public string|null        $image     = null;
-    public array|null         $expands   = null;
+    public ?string            $groupName = null;
+    public ?string            $image     = null;
+    public ?array             $expands   = null;
 
 
     public static function attributes() : array
@@ -44,10 +44,6 @@ class ProductCategoryCreateCommand extends Data
             'name'       => [ 'required', 'string', 'max:100' ],
             'group_name' => [ 'sometimes', 'nullable', 'max:100' ],
             'image'      => [ 'sometimes', 'nullable', 'max:255' ],
-            'sort'       => [ 'integer' ],
-            'is_leaf'    => [ 'required', 'boolean' ],
-            'is_show'    => [ 'required', 'boolean' ],
-            'status'     => [],
             'expands'    => [ 'sometimes', 'nullable', 'array' ],
         ];
 

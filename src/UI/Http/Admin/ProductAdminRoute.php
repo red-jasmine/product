@@ -22,8 +22,8 @@ class ProductAdminRoute
 
 
             Route::get('categories/tree', [ CategoryController::class, 'tree' ])->name('admin.product.categories.tree');
-            Route::get('categories', [ CategoryController::class, 'index' ])->name('admin.product.categories.index');
-            Route::get('categories/{category}', [ CategoryController::class, 'show' ])->name('admin.product.categories.show');
+
+            Route::apiResource('categories', CategoryController::class)->names('admin.product.categories');
 
 
             Route::apiResource('property/properties', PropertyController::class)->names('admin.product.property.properties');
