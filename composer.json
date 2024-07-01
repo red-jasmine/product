@@ -51,19 +51,6 @@
         ]
     },
     "repositories": {
-        "red-jasmine/support": {
-            "type": "path",
-            "url": "../support",
-            "options": {
-                "symlink": true
-            }
-        },
-        "red-jasmine/ecommerce": {
-            "type": "path",
-            "url": "../ecommerce",
-            "options": {
-                "symlink": true
-            }
-        }
+
     }
 }

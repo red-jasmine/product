@@ -8,7 +8,6 @@ use RedJasmine\Product\Application\Product\Services\ProductCommandService;
 use RedJasmine\Product\Application\Product\Services\ProductQueryService;
 use RedJasmine\Product\Application\Product\UserCases\Commands\ProductCreateCommand;
 use RedJasmine\Product\UI\Http\Admin\Api\Resources\ProductResource;
-use RedJasmine\Support\Data\UserData;
 use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
 use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
 
